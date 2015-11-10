@@ -1,0 +1,32 @@
+(* query.mli *)
+open Date
+
+(* data types our database support *)
+type value =
+  | VInt of int
+  | VString of string
+  | VBool of bool
+  | VFloat of float
+  | VDate of Date.t
+
+(* supported operators in where used to conditionally select rows *)
+type operator =
+  | Gt | Lt | Eq | GtEq | LtEq | NotEq
+  | Like
+
+(* SQL where expression: operate on the columns with the given value if there
+ * is a condition, or Null if there is no condition
+ *)
+type where    =
+  | Condition of (column * operator * value)
+  | Null
+
+(* represent our table columns as a string *)
+type column  = string
+
+(* type representing our query *)
+type t
+
+(* Takes two queries with the same number of columns and corresponding data
+ * types. and appends one onto the other in a new query *)
+val union     : t -> t -> t
