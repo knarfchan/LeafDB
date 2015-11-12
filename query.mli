@@ -24,6 +24,9 @@ type where    =
 (* represent our table columns as a string *)
 type column  = string
 
+(* declaration of a column with its associated value *)
+type column_dec = column * value
+
 (* type representing our query *)
 type t
 

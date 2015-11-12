@@ -7,6 +7,11 @@ type t
 (* a match between columns for relating tables *)
 type on = column * column
 
+(** Takes a column, the name of a table, returns the value associated with the
+ * column
+ *)
+val lookup    : column -> string -> value
+
 (* Takes a list of columns, the name of a table, and a condition and returns a
  * query given that the columns listed are in the table and the condition is
  * valid on the values of the columns
