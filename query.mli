@@ -30,6 +30,7 @@ type column_dec = column * value
 (* type representing our query *)
 type t
 
-(* Takes two queries with the same number of columns and corresponding data
+(* [precondition] : the two queries have the same number of columns
+ * Takes two queries with the same number of columns and corresponding data
  * types. and appends one onto the other in a new query *)
 val union     : t -> t -> t

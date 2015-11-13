@@ -8,9 +8,10 @@ type t
 type on = column * column
 
 (** Takes a column, the name of a table, returns the value associated with the
- * column
+ * column.
+ * [postcondition] : returns Some value or None if no table exists w/ that name
  *)
-val lookup    : column -> string -> value
+val lookup    : column -> string -> value option
 
 (* Takes a list of columns, the name of a table, and a condition and returns a
  * query given that the columns listed are in the table and the condition is
