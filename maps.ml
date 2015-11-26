@@ -1,6 +1,7 @@
 (*maps.ml*)
 open Query
-open Date
+open Core.Date
+
 
 let compare_dates d1 d2 = 0
 
@@ -25,7 +26,7 @@ module Float = struct
 end
 
 module Dates = struct
-  type t = Date.t
+  type t = Core.Date.t
   let compare = compare_dates
 end
 

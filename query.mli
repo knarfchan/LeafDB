@@ -1,5 +1,5 @@
 (* query.mli *)
-open Date
+open Core.Date
 
 (* data types our database support *)
 type value =
@@ -7,12 +7,15 @@ type value =
   | VString of string
   | VBool of bool
   | VFloat of float
-  | VDate of Date.t
+  | VDate of Core.Date.t
 
 (* supported operators in where used to conditionally select rows *)
 type operator =
   | Gt | Lt | Eq | GtEq | LtEq | NotEq
   | Like
+
+(* represent our table columns as a string *)
+type column  = string
 
 (* SQL where expression: operate on the columns with the given value if there
  * is a condition, or Null if there is no condition
@@ -20,9 +23,6 @@ type operator =
 type where    =
   | Condition of (column * operator * value)
   | Null
-
-(* represent our table columns as a string *)
-type column  = string
 
 (* declaration of a column with its associated value *)
 type column_dec = column * value
