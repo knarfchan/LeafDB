@@ -1,5 +1,6 @@
 (* query.mli *)
 open Date
+open Table
 
 (* data types our database support *)
 type value =
@@ -34,3 +35,7 @@ type t
  * Takes two queries with the same number of columns and corresponding data
  * types. and appends one onto the other in a new query *)
 val union     : t -> t -> t
+
+val convert   : Table.t -> t
+
+val is_empty  : t -> bool
