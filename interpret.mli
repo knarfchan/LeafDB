@@ -5,12 +5,16 @@ open Query
 type expr =
 | Select of column list * string * where
 | Insert of string * column list * value list
-| Join of string * string * on
-| Query of expr * expr
+| JoinTables of string * string * on
+| JoinTabQuer of string * expr * on
+| JoinQuerTab of expr * string * on
+| JoinQueries of expr * expr * on
 | Update of string * (column, value) list
 | Delete of string * (column, value) list
-| Create of column_dec list * string
-| Drop of string
+| CreateTable of string * column_dec list
+| CreateDb of string
+| DropTable of string
+| DropDb of string
 
 (* do a SQL evaluation *)
-val eval : database -> expr -> Query.t option
+val eval : Database.t -> expr -> Query.t option
