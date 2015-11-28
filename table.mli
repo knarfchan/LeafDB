@@ -1,4 +1,5 @@
 (* table.mli *)
+open Core.Date
 
 (* represents our table *)
 type t
@@ -8,6 +9,9 @@ type column  = string
 
 (* a match between columns for relating tables *)
 type on = column * column
+
+(*(year, month, day)*)
+type date = int * int * int
 
 (* data types our database support *)
 type value =
@@ -21,7 +25,7 @@ type value =
 type operator =
   | Gt | Lt | Eq | GtEq | LtEq | NotEq
   | LikeBegin | LikeEnd | LikeSubstring
-  | NotLikeBegin | NotLikeEnd | LikeSubstring
+  | NotLikeBegin | NotLikeEnd | NotLikeSubstring
 
 (* SQL where expression: operate on the columns with the given value if there
  * is a condition, or Null if there is no condition
