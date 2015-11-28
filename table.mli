@@ -20,7 +20,8 @@ type value =
 (* supported operators in where used to conditionally select rows *)
 type operator =
   | Gt | Lt | Eq | GtEq | LtEq | NotEq
-  | Like
+  | LikeBegin | LikeEnd | LikeSubstring
+  | NotLikeBegin | NotLikeEnd | LikeSubstring
 
 (* SQL where expression: operate on the columns with the given value if there
  * is a condition, or Null if there is no condition
@@ -31,6 +32,7 @@ type where    =
 
 (* declaration of a column with its associated value *)
 type column_dec = column * value
+
 
 (** Takes a column, the name of a table, returns the value associated with the
  * column.

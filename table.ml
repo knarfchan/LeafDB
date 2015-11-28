@@ -17,7 +17,8 @@ type value =
 (* supported operators in where used to conditionally select rows *)
 type operator =
   | Gt | Lt | Eq | GtEq | LtEq | NotEq
-  | Like
+  | LikeBegin | LikeEnd | LikeSubstring
+  | NotLikeBegin | NotLikeEnd | NotLikeSubstring
 
 (* SQL where expression: operate on the columns with the given value if there
  * is a condition, or Null if there is no condition

@@ -3,6 +3,7 @@
 (* represent our lexed and parsed expressions *)
 type expr =
 | Select of column list * string * where
+| SelectAll of string * where
 | Insert of string * column list * value list
 | JoinTables of string * string * on
 | JoinTabQuer of string * expr * on

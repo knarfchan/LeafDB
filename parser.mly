@@ -1,5 +1,4 @@
 %{
-open Query
 open Interpret
 %}
 
@@ -18,6 +17,9 @@ open Interpret
 %token LEFT_PAREN
 %token RIGHT_PAREN
 %token SEMICOLON
+%token ASTERISK
+%token PERCENTAGE
+%token QUOTE
 
 (* where ops *)
 %token GREATER
@@ -27,6 +29,7 @@ open Interpret
 %token LESS_EQUAL
 %token NOT_EQ
 %token LIKE_REGEX
+%token NOT_LIKE
 
 (* expression keywords *)
 %token SELECT
@@ -63,6 +66,8 @@ statement:
       {Select(cols, tab, w)}
   | SELECT; cols = col_list; FROM; tab = ID; w = where_condition
       {Select(cols, tab, w)}
+  | SELECT; ASTERISK; FROM; tab = ID; w = where_condition
+      {SelectAll(tab, w)}
   | INSERT; tab = ID; cols = col_list; vals = val_list
       {Insert(tab, cols, vals)}
   | UPDATE; tab = ID; SET; pairs = pair_list; WHERE; w = where_condition
@@ -104,8 +109,22 @@ rev_dec_list:
   ;
 
 where_condition:
-  | (* empty *)                                {Null}
-  | col = COLUMN; o = operator; v = value      {Condition(col, o, v)}
+  | (* empty *)
+      {Null}
+  | col = COLUMN; LIKE_REGEX; QUOTE; PERCENTAGE; v = value; QUOTE
+      {Condition(col, LikeBegin, v)}
+  | col = COLUMN; LIKE_REGEX; QUOTE; v = value; PERCENTAGE; QUOTE
+      {Condition(col, LikeEnd, v)}
+  | col = COLUMNL LIKE_REGEX; QUOTE; PERCENTAGE; v = value; PERCENTAGE; QUOTE
+      {Condition(col, LikeSubstring, v)}
+  | col = COLUMN; NOT_LIKE; QUOTE; PERCENTAGE; v = value; QUOTE
+      {Condition(col, NotLikeBegin, v)}
+  | col = COLUMN; NOT_LIKE; QUOTE; v = value; PERCENTAGE; QUOTE
+      {Condition(col, NotLikeEnd, v)}
+  | col = COLUMNL NOT_LIKE; QUOTE; PERCENTAGE; v = value; PERCENTAGE; QUOTE
+      {Condition(col, NotLikeSubstring, v)}
+  | col = COLUMN; o = operator; v = value
+      {Condition(col, o, v)}
   ;
 
 operator:
@@ -115,7 +134,6 @@ operator:
   | GREATER_EQUAL   {GtEq}
   | LESS_EQUAL      {LtEq}
   | NOT_EQ          {NotEq}
-  | LIKE_REGEX      {Like}
   ;
 
 value:
