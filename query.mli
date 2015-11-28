@@ -1,10 +1,6 @@
 (* query.mli *)
-<<<<<<< HEAD
-open Date
-open Table
-=======
+
 open Core.Date
->>>>>>> bfd1f9e845f0c0946400ad26011d5145ba50f254
 
 (* data types our database support *)
 type value =
@@ -39,10 +35,8 @@ type t
  * Takes two queries with the same number of columns and corresponding data
  * types. and appends one onto the other in a new query *)
 val union     : t -> t -> t
-<<<<<<< HEAD
 
 val convert   : Table.t -> t
 
 val is_empty  : t -> bool
-=======
->>>>>>> bfd1f9e845f0c0946400ad26011d5145ba50f254
+
