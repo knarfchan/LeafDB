@@ -1,9 +1,5 @@
 (*maps.ml*)
 open Query
-open Core.Date
-
-
-let compare_dates d1 d2 = 0
 
 module Int = struct
   type t = int
@@ -25,14 +21,29 @@ module Float = struct
   let compare = Pervasives.compare
 end
 
-module Dates = struct
-  type t = Core.Date.t
-  let compare = compare_dates
+type date = int * int * int (* (year, month, day) *)
+
+module Date : Map.OrderedType = struct
+  type t = date
+  let compare = Pervasives.compare
 end
 
-let type_map (v: Query.value) = match v with
-  | VInt _    -> Map.Make (Int)
-  | VString _ -> Map.Make (String)
-  | VBool _   -> Map.Make (Bool)
-  | VFloat _  -> Map.Make (Float)
-  | VDate _   -> Map.Make (Dates)
+module IntMap    = Map.Make (Int)
+module StringMap = Map.Make (String)
+module BoolMap   = Map.Make (Bool)
+module FloatMap  = Map.Make (Float)
+module DateMap   = Map.Make(Date)
+
+let lookup = failwith "Unimplemeted"
+
+let select (w: where) = failwith "Unimplemented"
+
+let insert (lst: value list) = failwith "Unimplemented"
+
+let update (w: where) (v: value) = failwith "Unimplemented"
+
+let updateAll (lst: value list) = failwith "Unimplemented"
+
+let delete (lst: value list) = failwith "Unimplemented"
+
+let join = failwith "Unimplemented"
