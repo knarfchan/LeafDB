@@ -11,7 +11,6 @@ type expr =
   | Create of column_dec list * string
   | Drop of string
 
-(*Should we have a method to change a table to a query*)
 let eval (d : database) (e : expr): Query.t option =
   match expr with
   | Select (lst, tbl, w) ->
