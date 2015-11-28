@@ -1,2 +1,3 @@
 compile.opam_packages=async
+compile.opam_packages=str
 compile.thread=true
