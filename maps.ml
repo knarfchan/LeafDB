@@ -1,4 +1,4 @@
-open Query
+open Types
 
 (* maps.ml *)
 module Int = struct

@@ -1,6 +1,4 @@
 (* table.mli *)
-open Core.Date
-
 (* represents our table *)
 type t
 

@@ -1,4 +1,4 @@
-open Interpret
+open Ast
 
 (* Parse a string into an ast *)
 let parse s =
