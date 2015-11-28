@@ -13,13 +13,6 @@ type on = column * column
 (*(year, month, day)*)
 type date = int * int * int
 
-(* data types our database support *)
-type value =
-  | VInt of int
-  | VString of string
-  | VBool of bool
-  | VFloat of float
-  | VDate of int
 
 (* supported operators in where used to conditionally select rows *)
 type operator =

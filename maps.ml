@@ -1,30 +1,31 @@
 (*maps.ml*)
-open Table
+open Types
+open Str
 
-module Int: Map.OrderedType with type t = Table.value.VInt = struct
-  type t = VInt of int
+module Int: Map.OrderedType with type t = int = struct
+  type t = int
   let compare = Pervasives.compare
 end
 
-module String: Map.OrderedType with type t = Table.value.VString = struct
-  type t = VString of string
+module String: Map.OrderedType with type t = string = struct
+  type t = string
   let compare = Pervasives.compare
 end
 
-module Bool: Map.OrderedType with type t = Table.value.VBool = struct
-  type t = VBool of bool
+module Bool: Map.OrderedType with type t = bool = struct
+  type t = bool
   let compare = Pervasives.compare
 end
 
-module Float: Map.OrderedType with type t = Table.value.VFloat = struct
-  type t = VFloat of float
+module Float: Map.OrderedType with type t = float = struct
+  type t = float
   let compare = Pervasives.compare
 end
 
-module Date: Map.OrderedType with type t = Table.value.VDate = struct
-  type t = VDate of Table.date
+module Date: Map.OrderedType with type t = date = struct
+  type t = date
   let compare d1 d2 : int = match d1, d2 with
-    | VDate (y1,m1,d1), VDate (y2,m2,d2) -> (y1*365 + m1*12 + d1*30) -
+    | (y1,m1,d1), (y2,m2,d2) -> (y1*365 + m1*12 + d1*30) -
                                             (y2*365 + m2*12 + d2*30)
     | _, _ -> failwith "Error comparing dates"
 end
@@ -36,33 +37,33 @@ module FloatMap  = Map.Make (Float)
 module DateMap   = Map.Make (Date)
 
 type t =
-  | Smap of StringMap.t
-  | Bmap of BoolMap.t
-  | Imap of IntMap.t
-  | Fmap of FloatMap.t
-  | Dmap of DateMap.t
+  | Smap of int StringMap.t
+  | Bmap of int BoolMap.t
+  | Imap of int IntMap.t
+  | Fmap of int FloatMap.t
+  | Dmap of int DateMap.t
 
-let lookup x m = match m.t with
-  | VInt _ -> IntMap.find x m
-  | VString _ -> StringMap.find x
-  | VBool _ -> BoolMap.find x m
-  | VFloat _ -> FloatMap.find x m
-  | VDate _ -> DateMap.find x m
+let lookup x m = match x, m with
+  | VInt i, Imap map -> IntMap.find i map
+  | VString s, Smap map -> StringMap.find s map
+  | VBool b, Bmap map -> BoolMap.find b map
+  | VFloat f, Fmap map -> FloatMap.find f map
+  | VDate d, Dmap map -> DateMap.find d map
+  | _, _ -> failwith "Error"
 
 let like_compare value element typ =
-  open Str in
   match typ with
-  | LikeBegin -> string_match (regex (".*"^element) value)
-  | LikeEnd -> string_match (regex (element^".*") value)
-  | LikeSubstring -> string_match (regex (".*"^element^".*") value)
-  | NotLikeBegin -> not (string_match (regex (".*"^element) value))
-  | NotLikeEnd -> not (string_match (regex (element^".*") value))
-  | NotLikeSubstring -> not (string_match (regex (".*"^element^".*") value))
+  | LikeBegin -> string_match (regexp (".*"^element) value)
+  | LikeEnd -> string_match (regexp (element^".*") value)
+  | LikeSubstring -> string_match (regexp (".*"^element^".*") value)
+  | NotLikeBegin -> not (string_match (regexp (".*"^element) value))
+  | NotLikeEnd -> not (string_match (regexp (element^".*") value))
+  | NotLikeSubstring -> not (string_match (regexp (".*"^element^".*") value))
 
-let compare element value typ =
+(*let compare element value typ =
   match typ with
-  | Date.t -> Date.compare element value
-  | _ -> Pervasives.compare element value
+  | (Date.t) -> Date.compare element value
+  | _ -> Pervasives.compare element value*)
 
 let does_satisfy condition value element typ =
   let var = compare element value typ in
@@ -90,7 +91,7 @@ let select map condition value =
   | VFloat f -> FloatMap.filter (fun key e -> does_satisfy condition f (get e) map.t) map
   | VDate d -> DateMap.filter (fun key e -> does_satisfy condition d (get e) map.t) map
 
-let insert x y m = match m.t with
+let insert x y m = match x with
   | VInt _ -> IntMap.add x y m
   | VString _ -> StringMap.add x y m
   | VBool _ -> BoolMap.add x y m
@@ -99,7 +100,7 @@ let insert x y m = match m.t with
 
 let update = failwith "Unimplemented"
 
-let delete x m = match m.t with
+let delete x m = match x with
   | VInt _ -> IntMap.remove x m
   | VString _ -> StringMap.remove x m
   | VBool _ -> BoolMap.remove x m
