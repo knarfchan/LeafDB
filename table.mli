@@ -3,6 +3,9 @@
 (* represents our table *)
 type t
 
+(* represent our table columns as a string *)
+type column  = string
+
 (* a match between columns for relating tables *)
 type on = column * column
 
@@ -18,9 +21,6 @@ type value =
 type operator =
   | Gt | Lt | Eq | GtEq | LtEq | NotEq
   | Like
-
-(* represent our table columns as a string *)
-type column  = string
 
 (* SQL where expression: operate on the columns with the given value if there
  * is a condition, or Null if there is no condition
@@ -60,15 +60,15 @@ val insertAll : string -> value list -> t
  * condition and returns an updated table for all records in which the condition
  * holds true
  *)
-val update    : string -> (column, value) list -> where -> t
+val update    : string -> (column * value) list -> where -> t
 
 (* Takes a table name and an updated list of (column * value) pairs and returns
  * a table with all of the records updated
  *)
-val updateAll : string -> (column, value) list -> t
+val updateAll : string -> (column * value) list -> t
 
 (* Takes a table name, a list of (column * value) pairs, and returns *)
-val delete    : string -> (column, value) list -> t
+val delete    : string -> (column * value) list -> t
 
 (* inner join
  * Takes two table names, and joins all rows from both tables where there is a
