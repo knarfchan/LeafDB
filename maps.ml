@@ -35,6 +35,13 @@ module BoolMap   = Map.Make (Bool)
 module FloatMap  = Map.Make (Float)
 module DateMap   = Map.Make (Date)
 
+type t =
+  | Smap of StringMap.t
+  | Bmap of BoolMap.t
+  | Imap of IntMap.t
+  | Fmap of FloatMap.t
+  | Dmap of DateMap.t
+
 let lookup x m = match m.t with
   | VInt _ -> IntMap.find x m
   | VString _ -> StringMap.find x

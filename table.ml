@@ -1,12 +1,7 @@
 (* table.ml *)
 open Types
 
-type 'a node = {mutable prev: 'a node option; mutable next: 'a node option;
-                value: 'a}
-
-type 'a dlist = {mutable first: 'a node option; mutable last: 'a node option}
-
-type t = (string * value Maps.t) list
+type t = (string * Maps.t) list
 
 let lookup = failwith "unimplemented"
 
