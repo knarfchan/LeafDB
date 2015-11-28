@@ -1,4 +1,3 @@
-open Query
 open Interpret
 
 (* Parse a string into an ast *)

@@ -1,5 +1,6 @@
-(*maps.ml*)
+open table
 
+(* maps.ml *)
 module Int = struct
   type t = int
   let compare = Pervasives.compare

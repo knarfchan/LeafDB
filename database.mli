@@ -1,5 +1,4 @@
 (* database.mli *)
-open Table
 
 (* type representing our database *)
 type t

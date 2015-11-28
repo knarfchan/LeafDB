@@ -44,7 +44,12 @@ rule read =
   | ">="              { GREATER_EQUAL }
   | "<="              { LESS_EQUAL }
   | "!="              { NOT_EQUAL }
-  | "LIKE"            { LIKE }
+  | "%"               { PERCENTAGE }
+  | "'"               { QUOTE }
+  | "\""              { QUOTE }
+  | "*"               { ASTERISK }
+  | "LIKE"            { LIKE_REGEX }
+  | "NOT LIKE"        { NOT_LIKE }
   | "in"              { IN }
   | "true"            { TRUE }
   | "false"           { FALSE }
