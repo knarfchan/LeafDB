@@ -1,36 +1,8 @@
 (* table.mli *)
 open Core.Date
+open Types
 
-(* represents our table *)
 type t
-
-(* represent our table columns as a string *)
-type column  = string
-
-(* a match between columns for relating tables *)
-type on = column * column
-
-(*(year, month, day)*)
-type date = int * int * int
-
-
-(* supported operators in where used to conditionally select rows *)
-type operator =
-  | Gt | Lt | Eq | GtEq | LtEq | NotEq
-  | LikeBegin | LikeEnd | LikeSubstring
-  | NotLikeBegin | NotLikeEnd | NotLikeSubstring
-
-(* SQL where expression: operate on the columns with the given value if there
- * is a condition, or Null if there is no condition
- *)
-type where    =
-  | Condition of (column * operator * value)
-  | Null
-
-(* declaration of a column with its associated value *)
-type column_dec = column * value
-
-
 (** Takes a column, the name of a table, returns the value associated with the
  * column.
  * [postcondition] : returns Some value or None if no table exists w/ that name
@@ -47,7 +19,7 @@ val select    : column list -> string -> where -> t
  * correspond respectively with the data types of the columns, and return a
  * table with the values appended to the columns
  *)
-val insert    : string -> column list -> value list -> t
+val insert    : t -> column list -> value list -> t
 
 (* Takes a table name, and a list which has a length equal to the number of
  * columns and which values correspond to the data types of the columns in order

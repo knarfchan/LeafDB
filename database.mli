@@ -1,5 +1,5 @@
 (* database.mli *)
-
+open Types
 (* type representing our database *)
 type t
 
@@ -13,4 +13,4 @@ val create: column_dec list -> string -> t
 val drop: Table.t -> t -> t
 
 (* finds a table in the database based on its name *)
-val lookup: string -> Table.t
+val lookup: string -> Table.t option
