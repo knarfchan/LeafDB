@@ -1,7 +1,3 @@
-open Query
-open Database
-open Table
-
 type expr =
   | Select of column list * string * where
   | Insert of string * column list * value list

@@ -1,11 +1,36 @@
 (* table.mli *)
-open Query
 
 (* represents our table *)
 type t
 
 (* a match between columns for relating tables *)
 type on = column * column
+
+(* data types our database support *)
+type value =
+  | VInt of int
+  | VString of string
+  | VBool of bool
+  | VFloat of float
+  | VDate of int
+
+(* supported operators in where used to conditionally select rows *)
+type operator =
+  | Gt | Lt | Eq | GtEq | LtEq | NotEq
+  | Like
+
+(* represent our table columns as a string *)
+type column  = string
+
+(* SQL where expression: operate on the columns with the given value if there
+ * is a condition, or Null if there is no condition
+ *)
+type where    =
+  | Condition of (column * operator * value)
+  | Null
+
+(* declaration of a column with its associated value *)
+type column_dec = column * value
 
 (** Takes a column, the name of a table, returns the value associated with the
  * column.
@@ -51,5 +76,7 @@ val delete    : string -> (column, value) list -> t
  *)
 val join      : string -> string -> on -> t
 
-(* convert a query into a table *)
-val convert   : Query.t -> t
+(* [precondition] : the two queries have the same number of columns
+ * Takes two queries with the same number of columns and corresponding data
+ * types. and appends one onto the other in a new query *)
+val union     : t -> t -> t

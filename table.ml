@@ -1,6 +1,4 @@
 (* table.ml *)
-open Query
-open Btree
 
 type 'a node = {mutable prev: 'a node option; mutable next: 'a node option;
                 value: 'a}

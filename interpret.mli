@@ -1,6 +1,4 @@
 (* interpret.mli *)
-open Query
-open Database
 
 (* represent our lexed and parsed expressions *)
 type expr =
