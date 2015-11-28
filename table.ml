@@ -1,4 +1,5 @@
 (* table.ml *)
+open Core.Date
 
 (* represent our table columns as a string *)
 type column  = string
@@ -35,7 +36,7 @@ type 'a node = {mutable prev: 'a node option; mutable next: 'a node option;
 
 type 'a dlist = {mutable first: 'a node option; mutable last: 'a node option}
 
-type t = 'a dlist
+type t = (string * value Map.t) list
 
 let lookup = failwith "unimplemented"
 
