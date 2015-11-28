@@ -1,7 +1,7 @@
 (* table.ml *)
 open Types
 
-type t = (string * value Maps.t) list
+type t = (string * Maps.t) list
 
 let lookup = failwith "unimplemented"
 
