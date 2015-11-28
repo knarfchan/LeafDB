@@ -1,29 +1,32 @@
-open table
+*maps.ml*)
+open Table
 
-(* maps.ml *)
-module Int = struct
-  type t = int
+module Int: Map.OrderedType with type t = Table.value.VInt = struct
+  type t = VInt of int
   let compare = Pervasives.compare
 end
 
-module String = struct
-  type t = string
+module String: Map.OrderedType with type t = Table.value.VString = struct
+  type t = VString of string
   let compare = Pervasives.compare
 end
 
-module Bool = struct
-  type t = bool
+module Bool: Map.OrderedType with type t = Table.value.VBool = struct
+  type t = VBool of bool
   let compare = Pervasives.compare
 end
 
-module Float = struct
-  type t = float
+module Float: Map.OrderedType with type t = Table.value.VFloat = struct
+  type t = VFloat of float
   let compare = Pervasives.compare
 end
 
-module Date : Map.OrderedType = struct
-  type t = Core.Date.t
-  let compare = Core.Date.compare
+module Date: Map.OrderedType with type t = Table.value.VDate = struct
+  type t = VDate of Table.date
+  let compare d1 d2 : int = match d1, d2 with
+    | VDate (y1,m1,d1), VDate (y2,m2,d2) -> (y1*365 + m1*12 + d1*30) -
+                                            (y2*365 + m2*12 + d2*30)
+    | _, _ -> failwith "Error comparing dates"
 end
 
 module IntMap    = Map.Make (Int)
@@ -32,7 +35,12 @@ module BoolMap   = Map.Make (Bool)
 module FloatMap  = Map.Make (Float)
 module DateMap   = Map.Make (Date)
 
-let lookup map k = failwith "Unimplemeted"
+let lookup x m = match m.t with
+  | VInt _ -> IntMap.find x m
+  | VString _ -> StringMap.find x
+  | VBool _ -> BoolMap.find x m
+  | VFloat _ -> FloatMap.find x m
+  | VDate _ -> DateMap.find x m
 
 let like_compare value element typ =
   open Str in
@@ -75,10 +83,18 @@ let select map condition value =
   | VFloat f -> FloatMap.filter (fun key e -> does_satisfy condition f (get e) map.t) map
   | VDate d -> DateMap.filter (fun key e -> does_satisfy condition d (get e) map.t) map
 
-let insert (lst: value list) = failwith "Unimplemented"
+let insert x y m = match m.t with
+  | VInt _ -> IntMap.add x y m
+  | VString _ -> StringMap.add x y m
+  | VBool _ -> BoolMap.add x y m
+  | VFloat _ -> FloatMap.add x y m
+  | VDate _ -> DateMap.find x m
 
-let update (w: where) (v: value) = failwith "Unimplemented"
+let update = failwith "Unimplemented"
 
-let delete (lst: value list) = failwith "Unimplemented"
-
-let join = failwith "Unimplemented"
+let delete x m = match m.t with
+  | VInt _ -> IntMap.remove x m
+  | VString _ -> StringMap.remove x m
+  | VBool _ -> BoolMap.remove x m
+  | VFloat _ -> FloatMap.remove x m
+  | VDate _ -> DateMap.remove x m
