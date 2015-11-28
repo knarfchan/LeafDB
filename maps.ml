@@ -84,15 +84,17 @@ let select map condition comp =
   | _ -> failwith "Error"
 
 let insert x y m = match x with
-  | VInt _ -> IntMap.add x y m
-  | VString _ -> StringMap.add x y m
-  | VBool _ -> BoolMap.add x y m
-  | VFloat _ -> FloatMap.add x y m
+  | VInt i, Imap map -> Imap(IntMap.add i y map)
+  | VString s, Smap map -> Smap(StringMap.add s y map)
+  | VBool b, Bmap map -> Bmap(BoolMap.add b y map)
+  | VFloat f, Fmap map -> Fmap(FloatMap.add f y map)
+  | _ -> failwith "Error"
 
 let update = failwith "Unimplemented"
 
-let delete x m = match x with
-  | VInt _ -> IntMap.remove x m
-  | VString _ -> StringMap.remove x m
-  | VBool _ -> BoolMap.remove x m
-  | VFloat _ -> FloatMap.remove x m
+let delete x m = match x, m with
+  | VInt i, Imap map -> Imap(IntMap.remove i map)
+  | VString s, Smap map -> Smap(StringMap.remove s map)
+  | VBool b, Bmap map -> Bmap(BoolMap.remove b map)
+  | VFloat f, Fmap map -> Fmap(FloatMap.remove f map)
+  | _ -> failwith "Error"
