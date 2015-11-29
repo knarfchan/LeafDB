@@ -2,23 +2,24 @@
 open Types
 open Str
 
-module Int: Map.OrderedType with type t = int = struct
-  type t = int
+
+module Int: Map.OrderedType with type t = (int*int) = struct
+  type t = (int*int)
+  let compare a b = 0
+end
+
+module String: Map.OrderedType with type t = (int*string) = struct
+  type t = (int*string)
   let compare = Pervasives.compare
 end
 
-module String: Map.OrderedType with type t = string = struct
-  type t = string
+module Bool: Map.OrderedType with type t = (int*bool) = struct
+  type t = (int*bool)
   let compare = Pervasives.compare
 end
 
-module Bool: Map.OrderedType with type t = bool = struct
-  type t = bool
-  let compare = Pervasives.compare
-end
-
-module Float: Map.OrderedType with type t = float = struct
-  type t = float
+module Float: Map.OrderedType with type t = (int*float) = struct
+  type t = (int*float)
   let compare = Pervasives.compare
 end
 
@@ -35,12 +36,12 @@ type t =
   | Imap of int IntMap.t
   | Fmap of int FloatMap.t
 
-let lookup x m = match x, m with
+(*let lookup x m = match x, m with
   | VInt i, Imap map -> IntMap.find i map
   | VString s, Smap map -> StringMap.find s map
   | VBool b, Bmap map -> BoolMap.find b map
   | VFloat f, Fmap map -> FloatMap.find f map
-  | _, _ -> failwith "Error"
+  | _, _ -> failwith "Error"*)
 
 let like_compare key comp condition =
   match condition with
@@ -53,7 +54,7 @@ let like_compare key comp condition =
   | _ -> false
 
 
-let does_satisfy condition comp key =
+let does_satisfy condition comp (c,key) =
   let var = Pervasives.compare key comp in
   match condition with
   | Gt -> var > 0
@@ -64,7 +65,7 @@ let does_satisfy condition comp key =
   | NotEq -> var <> 0
   | _ -> false
 
-let does_satisfy' condition comp key =
+let does_satisfy' condition comp (c,key) =
   let var = Pervasives.compare key comp in
   match condition with
   | Gt -> var > 0
@@ -75,6 +76,7 @@ let does_satisfy' condition comp key =
   | NotEq -> var <> 0
   | _ -> like_compare key comp condition
 
+
 let select map condition comp =
   match comp,map with
   | VInt i,Imap m -> Imap(IntMap.filter (fun key value -> does_satisfy condition i key) m)
@@ -84,13 +86,35 @@ let select map condition comp =
   | _ -> failwith "Error"
 
 let insert x y m = match x with
-  | VInt i, Imap map -> Imap(IntMap.add i y map)
-  | VString s, Smap map -> Smap(StringMap.add s y map)
-  | VBool b, Bmap map -> Bmap(BoolMap.add b y map)
-  | VFloat f, Fmap map -> Fmap(FloatMap.add f y map)
+  | VInt i, Imap map -> Imap(IntMap.add (y,i) y map)
+  | VString s, Smap map -> Smap(StringMap.add (y,s) y map)
+  | VBool b, Bmap map -> Bmap(BoolMap.add (y,b) y map)
+  | VFloat f, Fmap map -> Fmap(FloatMap.add (y,f) y map)
   | _ -> failwith "Error"
 
-let update = failwith "Unimplemented"
+let update map condition comp newv =
+  match comp,map,newv with
+  | VInt i, Imap m, VInt i' ->
+     Imap(IntMap.fold
+            (fun (c,k) a map -> if (does_satisfy condition i (c,k)) then
+                                  IntMap.add (c,i')(c)(IntMap.remove (c,k) map)
+                                else map) m m)
+  | VString s,Smap m, VString s'->
+          Smap(StringMap.fold
+            (fun (c,k) a map -> if (does_satisfy condition s (c,k)) then
+                                  StringMap.add (c,s')(c)(StringMap.remove (c,k) map)
+                                else map) m m)
+  | VBool b, Bmap m, VBool b' ->
+          Bmap(BoolMap.fold
+            (fun (c,k) a map -> if (does_satisfy condition b (c,k)) then
+                                  BoolMap.add (c,b')(c)(BoolMap.remove (c,k) map)
+                                else map) m m)
+  | VFloat f, Fmap m, VFloat f' ->
+     Fmap(FloatMap.fold
+            (fun (c,k) a map -> if (does_satisfy condition f (c,k)) then
+                                  FloatMap.add (c,f')(c)(FloatMap.remove (c,k) map)
+                                else map) m m)
+  | _ -> failwith "Does not follow schema"
 
 let delete x m = match x, m with
   | VInt i, Imap map -> Imap(IntMap.remove i map)
