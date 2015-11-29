@@ -1,5 +1,4 @@
 (* table.mli *)
-open Core.Date
 open Types
 
 type t
@@ -25,27 +24,27 @@ val insert    : t -> column list -> value list -> t
  * columns and which values correspond to the data types of the columns in order
  * of the columns, and returns a table with the values appended to the columns
  *)
-val insertAll : string -> value list -> t
+val insertAll : t -> value list -> t
 
 (* Takes a table name, an updated list of (column * value) pairs, and a where
  * condition and returns an updated table for all records in which the condition
  * holds true
  *)
-val update    : string -> (column * value) list -> where -> t
+val update    : t -> (column * value) list -> where -> t
 
 (* Takes a table name and an updated list of (column * value) pairs and returns
  * a table with all of the records updated
  *)
-val updateAll : string -> (column * value) list -> t
+val updateAll : t -> (column * value) list -> t
 
 (* Takes a table name, a list of (column * value) pairs, and returns *)
-val delete    : string -> (column * value) list -> t
+val delete    : t -> (column * value) list -> where -> t
 
 (* inner join
  * Takes two table names, and joins all rows from both tables where there is a
  * match between columns and joins them in a new table
  *)
-val join      : string -> string -> on -> t
+val join      : t -> t -> on -> t
 
 (* [precondition] : the two queries have the same number of columns
  * Takes two queries with the same number of columns and corresponding data

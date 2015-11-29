@@ -1,26 +1,26 @@
 (*maps.ml*)
-open Table
+open Types
+open Str
 
-module Int = struct
-  type t = VInt of int
+module Int: Map.OrderedType with type t = int = struct
+  type t = int
   let compare = Pervasives.compare
 end
 
-module String = struct
-  type t = VString of string
+module String: Map.OrderedType with type t = string = struct
+  type t = string
   let compare = Pervasives.compare
 end
 
-module Bool = struct
-  type t = VBool of bool
+module Bool: Map.OrderedType with type t = bool = struct
+  type t = bool
   let compare = Pervasives.compare
 end
 
-module Float = struct
-  type t = VFloat of float
+module Float: Map.OrderedType with type t = float = struct
+  type t = float
   let compare = Pervasives.compare
 end
-
 
 
 module IntMap    = Map.Make (Int)
@@ -34,7 +34,6 @@ type t =
   | Bmap of int BoolMap.t
   | Imap of int IntMap.t
   | Fmap of int FloatMap.t
-  | Dmap of int DateMap.t
 
 let lookup x m = match x, m with
   | VInt i, Imap map -> IntMap.find i map
@@ -84,14 +83,14 @@ let select map condition comp =
   | VFloat f,Fmap m -> Fmap(FloatMap.filter (fun key value -> does_satisfy condition f key) m)
   | _ -> failwith "Error"
 
-let insert x y m = match x with
+let insert x y m = match x, m with
   | VInt i, Imap map -> Imap(IntMap.add i y map)
   | VString s, Smap map -> Smap(StringMap.add s y map)
   | VBool b, Bmap map -> Bmap(BoolMap.add b y map)
   | VFloat f, Fmap map -> Fmap(FloatMap.add f y map)
   | _ -> failwith "Error"
 
-let update = failwith "Unimplemented"
+let update map condition comp newv = failwith "Unimplemented"
 
 let delete x m = match x, m with
   | VInt i, Imap map -> Imap(IntMap.remove i map)
