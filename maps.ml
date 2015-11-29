@@ -116,9 +116,16 @@ let update map condition comp newv =
                                 else map) m m)
   | _ -> failwith "Does not follow schema"
 
-let delete x m = match x, m with
+(*let delete x m = match x, m with
   | VInt i, Imap map -> Imap(IntMap.remove i map)
   | VString s, Smap map -> Smap(StringMap.remove s map)
   | VBool b, Bmap map -> Bmap(BoolMap.remove b map)
   | VFloat f, Fmap map -> Fmap(FloatMap.remove f map)
+  | _ -> failwith "Error"*)
+
+let delete map op v = match v,map with
+  | VInt i,Imap m -> (Imap(IntMap.filter (fun key value -> (not)(does_satisfy op i key)) m))
+  | VString s,Smap m  -> (Smap(StringMap.filter (fun key value -> (not)(does_satisfy' op s key)) m))
+  | VBool b,Bmap m -> (Bmap(BoolMap.filter (fun key value -> (not)(does_satisfy op b key)) m))
+  | VFloat f,Fmap m -> (Fmap(FloatMap.filter (fun key value -> (not)(does_satisfy op f key)) m))
   | _ -> failwith "Error"

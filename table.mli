@@ -1,79 +1,51 @@
 (* table.mli *)
-open Core.Date
-
+open Types
 (* represents our table *)
 type t
 
-(* represent our table columns as a string *)
-type column  = string
-
-(* a match between columns for relating tables *)
-type on = column * column
-
-(*(year, month, day)*)
-type date = int * int * int
-
-
-(* supported operators in where used to conditionally select rows *)
-type operator =
-  | Gt | Lt | Eq | GtEq | LtEq | NotEq
-  | LikeBegin | LikeEnd | LikeSubstring
-  | NotLikeBegin | NotLikeEnd | NotLikeSubstring
-
-(* SQL where expression: operate on the columns with the given value if there
- * is a condition, or Null if there is no condition
- *)
-type where    =
-  | Condition of (column * operator * value)
-  | Null
-
-(* declaration of a column with its associated value *)
-type column_dec = column * value
-
-
-(** Takes a column, the name of a table, returns the value associated with the
- * column.
+(* Takes a column, a table, returns the value associated with the column.
  * [postcondition] : returns Some value or None if no table exists w/ that name
  *)
-val lookup    : column -> string -> value option
+val lookup    : column -> t -> value option
 
-(* Takes a list of columns, the name of a table, and a condition and returns a
+(* Takes a list of columns, a table, and a condition and returns a
  * query given that the columns listed are in the table and the condition is
  * valid on the values of the columns
  *)
-val select    : column list -> string -> where -> t
+val select    : column list -> t -> where -> t
 
-(* Takes the name of a table, a list of columns, a list of values that
+(* Takes a table, a list of columns, a list of values that
  * correspond respectively with the data types of the columns, and return a
  * table with the values appended to the columns
  *)
-val insert    : string -> column list -> value list -> t
+val insert    : t -> column list -> value list -> t
 
-(* Takes a table name, and a list which has a length equal to the number of
+(* Takes a table, and a list which has a length equal to the number of
  * columns and which values correspond to the data types of the columns in order
  * of the columns, and returns a table with the values appended to the columns
  *)
-val insertAll : string -> value list -> t
+val insertAll : t -> value list -> t
 
-(* Takes a table name, an updated list of (column * value) pairs, and a where
+(* Takes a table, an updated list of (column * value) pairs, and a where
  * condition and returns an updated table for all records in which the condition
  * holds true
  *)
-val update    : string -> (column * value) list -> where -> t
+val update    : t -> (column * value) list -> where -> t
 
-(* Takes a table name and an updated list of (column * value) pairs and returns
+(* Takes a table and an updated list of (column * value) pairs and returns
  * a table with all of the records updated
  *)
-val updateAll : string -> (column * value) list -> t
+val updateAll : t -> (column * value) list -> t
 
-(* Takes a table name, a list of (column * value) pairs, and returns *)
-val delete    : string -> (column * value) list -> t
+(* Takes a table, a list of (column * value) pairs, and returns a table
+ * without the bindings in the list*)
+val delete    : t -> where -> t
 
 (* inner join
- * Takes two table names, and joins all rows from both tables where there is a
+ * Takes two tables, and joins all rows from both tables where there is a
  * match between columns and joins them in a new table
  *)
-val join      : string -> string -> on -> t
+val join      : t -> t -> on -> t
 
 (* [precondition] : the two queries have the same number of columns
  * Takes two queries with the same number of columns and corresponding data
