@@ -2,7 +2,7 @@
 open Types
 open Maps
 
-type t = (string * Maps.t) list
+type t = (column * Maps.t) list
 
 let next_val =
  let counter = ref 0 in fun () ->
@@ -13,10 +13,20 @@ let lookup col tbl = failwith "unimplemented"
 
 let select = failwith "unimplemented"
 
+let rec get_cvlst (clst: column list) (vlst: value list) (acc: (column * value) list) =
+  match clst, vlst with
+  | [],[] -> acc
+  | h::t, h'::t' -> get_cvlst t t' (acc @ [(h,h')])
+
+let rec insert_helper (tbl:t) clst (acc: (column * value) list)=
+  match tbl with
+  | [] -> acc
+  | (col, map)::tl -> if List.mem_assoc col clst then insert_helper tl clst acc
+              else insert_helper tl clst (acc @ [col, ()])
+
 let rec insert (tbl:t) (clst:column list) (vlst: value list) =
   let rowid = next_val () in
-  match tbl, clst, vlst with
-    | (name, map)::tl, a::b, a'::b' -> if name = a then (name, Maps.insert a' rowid map):: (insertAll tl b b')
+
 
 let rec insertAll (tbl:t) (vlst: value list) =
   let rowid = next_val () in
