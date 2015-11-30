@@ -13,7 +13,6 @@ type value =
   | VString of string
   | VBool of bool
   | VFloat of float
-  | VDate of date
 
 (* supported operators in where used to conditionally select rows *)
 type operator =

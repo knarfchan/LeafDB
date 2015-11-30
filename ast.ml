@@ -1,4 +1,4 @@
-open Types
+open Typs
 
 type expr =
 | Select of column list * string * where
@@ -9,7 +9,7 @@ type expr =
 | JoinQuerTab of expr * string * on
 | JoinQueries of expr * expr * on
 | Update of string * (column * value) list * where
-| Delete of string * (column * value) list * where
+| Delete of string * where
 | CreateTable of string * column_dec list
 | CreateDb of string
 | DropTable of string

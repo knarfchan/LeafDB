@@ -1,0 +1,5 @@
+#directory "_build";;
+#load "ast.cmo";;
+#load "typs.cmo";;
+#load "lexer.cmo";;
+#load "parser.cmo";;

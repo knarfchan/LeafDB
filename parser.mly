@@ -1,13 +1,12 @@
 %{
 open Ast
-open Types
+open Typs
 %}
 
 %token <float> FLOAT
 %token <int> INT
 %token <string> COLUMN
 %token <string> STRING
-%token <int*int*int> DATE
 %token <string> ID
 %token TRUE
 %token FALSE
@@ -73,8 +72,10 @@ statement:
       {Insert(tab, cols, vals)}
   | UPDATE; tab = ID; SET; pairs = pair_list; WHERE; w = where_condition
       {Update(tab, pairs, w)}
-  | DELETE; tab = ID; SET; pairs = pair_list; WHERE; w = where_condition
-      {Delete(tab, pairs, w)}
+  | DELETE; tab = ID; WHERE; w = where_condition
+      {Delete(tab, w)}
+  | DELETE; tab = ID; w = where_condition
+      {Delete(tab, w)}
   | CREATETABLE; tab = ID; LEFT_PAREN; decs = dec_list; RIGHT_PAREN
       {CreateTable(tab, decs)}
   | CREATEDB; db = ID
@@ -151,5 +152,4 @@ value:
   | i = INT         {VInt(i)}
   | str = STRING    {VString(str)}
   | f = FLOAT       {VFloat(f)}
-  | v = DATE        {VDate(v)}
   ;

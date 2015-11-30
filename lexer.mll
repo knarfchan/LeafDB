@@ -29,14 +29,14 @@ rule read =
   | "SELECT"          { SELECT }
   | "FROM"            { FROM }
   | "WHERE"           { WHERE }
-  | "INSERT"          { INSERT }
+  | "INSERT INTO"     { INSERT }
   | "JOIN"            { JOIN }
   | "CREATE TABLE"    { CREATETABLE }
   | "CREATE DATABASE" { CREATEDB }
   | "DROP TABLE"      { DROPTABLE }
   | "DROP DATABASE"   { DROPDB }
   | "SET"             { SET }
-  | "DELETE"          { DELETE }
+  | "DELETE FROM"     { DELETE }
   | "UPDATE"          { UPDATE }
   | "="               { EQUAL }
   | ">"               { GREATER }
