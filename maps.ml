@@ -43,6 +43,13 @@ type t =
   | VFloat f, Fmap map -> FloatMap.find f map
   | _, _ -> failwith "Error"*)
 
+let empty map =
+  match map with
+  | Smap _ -> Smap (StringMap.empty)
+  | Bmap _ -> Bmap (BoolMap.empty)
+  | Imap _ -> Imap (IntMap.empty)
+  | Fmap _ -> Fmap (FloatMap.empty)
+
 let like_compare key comp condition =
   match condition with
   | LikeBegin -> string_match (regexp (".*"^key)) comp 0
@@ -85,7 +92,7 @@ let select map condition comp =
   | VFloat f,Fmap m -> Fmap(FloatMap.filter (fun key value -> does_satisfy condition f key) m)
   | _ -> failwith "Error"
 
-let insert x y m = match x with
+let insert x y m = match x, m with
   | VInt i, Imap map -> Imap(IntMap.add (y,i) y map)
   | VString s, Smap map -> Smap(StringMap.add (y,s) y map)
   | VBool b, Bmap map -> Bmap(BoolMap.add (y,b) y map)
