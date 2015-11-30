@@ -5,22 +5,22 @@ open Str
 
 module Int: Map.OrderedType with type t = (int*int) = struct
   type t = (int*int)
-  let compare a b = 0
+  let compare (a,a') (b,b') = Pervasives.compare a' b'
 end
 
 module String: Map.OrderedType with type t = (int*string) = struct
   type t = (int*string)
-  let compare = Pervasives.compare
+  let compare (a,a') (b,b') = Pervasives.compare a' b'
 end
 
 module Bool: Map.OrderedType with type t = (int*bool) = struct
   type t = (int*bool)
-  let compare = Pervasives.compare
+  let compare (a,a') (b,b') = Pervasives.compare a' b'
 end
 
 module Float: Map.OrderedType with type t = (int*float) = struct
   type t = (int*float)
-  let compare = Pervasives.compare
+  let compare (a,a') (b,b') = Pervasives.compare a' b'
 end
 
 
@@ -36,12 +36,25 @@ type t =
   | Imap of int IntMap.t
   | Fmap of int FloatMap.t
 
-(*let lookup x m = match x, m with
-  | VInt i, Imap map -> IntMap.find i map
-  | VString s, Smap map -> StringMap.find s map
-  | VBool b, Bmap map -> BoolMap.find b map
-  | VFloat f, Fmap map -> FloatMap.find f map
-  | _, _ -> failwith "Error"*)
+(*precondition: r is a unique key in the map
+  postcondition: returns the value associated with the row key r*)
+let lookup r m = match m with
+  |Fmap map -> VFloat(snd (fst (FloatMap.choose(FloatMap.filter(fun (row,v) value -> row = r) map))))
+  |Smap map -> VString(snd (fst (StringMap.choose(StringMap.filter (fun (row,v) value -> row = r) map))))
+  |Imap map -> VInt(snd (fst (IntMap.choose(IntMap.filter (fun (row,v) value -> row = r) map))))
+  |Bmap map -> VBool(snd (fst (BoolMap.choose(BoolMap.filter(fun (row,v) value -> row = r) map))))
+
+let is_member r map = match map with
+  | Imap m-> not (IntMap.is_empty(IntMap.filter(fun (row,v) value -> row = r) m))
+  | Smap m -> not (StringMap.is_empty(StringMap.filter(fun (row,v) value -> row = r) m))
+  | Bmap m -> not (BoolMap.is_empty(BoolMap.filter(fun (row,v) value -> row = r) m))
+  | Fmap m -> not (FloatMap.is_empty(FloatMap.filter(fun (row,v) value -> row = r) m))
+
+let get_rows map = match map with
+  |Imap m -> IntMap.fold (fun (r,v) a b -> a::b) m []
+  |Smap m -> StringMap.fold (fun (r,v) a b -> a::b) m []
+  |Bmap m -> BoolMap.fold (fun (r,v) a b -> a::b) m []
+  |Fmap m -> FloatMap.fold (fun (r,v) a b -> a::b) m []
 
 let empty map =
   match map with
