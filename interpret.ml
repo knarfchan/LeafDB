@@ -17,7 +17,9 @@ type expr =
 
 let eval (d : database) (e : expr): Table.t option =
   match expr with
-  | Select (lst, tbl, w) -> failwith "Unimplemented"
+  | Select (lst, tbl, w) -> match Database.lookup tbl with
+                            | None -> None
+                            | Some x -> Table.select lst x w
   | SelectAll (tbl, w) -> failwith "Unimplemented"
   | Insert (tbl, clst, vlst) -> (*Write insert method*)
       match Database.lookup tbl with

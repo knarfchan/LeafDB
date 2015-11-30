@@ -29,7 +29,7 @@ module StringMap = Map.Make (String)
 module BoolMap   = Map.Make (Bool)
 module FloatMap  = Map.Make (Float)
 
-
+module Maps = struct
 type t =
   | Smap of int StringMap.t
   | Bmap of int BoolMap.t
@@ -73,6 +73,17 @@ let like_compare key comp condition =
   | NotLikeSubstring -> not (string_match (regexp (".*"^key^".*")) comp 0)
   | _ -> false
 
+let rec get_longest (map_list:t list) (lsize:int) (lmap:t)=
+  match map_list with
+  | [] -> lmap
+  | (Smap s)::t -> if (StringMap.cardinal s) > lsize then get_longest t (StringMap.cardinal s) (Smap s)
+                   else get_longest t lsize lmap
+  | (Bmap b)::t -> if (BoolMap.cardinal b) > lsize then get_longest t (BoolMap.cardinal b) (Bmap b)
+                   else get_longest t lsize lmap
+  | (Imap i)::t -> if (IntMap.cardinal i) > lsize then get_longest t (IntMap.cardinal i) (Imap i)
+                   else get_longest t lsize lmap
+  | (Fmap f)::t -> if (FloatMap.cardinal f) > lsize then get_longest t (FloatMap.cardinal f) (Fmap f)
+                   else get_longest t lsize lmap
 
 let does_satisfy condition comp (c,key) =
   let var = Pervasives.compare key comp in
@@ -149,3 +160,4 @@ let delete map op v = match v,map with
   | VBool b,Bmap m -> (Bmap(BoolMap.filter (fun key value -> (not)(does_satisfy op b key)) m))
   | VFloat f,Fmap m -> (Fmap(FloatMap.filter (fun key value -> (not)(does_satisfy op f key)) m))
   | _ -> failwith "Error"
+end
