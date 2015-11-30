@@ -25,7 +25,7 @@ val insert    : t -> column list -> value list -> t
  * columns and which values correspond to the data types of the columns in order
  * of the columns, and returns a table with the values appended to the columns
  *)
-val insertAll : t -> value list -> t
+(*val insertAll : t -> value list -> t*)
 
 (* Takes a table, an updated list of (column * value) pairs, and a where
  * condition and returns an updated table for all records in which the condition
