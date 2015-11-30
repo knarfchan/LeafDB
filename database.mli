@@ -1,5 +1,6 @@
 (* database.mli *)
-open Types
+open Typs
+
 (* type representing our database *)
 type t
 

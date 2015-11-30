@@ -1,5 +1,5 @@
 (*maps.ml*)
-open Types
+open Typs
 open Str
 
 

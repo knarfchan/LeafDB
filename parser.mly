@@ -1,18 +1,26 @@
 %{
-open Interpret
+open Ast
+open Typs
+open Lexing
+
+let parse_error _ =
+  let start_pos = Parsing.symbol_start_pos () in
+  let end_pos = Parsing.symbol_end_pos () in
+  let start_line = string_of_int start_pos.pos_lnum in
+  let start_char = string_of_int (start_pos.pos_cnum - start_pos.pos_bol) in
+  let end_line = string_of_int end_pos.pos_lnum in
+  let end_char = string_of_int (end_pos.pos_cnum - end_pos.pos_bol) in
+  failwith ("Parse error: ("^start_line^"."^start_char^"-"^end_line^"."^end_char)
 %}
 
-(* value tokens *)
 %token <float> FLOAT
 %token <int> INT
 %token <string> COLUMN
 %token <string> STRING
-%token <Date.t> DATE
 %token <string> ID
 %token TRUE
 %token FALSE
 
-(* symbols *)
 %token COMMA
 %token LEFT_PAREN
 %token RIGHT_PAREN
@@ -21,7 +29,6 @@ open Interpret
 %token PERCENTAGE
 %token QUOTE
 
-(* where ops *)
 %token GREATER
 %token LESS
 %token EQUAL
@@ -31,7 +38,6 @@ open Interpret
 %token LIKE_REGEX
 %token NOT_LIKE
 
-(* expression keywords *)
 %token SELECT
 %token FROM
 %token WHERE
@@ -44,10 +50,15 @@ open Interpret
 %token DROPTABLE
 %token DROPDB
 %token SET
+%token ON
 
 %token EOF
-%start <Interpret.expr> prog
+
+%start prog
+%type <Ast.expr> prog
+
 %%
+
 prog:
   | s = statement; EOF              {s}
   | s = statement; SEMICOLON; EOF   {s}
@@ -60,8 +71,8 @@ statement:
       {JoinTables(t1, t2, (c1, c2))}
   | tab = ID; JOIN; query = statement; ON; c1 = COLUMN; EQUAL; c2 = COLUMN
       {JoinTabQuer(tab, query, (c1, c2))}
-  | query = statement; JOIN; tab = ID; ON; c1 = COLUM; EQUAL; c2 = COLUMN
-      {JoinQueries(query, tab, (c1, c2))}
+  | query = statement; JOIN; tab = ID; ON; c1 = COLUMN; EQUAL; c2 = COLUMN
+      {JoinQuerTab(query, tab, (c1, c2))}
   | SELECT; cols = col_list; FROM; tab = ID; WHERE; w = where_condition
       {Select(cols, tab, w)}
   | SELECT; cols = col_list; FROM; tab = ID; w = where_condition
@@ -72,14 +83,16 @@ statement:
       {Insert(tab, cols, vals)}
   | UPDATE; tab = ID; SET; pairs = pair_list; WHERE; w = where_condition
       {Update(tab, pairs, w)}
-  | DELETE; tab = ID; SET; pairs = pair_list; WHERE; w = where_condition
-      {Delete(tab, pairs, w)}
+  | DELETE; tab = ID; WHERE; w = where_condition
+      {Delete(tab, w)}
+  | DELETE; tab = ID; w = where_condition
+      {Delete(tab, w)}
   | CREATETABLE; tab = ID; LEFT_PAREN; decs = dec_list; RIGHT_PAREN
       {CreateTable(tab, decs)}
   | CREATEDB; db = ID
       {CreateDb(db)}
   | DROPTABLE; tab = ID
-      {DropTable(db)}
+      {DropTable(tab)}
   | DROPDB; db = ID
       {DropDb(db)}
   ;
@@ -90,6 +103,8 @@ val_list: vals = rev_val_list  {List.rev vals};
 
 dec_list: decs = rev_dec_list  {List.rev decs};
 
+pair_list: pairs = rev_pair_list {List.rev pairs};
+
 rev_col_list:
   | (* empty *)                               {[]}
   | col = COLUMN                              {[col]}
@@ -98,31 +113,37 @@ rev_col_list:
 
 rev_val_list:
   | (* empty *)                                 {[]}
-  | val = value                                 {[val]}
-  | vals = rev_val_list; COMMA; val = value     {val::vals}
+  | v = value                                   {[v]}
+  | vals = rev_val_list; COMMA; v = value       {v::vals}
   ;
 
 rev_dec_list:
   | (* empty *)                                             {[]}
-  | col = COLUMN; val = value                               {[(col, val)]}
-  | decs = rev_dec_list; COMMA; col = COLUMN; val = value   {(col, val)::decs}
+  | col = COLUMN; v = value                                 {[(col, v)]}
+  | decs = rev_dec_list; COMMA; col = COLUMN; v = value     {(col, v)::decs}
+  ;
+
+rev_pair_list:
+  | (* empty *)                                                {[]}
+  | col = COLUMN; EQUAL; v = value                             {[(col, v)]}
+  | ps = rev_pair_list; COMMA; col = COLUMN; EQUAL; v = value  {(col, v)::ps}
   ;
 
 where_condition:
   | (* empty *)
       {Null}
-  | col = COLUMN; LIKE_REGEX; QUOTE; PERCENTAGE; v = value; QUOTE
-      {Condition(col, LikeBegin, v)}
-  | col = COLUMN; LIKE_REGEX; QUOTE; v = value; PERCENTAGE; QUOTE
-      {Condition(col, LikeEnd, v)}
-  | col = COLUMNL LIKE_REGEX; QUOTE; PERCENTAGE; v = value; PERCENTAGE; QUOTE
-      {Condition(col, LikeSubstring, v)}
-  | col = COLUMN; NOT_LIKE; QUOTE; PERCENTAGE; v = value; QUOTE
-      {Condition(col, NotLikeBegin, v)}
-  | col = COLUMN; NOT_LIKE; QUOTE; v = value; PERCENTAGE; QUOTE
-      {Condition(col, NotLikeEnd, v)}
-  | col = COLUMNL NOT_LIKE; QUOTE; PERCENTAGE; v = value; PERCENTAGE; QUOTE
-      {Condition(col, NotLikeSubstring, v)}
+  | col = COLUMN; LIKE_REGEX; QUOTE; PERCENTAGE; v = ID; QUOTE
+      {Condition(col, LikeBegin, VString(v))}
+  | col = COLUMN; LIKE_REGEX; QUOTE; v = ID; PERCENTAGE; QUOTE
+      {Condition(col, LikeEnd, VString(v))}
+  | col = COLUMN; LIKE_REGEX; QUOTE; PERCENTAGE; v = ID; PERCENTAGE; QUOTE
+      {Condition(col, LikeSubstring, VString(v))}
+  | col = COLUMN; NOT_LIKE; QUOTE; PERCENTAGE; v = ID; QUOTE
+      {Condition(col, NotLikeBegin, VString(v))}
+  | col = COLUMN; NOT_LIKE; QUOTE; v = ID; PERCENTAGE; QUOTE
+      {Condition(col, NotLikeEnd, VString(v))}
+  | col = COLUMN; NOT_LIKE; QUOTE; PERCENTAGE; v = ID; PERCENTAGE; QUOTE
+      {Condition(col, NotLikeSubstring, VString(v))}
   | col = COLUMN; o = operator; v = value
       {Condition(col, o, v)}
   ;
@@ -137,10 +158,9 @@ operator:
   ;
 
 value:
-  | b = TRUE        {VBool(true)}
-  | b = FALSE       {VBool(false)}
+  | TRUE            {VBool(true)}
+  | FALSE           {VBool(false)}
   | i = INT         {VInt(i)}
   | str = STRING    {VString(str)}
   | f = FLOAT       {VFloat(f)}
-  | v = DATE        {VDate(v)}
   ;

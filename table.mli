@@ -1,5 +1,6 @@
 (* table.mli *)
-open Types
+open Typs
+
 (* represents our table *)
 type t
 
