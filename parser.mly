@@ -1,6 +1,16 @@
 %{
 open Ast
 open Typs
+open Lexing
+
+let parse_error _ =
+  let start_pos = Parsing.symbol_start_pos () in
+  let end_pos = Parsing.symbol_end_pos () in
+  let start_line = string_of_int start_pos.pos_lnum in
+  let start_char = string_of_int (start_pos.pos_cnum - start_pos.pos_bol) in
+  let end_line = string_of_int end_pos.pos_lnum in
+  let end_char = string_of_int (end_pos.pos_cnum - end_pos.pos_bol) in
+  failwith ("Parse error: ("^start_line^"."^start_char^"-"^end_line^"."^end_char)
 %}
 
 %token <float> FLOAT
@@ -44,7 +54,8 @@ open Typs
 
 %token EOF
 
-%start <Ast.expr> prog
+%start prog
+%type <Ast.expr> prog
 
 %%
 
@@ -121,18 +132,18 @@ rev_pair_list:
 where_condition:
   | (* empty *)
       {Null}
-  | col = COLUMN; LIKE_REGEX; QUOTE; PERCENTAGE; v = value; QUOTE
-      {Condition(col, LikeBegin, v)}
-  | col = COLUMN; LIKE_REGEX; QUOTE; v = value; PERCENTAGE; QUOTE
-      {Condition(col, LikeEnd, v)}
-  | col = COLUMN; LIKE_REGEX; QUOTE; PERCENTAGE; v = value; PERCENTAGE; QUOTE
-      {Condition(col, LikeSubstring, v)}
-  | col = COLUMN; NOT_LIKE; QUOTE; PERCENTAGE; v = value; QUOTE
-      {Condition(col, NotLikeBegin, v)}
-  | col = COLUMN; NOT_LIKE; QUOTE; v = value; PERCENTAGE; QUOTE
-      {Condition(col, NotLikeEnd, v)}
-  | col = COLUMN; NOT_LIKE; QUOTE; PERCENTAGE; v = value; PERCENTAGE; QUOTE
-      {Condition(col, NotLikeSubstring, v)}
+  | col = COLUMN; LIKE_REGEX; QUOTE; PERCENTAGE; v = ID; QUOTE
+      {Condition(col, LikeBegin, VString(v))}
+  | col = COLUMN; LIKE_REGEX; QUOTE; v = ID; PERCENTAGE; QUOTE
+      {Condition(col, LikeEnd, VString(v))}
+  | col = COLUMN; LIKE_REGEX; QUOTE; PERCENTAGE; v = ID; PERCENTAGE; QUOTE
+      {Condition(col, LikeSubstring, VString(v))}
+  | col = COLUMN; NOT_LIKE; QUOTE; PERCENTAGE; v = ID; QUOTE
+      {Condition(col, NotLikeBegin, VString(v))}
+  | col = COLUMN; NOT_LIKE; QUOTE; v = ID; PERCENTAGE; QUOTE
+      {Condition(col, NotLikeEnd, VString(v))}
+  | col = COLUMN; NOT_LIKE; QUOTE; PERCENTAGE; v = ID; PERCENTAGE; QUOTE
+      {Condition(col, NotLikeSubstring, VString(v))}
   | col = COLUMN; o = operator; v = value
       {Condition(col, o, v)}
   ;

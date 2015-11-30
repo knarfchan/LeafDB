@@ -1,5 +1,5 @@
 (* table.ml *)
-open Types
+open Typs
 open Maps
 
 type t = (column * Maps.t) list

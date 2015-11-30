@@ -1,5 +1,6 @@
 {
 open Parser
+exception Eof
 }
 
 let white = [' ' '\t' '\n']+
@@ -7,7 +8,7 @@ let digit = ['0'-'9']
 let int = '-'? digit+
 let letter = ['a'-'z' 'A'-'Z']
 let id = letter+
-let string = (' ' | letter | digit)*
+let string = '''(letter | digit | white)*'''
 let frac = '.'digit*
 let float = digit* frac?
 
@@ -45,8 +46,7 @@ rule read =
   | "<="              { LESS_EQUAL }
   | "!="              { NOT_EQ }
   | "%"               { PERCENTAGE }
-  | "'"               { QUOTE }
-  | "\""              { QUOTE }
+  | "'" | "\""        { QUOTE }
   | "*"               { ASTERISK }
   | "LIKE"            { LIKE_REGEX }
   | "NOT LIKE"        { NOT_LIKE }
