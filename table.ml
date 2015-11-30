@@ -47,7 +47,7 @@ let select clst tbl w =
                               else failwith "Column is not found in table"
     | Null -> (match clst with
               | [] -> failwith "No columns chosen for select"
-              | h::t -> get_longest (strip_tbl tbl []) 0 (List.assoc h tbl))) in
+              | h::t -> Maps.get_longest (strip_tbl tbl []) 0 (List.assoc h tbl))) in
   let rows = Maps.get_rows map in
     (all_col tbl clst rows [])
 
