@@ -10,23 +10,46 @@ let next_val =
    !counter
 
 let lookup col tbl = failwith "unimplemented" (*Idk if this is necessary*)
-
+(*
 let rec find_col col clst =
   match clst with
   | [] -> false
-  | hd::tl -> if col = hd then true else find_col col tl
+  | hd::tl -> if col = hd then true else find_col col tl*)
 
-(*
-let select_help clst tbl w acc =
-  type where    =
-  | Condition of (column * operator * value)
-  | Null
+let make_select tbl col =
+  if List.mem_assoc col tbl then Maps.empty (List.assoc col tbl)
+  else failwith "Column not found in table"
 
-  match tbl, w with
-  | (name, map)::t, Condition () -> Maps.select w*)
+let rec select_col tbl rows col acc =
+  match rows with
+  | [] -> acc
+  | h::t -> if List.mem_assoc col tbl then
+              let map = List.assoc col tbl in
+              if Maps.is_member h map then
+                select_col tbl t col (Maps.insert (Maps.lookup h map) h acc)
+              else select_col tbl t col acc
+            else failwith "Column is not found in table"
 
-let select clst tbl w = failwith "Unimplemented"
+let rec all_col tbl clst rows acc =
+  match clst with
+  | [] -> acc
+  | h::t -> all_col tbl t rows (acc @ [(h, (select_col tbl rows h (make_select tbl h)))])
 
+let rec strip_tbl tbl acc =
+  match tbl with
+  | [] -> acc
+  | (_,b)::t -> (strip_tbl t (acc @ [b]))
+
+let select clst tbl w =
+  let map =
+    (match w with
+    | Condition (col,op,v) -> if List.mem_assoc col tbl then Maps.select (List.assoc col tbl) op v
+                              else failwith "Column is not found in table"
+    | Null -> (match clst with
+              | [] -> failwith "No columns chosen for select"
+              | h::t -> Maps.get_longest (strip_tbl tbl []) 0 (List.assoc h tbl))) in
+  let rows = Maps.get_rows map in
+    (all_col tbl clst rows [])
 
 let rec get_cvlst (clst: column list) (vlst: value list) (acc: (column * value) list) =
   match clst, vlst with
