@@ -76,7 +76,7 @@ let rec insertAll (tbl:t) (vlst: value list) rowid acc =
         (insertAll tl b rowid (acc @ [(name, Maps.insert a rowid map)]))
     | _, _ -> acc
 
-let rec insert (tbl:t) (clst:column list) (vlst: value list) =
+let rec insert (tbl:t) (clst:column list) (vlst: value list) : Table.t =
   let cvlst = (get_cvlst clst vlst []) in
   let rowid = next_val () in
     if List.length tbl = List.length clst then (insertAll tbl vlst rowid [])
