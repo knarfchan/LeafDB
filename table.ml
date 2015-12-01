@@ -37,11 +37,20 @@ let rec all_col tbl clst rows acc =
   | h::t -> all_col tbl t rows (acc @ [(h, (select_col tbl rows h (make_select tbl h)))])
 
 (* precondition:
- * postcondition: *)
-let rec strip_tbl tbl acc =
+ * postcondition: strip away cols*)
+let rec strip_tbl tbl acc : Maps.t list =
   match tbl with
   | [] -> acc
   | (_,b)::t -> (strip_tbl t (acc @ [b]))
+
+let get_size (tbl:t) : int = match tbl with
+  | (a,b)::t -> Maps.size (Maps.get_longest (strip_tbl tbl []) 0 (List.assoc a tbl))
+  | [] -> 0
+
+let get_diff (first:t) (second:t) : int =
+  let old_length = (get_size first) in
+  let new_length = (get_size second) in
+    (new_length - old_length)
 
 (* precondition:
  * postcondition: *)

@@ -1,7 +1,7 @@
 open Table
 
 (* type representing our database *)
-type t = (string, (string, Table.t) Hashtbl.t)
+type t = (string * Table.t) Hashtbl.t
 
 (* [add_table db str tbl] adds a table to a specified database
  * precondition  : none

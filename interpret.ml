@@ -1,7 +1,7 @@
 open Typs
 open Ast
 
-let eval (d : Database.t) (e : expr): Table.t option =
+let eval (d : Database.t) (e : expr): Table.t option * bool =
   match expr with
   | Select (lst, tbl, w) -> match Database.lookup tbl with
                             | None -> None
@@ -21,8 +21,8 @@ let eval (d : Database.t) (e : expr): Table.t option =
       match Database.lookup t1 with
       | None -> None
       | Some x -> Table.update x cvlst w
-  | Delete tbl cvlst w ->
+  | Delete tbl w ->
       match Database.lookup tbl with
       | None -> None
-      | Some x -> Table.delete x cvlst w
+      | Some x -> Table.delete x w
   | CreateTable(str, cdl) -> Database.add_table d str cdl

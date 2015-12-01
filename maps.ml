@@ -86,7 +86,13 @@ let like_compare key comp condition =
   | NotLikeSubstring -> not (string_match (regexp (".*"^key^".*")) comp 0)
   | _ -> false
 
-let rec get_longest (map_list:t list) (lsize:int) (lmap:t)=
+let size (map: t) : int = match map with
+  | Smap m -> StringMap.cardinal m
+  | Bmap m -> BoolMap.cardinal m
+  | Imap m -> IntMap.cardinal m
+  | Fmap m -> FloatMap.cardinal m
+
+let rec get_longest (map_list:t list) (lsize:int) (lmap:t) : t =
   match map_list with
   | [] -> lmap
   | (Smap s)::t -> if (StringMap.cardinal s) > lsize then get_longest t (StringMap.cardinal s) (Smap s)
