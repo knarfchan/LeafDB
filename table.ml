@@ -137,3 +137,14 @@ let union = failwith "unimplemented"
 (* precondition:
  * postcondition: *)
 let join = failwith "unimplemented"
+
+let rec create_help cdl acc =
+  match cdl with
+  | [] -> acc
+  | (col, v)::t -> create_help t (col, Maps.create v)::acc
+
+(* [create cdl] creates an empty table
+ * precondition:
+ * postcondition:  *)
+let rec create (cdl : column_dec list) =
+  create_help cdl []

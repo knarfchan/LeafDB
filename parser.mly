@@ -18,7 +18,10 @@ open Lexing
 %token ASTERISK
 %token PERCENTAGE
 %token QUOTE
-
+%token INTEGERS
+%token STRINGS
+%token BOOLS
+%token FLOATS
 %token GREATER
 %token LESS
 %token EQUAL
@@ -111,9 +114,8 @@ rev_val_list:
   ;
 
 rev_dec_list:
-  | (* empty *)                                         {[]}
-  | col = ID; v = value                                 {[(col, v)]}
-  | decs = rev_dec_list; COMMA; col = ID; v = value     {(col, v)::decs}
+  | col = ID; v = value                                    {[(col, v)]}
+  | decs = rev_dec_list; COMMA; col = ID; t = supported    {(col, t)::decs}
   ;
 
 rev_pair_list:
@@ -157,3 +159,9 @@ value:
   | str = STRING    {VString(str)}
   | f = FLOAT       {VFloat(f)}
   ;
+
+supported:
+  | INTEGERS        {VInt(0)}
+  | BOOLS           {VBool(true)}
+  | FLOATS          {VFloat(.0)}
+  | STRINGS         {VString("")}
