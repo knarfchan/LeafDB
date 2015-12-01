@@ -11,8 +11,8 @@ let next_val =
 
 let lookup col tbl = failwith "unimplemented"
 
-(* precondition:
- * postcondition: *)
+(* precondition: col must be a column in Table tbl
+ * postcondition: [make_select] will return an empty map with the the same type of the map of col*)
 let make_select tbl col =
   if List.mem_assoc col tbl then Maps.empty (List.assoc col tbl)
   else failwith "Column not found in table"
@@ -111,12 +111,27 @@ let rec get_col cvlst acc =
 
 (* precondition:
  * postcondition: *)
-let update tbl cvlst w = failwith "unimplemented"
-  (*
-  let new_tbl = select (get_col cvlst []) tbl w in
+let rec update_help new_tbl cvlst acc =
   match new_tbl, cvlst with
-  | [] ->
-  | (name, map)::t, ->*)
+  | [], [] -> acc
+  | (a,b)::t, (c,v)::t' -> update_help t t' (acc @ [(a, Maps.update b v)])
+  | _, _ -> failwith "tbl and column value lists should not be of different size"
+
+let rec update_all_col tbl new_tbl acc =
+  match tbl with
+  | [] -> acc
+  | (name, map)::t -> update_all_col t new_tbl
+                      (acc @ [(name,
+                      (if List.mem_assoc name new_tbl
+                        then Maps.replace (List.assoc name new_tbl) map
+                       else map))])
+
+(* precondition:
+ * postcondition: *)
+let update tbl cvlst w =
+  let new_tbl = select (get_col cvlst []) tbl w in
+  let updated_tbl = update_help new_tbl cvlst [] in
+    (update_all_col tbl updated_tbl [])
 
 (* precondition:
  * postcondition: *)
@@ -141,7 +156,7 @@ let join = failwith "unimplemented"
 let rec create_help cdl acc =
   match cdl with
   | [] -> acc
-  | (col, v)::t -> create_help t (col, Maps.create v)::acc
+  | (col, v)::t -> create_help t ((col, Maps.create v)::acc)
 
 (* [create cdl] creates an empty table
  * precondition:

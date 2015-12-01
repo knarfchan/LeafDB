@@ -11,7 +11,7 @@ let eval (d : Database.t) (e : expr): Table.t option =
       match Database.lookup tbl with
       | None -> None
       | Some x -> Some (Table.insert x clst vlst)
-  | Join (t1, t2, o) -> (*Write join method*)
+  | Join (clst, t1, t2, o) -> (*Write join method*)
       match Database.lookup t1, Database.lookup t2 with
       | None, None -> None
       | None, Some x -> Some x (*I am unsure about this*)
