@@ -37,11 +37,20 @@ let rec all_col tbl clst rows acc =
   | h::t -> all_col tbl t rows (acc @ [(h, (select_col tbl rows h (make_select tbl h)))])
 
 (* precondition:
- * postcondition: *)
-let rec strip_tbl tbl acc =
+ * postcondition: strip away cols*)
+let rec strip_tbl tbl acc : Maps.t list =
   match tbl with
   | [] -> acc
   | (_,b)::t -> (strip_tbl t (acc @ [b]))
+
+let get_size (tbl:t) : int = match tbl with
+  | (a,b)::t -> Maps.size (Maps.get_longest (strip_tbl tbl []) 0 (List.assoc a tbl))
+  | [] -> 0
+
+let get_diff (first:t) (second:t) : int =
+  let old_length = (get_size first) in
+  let new_length = (get_size second) in
+    (new_length - old_length)
 
 (* precondition:
  * postcondition: *)
@@ -88,19 +97,24 @@ let rec insert_help (tbl:t) (cvlst: (column * value) list) (rowid) (acc) =
 
 (* precondition:
  * postcondition: *)
-let rec insertAll (tbl:t) (vlst: value list) rowid acc =
+let insert (tbl:t) (clst:column list) (vlst: value list) : t =
+  let cvlst = (get_cvlst clst vlst []) in
+  let rowid = next_val () in
+    insert_help tbl cvlst rowid []
+
+(* precondition:
+ * postcondition: *)
+let rec insertAll_help (tbl:t) (vlst: value list) rowid acc =
   match tbl, vlst with
     | (name, map)::tl, a::b ->
-        (insertAll tl b rowid (acc @ [(name, Maps.insert a rowid map)]))
+        (insertAll_help tl b rowid (acc @ [(name, Maps.insert a rowid map)]))
     | _, _ -> acc
 
 (* precondition:
  * postcondition: *)
-let rec insert (tbl:t) (clst:column list) (vlst: value list) =
-  let cvlst = (get_cvlst clst vlst []) in
+let insertAll (tbl:t) (vlst: value list) : t =
   let rowid = next_val () in
-    if List.length tbl = List.length clst then (insertAll tbl vlst rowid [])
-    else (insert_help tbl cvlst rowid [])
+    insertAll_help tbl vlst rowid []
 
 (* precondition:
  * postcondition: *)
