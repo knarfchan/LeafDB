@@ -11,10 +11,14 @@ let next_val =
 
 let lookup col tbl = failwith "unimplemented"
 
+(* precondition:
+ * postcondition: *)
 let make_select tbl col =
   if List.mem_assoc col tbl then Maps.empty (List.assoc col tbl)
   else failwith "Column not found in table"
 
+(* precondition:
+ * postcondition: *)
 let rec select_col tbl rows col acc =
   match rows with
   | [] -> acc
@@ -25,16 +29,22 @@ let rec select_col tbl rows col acc =
               else select_col tbl t col acc
             else failwith "Column is not found in table"
 
+(* precondition:
+ * postcondition: *)
 let rec all_col tbl clst rows acc =
   match clst with
   | [] -> acc
   | h::t -> all_col tbl t rows (acc @ [(h, (select_col tbl rows h (make_select tbl h)))])
 
+(* precondition:
+ * postcondition: *)
 let rec strip_tbl tbl acc =
   match tbl with
   | [] -> acc
   | (_,b)::t -> (strip_tbl t (acc @ [b]))
 
+(* precondition:
+ * postcondition: *)
 let select clst tbl w =
   let map =
     (match w with
@@ -46,21 +56,28 @@ let select clst tbl w =
   let rows = Maps.get_rows map in
     (all_col tbl clst rows [])
 
+(* precondition:
+ * postcondition: *)
 let rec strip_col (tbl:t) (acc:column list) :column list =
   match tbl with
   | [] -> acc
   | (a,_)::t -> (strip_col t (acc @ [a]))
 
+(* precondition:
+ * postcondition: *)
 let selectAll tbl w =
   select (strip_col tbl []) tbl w
 
-
+(* precondition:
+ * postcondition: *)
 let rec get_cvlst (clst: column list) (vlst: value list) (acc: (column * value) list) =
   match clst, vlst with
   | [],[] -> acc
   | h::t, h'::t' -> get_cvlst t t' (acc @ [(h,h')])
   | _, _ -> failwith "Column list and value list should be the same length"
 
+(* precondition:
+ * postcondition: *)
 let rec insert_help (tbl:t) (cvlst: (column * value) list) (rowid) (acc) =
     match tbl with
     | [] -> acc
@@ -69,35 +86,54 @@ let rec insert_help (tbl:t) (cvlst: (column * value) list) (rowid) (acc) =
                             (acc @ [(name, Maps.insert (List.assoc name cvlst) rowid map)])
                          else insert_help tbl cvlst rowid (acc @ [name, map])
 
-
+(* precondition:
+ * postcondition: *)
 let rec insertAll (tbl:t) (vlst: value list) rowid acc =
   match tbl, vlst with
     | (name, map)::tl, a::b ->
         (insertAll tl b rowid (acc @ [(name, Maps.insert a rowid map)]))
     | _, _ -> acc
 
+(* precondition:
+ * postcondition: *)
 let rec insert (tbl:t) (clst:column list) (vlst: value list) =
   let cvlst = (get_cvlst clst vlst []) in
   let rowid = next_val () in
     if List.length tbl = List.length clst then (insertAll tbl vlst rowid [])
     else (insert_help tbl cvlst rowid [])
 
-let get_col cvlst acc =
-  match cvlist with
-  | [] ->
+(* precondition:
+ * postcondition: *)
+let rec get_col cvlst acc =
+  match cvlst with
+  | [] -> acc
   | (c,v)::t -> get_col t (acc @ [c])
 
-let update tbl cvlst w =
-  let new_tbl =
+(* precondition:
+ * postcondition: *)
+let update tbl cvlst w = failwith "unimplemented"
+  (*
+  let new_tbl = select (get_col cvlst []) tbl w in
+  match new_tbl, cvlst with
+  | [] ->
+  | (name, map)::t, ->*)
 
-let updateAll = failwith "unimplemented"
+(* precondition:
+ * postcondition: *)
+let updateAll = failwith "unimplemented" (*I don't think this needs to be implemented*)
 
+(* precondition:
+ * postcondition: *)
 let rec delete table where = match table, where with
   | ((name,map)::t), (Condition (col,op,v)) -> (if (name = col) then (name, (Maps.delete map op v))::t
     else delete t where)
   | _ , Null -> []
   | _ -> failwith "Error"
 
+(* precondition:
+ * postcondition: *)
 let union = failwith "unimplemented"
 
+(* precondition:
+ * postcondition: *)
 let join = failwith "unimplemented"
