@@ -3,7 +3,7 @@ open Typs
 open Str
 open Assertions
 
-
+module Maps = struct
 module Int: Map.OrderedType with type t = (int*int) = struct
   type t = (int*int)
   let compare (a,a') (b,b') = Pervasives.compare a' b'
@@ -30,7 +30,8 @@ module StringMap = Map.Make (String)
 module BoolMap   = Map.Make (Bool)
 module FloatMap  = Map.Make (Float)
 
-module Maps = struct
+
+
 
 type t =
   | Smap of int StringMap.t
@@ -135,36 +136,24 @@ let insert x y m = match x, m with
   | VFloat f, Fmap map -> Fmap(FloatMap.add (y,f) y map)
   | _ -> failwith "Error"
 
-let update map condition comp newv =
-  match comp,map,newv with
-  | VInt i, Imap m, VInt i' ->
-     Imap(IntMap.fold
-            (fun (c,k) a map -> if (does_satisfy condition i (c,k)) then
-                                  IntMap.add (c,i')(c)(IntMap.remove (c,k) map)
-                                else map) m m)
-  | VString s,Smap m, VString s'->
-          Smap(StringMap.fold
-            (fun (c,k) a map -> if (does_satisfy condition s (c,k)) then
-                                  StringMap.add (c,s')(c)(StringMap.remove (c,k) map)
-                                else map) m m)
-  | VBool b, Bmap m, VBool b' ->
-          Bmap(BoolMap.fold
-            (fun (c,k) a map -> if (does_satisfy condition b (c,k)) then
-                                  BoolMap.add (c,b')(c)(BoolMap.remove (c,k) map)
-                                else map) m m)
-  | VFloat f, Fmap m, VFloat f' ->
-     Fmap(FloatMap.fold
-            (fun (c,k) a map -> if (does_satisfy condition f (c,k)) then
-                                  FloatMap.add (c,f')(c)(FloatMap.remove (c,k) map)
-                                else map) m m)
+let update (map:t)(newv:value) =
+  match map,newv with
+  | Imap m, VInt i' ->
+     Imap(IntMap.fold(fun (c,k) a map -> IntMap.add (c,i')(c)(IntMap.remove (c,k) map)) m m)
+  | Smap m, VString s'->
+     Smap(StringMap.fold(fun (c,k) a map -> StringMap.add (c,s')(c)(StringMap.remove (c,k) map)) m m)
+  | Bmap m, VBool b' ->
+     Bmap(BoolMap.fold(fun (c,k) a map -> BoolMap.add (c,b')(c)(BoolMap.remove (c,k) map)) m m)
+  | Fmap m, VFloat f' ->
+     Fmap(FloatMap.fold(fun (c,k) a map -> FloatMap.add (c,f')(c)(FloatMap.remove (c,k) map)) m m)
   | _ -> failwith "Does not follow schema"
 
-(*let delete x m = match x, m with
-  | VInt i, Imap map -> Imap(IntMap.remove i map)
-  | VString s, Smap map -> Smap(StringMap.remove s map)
-  | VBool b, Bmap map -> Bmap(BoolMap.remove b map)
-  | VFloat f, Fmap map -> Fmap(FloatMap.remove f map)
-  | _ -> failwith "Error"*)
+let replace (newm:t) (oldm:t) =
+  match newm with
+  |Imap m -> IntMap.fold(fun (c,k) a map -> update map (VInt k)) m oldm
+  |Smap m -> StringMap.fold(fun (c,k) a map -> update map (VString k)) m oldm
+  |Bmap m -> BoolMap.fold(fun (c,k) a map -> update map (VBool k)) m oldm
+  |Fmap m -> FloatMap.fold(fun (c,k) a map -> update map (VFloat k)) m oldm
 
 let delete map op v = match v,map with
   | VInt i,Imap m -> (Imap(IntMap.filter (fun key value -> (not)(does_satisfy op i key)) m))
