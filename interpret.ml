@@ -1,42 +1,42 @@
 open Typs
 open Ast
 
-let evaluated = Table.t option * bool
+type evaluated = Table.t option * bool
 
 let attempt_op db tbl op =
   match Database.lookup db tbl with
   | None -> (None, false)
-  | Some x -> (Some op, true)
+  | Some x -> (Some (op x), true)
 
-let attempt_join p1 p2 =
+let attempt_join p1 p2 o =
   match p1 p2 with
   | Some x, Some y -> (Some(Table.join x y o), true)
   | _ -> (None, false)
 
-let eval_select (d: Database.t) (e: expr) : Table.t option =
+let eval_select (db: Database.t) (e: expr) : Table.t option =
   match e with
   | Select (lst, tbl, w) ->
-      match Database.lookup db tbl with
-      | None -> None
-      | Some x -> Some(Table.select lst x w)
+      (match Database.lookup db tbl with
+        | None -> None
+        | Some x -> Some(Table.select lst x w))
   | _ -> None
 
 let eval (d : Database.t) (e : expr): evaluated =
   match e with
   | Select (lst, tbl, w) ->
-      attempt_op(d)(tbl)(Table.select lst x w)
+      attempt_op(d)(tbl)(fun x -> Table.select lst x w)
   | SelectAll (tbl, w) ->
-      attempt_op(d)(tbl)(Table.selectAll x w)
+      attempt_op(d)(tbl)(fun x -> Table.selectAll x w)
   | Insert (tbl, clst, vlst) ->
-      attempt_op(d)(tbl)(Table.insert x clst vlst)
+      attempt_op(d)(tbl)(fun x -> Table.insert x clst vlst)
   | InsertAll (tbl, vlst) ->
-      attempt_op(d)(tbl)(Table.insertAll x vlst)
-  | Delete (tbl, cvlst, w) ->
-      attempt_op(db)(tbl)(Table.delete x cvlst w)
+      attempt_op(d)(tbl)(fun x -> Table.insertAll x vlst)
+  | Delete (tbl, w) ->
+      attempt_op(db)(tbl)(fun x -> Table.delete x w)
   | Update (tbl, cvlst, w) ->
       attempt_op(db)(tbl)(Table.update x cvlst w)
-  | JoinTables (str, str, o) ->
-      (match Database.lookup str, Database.lookup str with
+  | JoinTables (str1, str2, o) ->
+      (match Database.lookup str1, Database.lookup str2 with
             | Some x, Some y -> (Some(Table.join x y o), true)
             | _ -> (None, false))
   | JoinTabQuer (str, e, o) ->

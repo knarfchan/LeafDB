@@ -97,19 +97,24 @@ let rec insert_help (tbl:t) (cvlst: (column * value) list) (rowid) (acc) =
 
 (* precondition:
  * postcondition: *)
-let rec insertAll (tbl:t) (vlst: value list) rowid acc =
+let insert (tbl:t) (clst:column list) (vlst: value list) : t =
+  let cvlst = (get_cvlst clst vlst []) in
+  let rowid = next_val () in
+    insert_help tbl cvlst rowid []
+
+(* precondition:
+ * postcondition: *)
+let rec insertAll_help (tbl:t) (vlst: value list) rowid acc =
   match tbl, vlst with
     | (name, map)::tl, a::b ->
-        (insertAll tl b rowid (acc @ [(name, Maps.insert a rowid map)]))
+        (insertAll_help tl b rowid (acc @ [(name, Maps.insert a rowid map)]))
     | _, _ -> acc
 
 (* precondition:
  * postcondition: *)
-let rec insert (tbl:t) (clst:column list) (vlst: value list) : t =
-  let cvlst = (get_cvlst clst vlst []) in
+let insertAll (tbl:t) (vlst: value list) : t =
   let rowid = next_val () in
-    if List.length tbl = List.length clst then (insertAll tbl vlst rowid [])
-    else (insert_help tbl cvlst rowid [])
+    insertAll_help tbl vlst rowid []
 
 (* precondition:
  * postcondition: *)
