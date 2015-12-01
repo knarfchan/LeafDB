@@ -57,6 +57,10 @@ rule read =
   | "VALUES" | "values"         { VALUES }
   | "true"                      { TRUE }
   | "false"                     { FALSE }
+  | "INT" | "int"               { INTEGERS }
+  | "FLOAT" | "float"           { FLOATS }
+  | "TEXT" | "text"             { STRINGS }
+  | "BOOLEAN" | "boolean"       { BOOLEANS }
   | id                          { ID (Lexing.lexeme lexbuf) }
   | string                      { STRING (Lexing.lexeme lexbuf) }
   | int                         { INT (int_of_string (Lexing.lexeme lexbuf)) }

@@ -12,12 +12,14 @@ altering it so... things return units?*)
 let use str = failwith "unimplemented"
 
 (* add a table to a database *)
-let addTable (db: Database.t) (str: string) (tbl: Table.t) : unit =
-
+let add_table (db: Database.t) (str: string) (tbl: Table.t) : unit =
+  let tables = snd db in
+    Hashtbl.add tables str tbl
 
 (* takes a table, removes it from the database *)
 let drop (db: Database.t) (str: string) : unit  =
-
+  let tables = snd db in
+    Hashtbl.remove tables str
 (* need another method in a higher module that takes a string db name and returns
 the actual db*)
 (* finds a table in the database based on its name *)

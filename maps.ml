@@ -65,6 +65,16 @@ let empty map =
   | Imap _ -> Imap (IntMap.empty)
   | Fmap _ -> Fmap (FloatMap.empty)
 
+(* [create v] creates an empty map based on the value v
+ * precondition  : none
+ * postcondition : create v ~ empty (create v) *)
+let create (v : value) =
+  match v with
+  | VInt _ -> Imap (IntMap.empty)
+  | VString _ -> Smap (StringMap.empty)
+  | VFloat _ -> Fmap (FloatMap.empty)
+  | VBool _ -> Bmap (BoolMap.empty)
+
 let like_compare key comp condition =
   match condition with
   | LikeBegin -> string_match (regexp (".*"^key)) comp 0

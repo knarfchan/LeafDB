@@ -101,3 +101,14 @@ let rec delete table where = match table, where with
 let union = failwith "unimplemented"
 
 let join = failwith "unimplemented"
+
+let rec create_help cdl acc =
+  match cdl with
+  | [] -> acc
+  | (col, v)::t -> create_help t (col, Maps.create v)::acc
+
+(* [create cdl] creates an empty table
+ * precondition:
+ * postcondition:  *)
+let rec create (cdl : column_dec list) =
+  create_help cdl []

@@ -25,4 +25,4 @@ let eval (d : Database.t) (e : expr): Table.t option =
       match Database.lookup tbl with
       | None -> None
       | Some x -> Table.delete x cvlst w
-
+  | CreateTable(str, cdl) -> Database.add_table d str cdl
