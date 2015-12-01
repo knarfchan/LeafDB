@@ -1,6 +1,7 @@
 (*maps.ml*)
 open Typs
 open Str
+open Assertions
 
 module Maps = struct
 module Int: Map.OrderedType with type t = (int*int) = struct
@@ -28,6 +29,8 @@ module IntMap    = Map.Make (Int)
 module StringMap = Map.Make (String)
 module BoolMap   = Map.Make (Bool)
 module FloatMap  = Map.Make (Float)
+
+
 
 
 type t =
@@ -148,4 +151,5 @@ let delete map op v = match v,map with
   | VBool b,Bmap m -> (Bmap(BoolMap.filter (fun key value -> (not)(does_satisfy op b key)) m))
   | VFloat f,Fmap m -> (Fmap(FloatMap.filter (fun key value -> (not)(does_satisfy op f key)) m))
   | _ -> failwith "Error"
+
 end

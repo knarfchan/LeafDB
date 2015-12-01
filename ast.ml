@@ -4,6 +4,7 @@ type expr =
 | Select of column list * string * where
 | SelectAll of string * where
 | Insert of string * column list * value list
+| InsertAll of string * value list
 | JoinTables of string * string * on
 | JoinTabQuer of string * expr * on
 | JoinQuerTab of expr * string * on
