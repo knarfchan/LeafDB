@@ -3,24 +3,26 @@ open Table
 (* type representing our database *)
 type t = (string, (string, Table.t) Hashtbl.t)
 
-(* [add_table db str tbl] adds a table to a specified database
- * precondition  : none
- * postcondition : mem tables str ~ true implies add_table db str tbl ~ Some ()
-                   mem tables str ~ false implies add_table db str tbl ~ None *)
+(* since this is an imperative data structure, we can
+avoid the functional way of returning the structure after
+altering it so... things return units?*)
+
+(* i think all of this belongs in a higher module *)
+(* takes the name of the database and returns the database *)
+let use str = failwith "unimplemented"
+
+(* add a table to a database *)
 let add_table (db: Database.t) (str: string) (tbl: Table.t) : unit =
   let tables = snd db in
-    if Hashtbl.mem tables str then None
-    else (Hashtbl.add tables str tbl; Some())
+    Hashtbl.add tables str tbl
 
-(* takes the table with name str, removes it from the database *)
-let drop (db: Database.t) (str: string) : unit option =
+(* takes a table, removes it from the database *)
+let drop (db: Database.t) (str: string) : unit  =
   let tables = snd db in
-    if Hashtbl.mem tables str then (Hashtbl.remove tables str; Some ())
-    else None
-
-(* precondition  : none
- * postcondition : [lookup db str] returns Some table in the database db
-                    with name str if it exists and None otherwise *)
+    Hashtbl.remove tables str
+(* need another method in a higher module that takes a string db name and returns
+the actual db*)
+(* finds a table in the database based on its name *)
 let lookup (db: Database.t) (str: string) : Table.t option =
   let tables = snd db in
     if Hashtbl.mem tables str then Some (Hashtbl.find tables str)

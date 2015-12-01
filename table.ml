@@ -174,7 +174,7 @@ let rec tbl_to_matrix (tbl : t) acc =
               let rows = Maps.get_rows new_map in
                 get_all_rows rows tbl acc
 
-let convert_matrix tbl =
+let convert_matrix tbl:value list list =
   tbl_to_matrix tbl []
 
 (* precondition:

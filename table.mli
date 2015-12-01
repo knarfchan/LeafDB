@@ -35,11 +35,6 @@ val insert    : t -> column list -> value list -> t
  *)
 val update    : t -> (column * value) list -> where -> t
 
-(* Takes a table and an updated list of (column * value) pairs and returns
- * a table with all of the records updated
- *)
-val updateAll : t -> (column * value) list -> t
-
 (* Takes a table, a list of (column * value) pairs, and returns a table
  * without the bindings in the list*)
 val delete    : t -> where -> t
@@ -54,3 +49,7 @@ val join      : t -> t -> on -> t
  * Takes two queries with the same number of columns and corresponding data
  * types. and appends one onto the other in a new query *)
 val union     : t -> t -> t
+
+val convert_matrix : t -> value list list
+
+val strip_col : t -> column list -> column list
