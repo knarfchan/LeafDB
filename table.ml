@@ -133,9 +133,6 @@ let update tbl cvlst w =
   let updated_tbl = update_help new_tbl cvlst [] in
     (update_all_col tbl updated_tbl [])
 
-(* precondition:
- * postcondition: *)
-let updateAll = failwith "unimplemented" (*I don't think this needs to be implemented*)
 
 (* precondition:
  * postcondition: *)
@@ -145,13 +142,7 @@ let rec delete table where = match table, where with
   | _ , Null -> []
   | _ -> failwith "Error"
 
-(* precondition:
- * postcondition: *)
-let union = failwith "unimplemented"
 
-(* precondition:
- * postcondition: *)
-let join = failwith "unimplemented"
 
 let rec create_help cdl acc =
   match cdl with
@@ -163,3 +154,33 @@ let rec create_help cdl acc =
  * postcondition:  *)
 let rec create (cdl : column_dec list) =
   create_help cdl []
+
+let rec get_row row tbl acc =
+  match tbl with
+  | [] -> acc
+  | (name, map)::t -> if Maps.is_member row map then
+                        get_row row t (acc @ [(Maps.lookup row map)])
+                      else get_row row t (acc @ [VNull])
+
+let rec get_all_rows rows tbl acc =
+  match rows with
+  | [] -> acc
+  | h::t -> get_all_rows t tbl acc @ [(get_row h tbl [])]
+
+let rec tbl_to_matrix (tbl : t) acc =
+  match tbl with
+  | [] -> [[]]
+  | (a,b)::t -> let new_map = Maps.get_longest (strip_tbl tbl []) 0 (List.assoc a tbl) in
+              let rows = Maps.get_rows new_map in
+                get_all_rows rows tbl acc
+
+let convert_matrix tbl =
+  tbl_to_matrix tbl []
+
+(* precondition:
+ * postcondition: *)
+let union = failwith "unimplemented"
+
+(* precondition:
+ * postcondition: *)
+let join = failwith "unimplemented"
