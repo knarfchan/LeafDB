@@ -66,8 +66,9 @@ let rec ast_to_string ast =
   | Select(cl, s, w) -> "Select(" ^ list_to_string(cl) ^ ", " ^ s ^
                          ", " ^ where_to_string(w) ^ ")"
   | SelectAll(s, w) -> "SelectAll(" ^ s ^ ", " ^ where_to_string(w) ^ ")"
-  | Insert (s, cl, vl) -> "Insert(" ^ s ^ list_to_string(cl) ^ ", " ^
+  | Insert(s, cl, vl) -> "Insert(" ^ s ^ list_to_string(cl) ^ ", " ^
                             vlist_to_string(vl) ^ ")"
+  | InsertAll(s, vl) -> "InsertAll(" ^ s ^ ", " ^ vlist_to_string(vl) ^ ")"
   | JoinTables(s1, s2, (on1, on2)) -> "JoinTables(" ^ s1 ^ ", " ^ s2 ^ ", " ^
                                         "(" ^ on1 ^ ", " ^ on2 ^ "))"
   | JoinTabQuer(s1, e, (on1, on2)) -> "JoinTabQuer(" ^ s1 ^ ", " ^

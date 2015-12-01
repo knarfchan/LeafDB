@@ -2,20 +2,10 @@
 open Ast
 open Typs
 open Lexing
-
-let parse_error _ =
-  let start_pos = Parsing.symbol_start_pos () in
-  let end_pos = Parsing.symbol_end_pos () in
-  let start_line = string_of_int start_pos.pos_lnum in
-  let start_char = string_of_int (start_pos.pos_cnum - start_pos.pos_bol) in
-  let end_line = string_of_int end_pos.pos_lnum in
-  let end_char = string_of_int (end_pos.pos_cnum - end_pos.pos_bol) in
-  failwith ("Parse error: ("^start_line^"."^start_char^"-"^end_line^"."^end_char)
 %}
 
 %token <float> FLOAT
 %token <int> INT
-%token <string> COLUMN
 %token <string> STRING
 %token <string> ID
 %token TRUE
@@ -35,22 +25,24 @@ let parse_error _ =
 %token GREATER_EQUAL
 %token LESS_EQUAL
 %token NOT_EQ
-%token LIKE_REGEX
-%token NOT_LIKE
+%token LK
+%token NT
 
 %token SELECT
 %token FROM
 %token WHERE
 %token INSERT
 %token JOIN
-%token CREATETABLE
-%token CREATEDB
+%token CREATE
 %token UPDATE
 %token DELETE
-%token DROPTABLE
-%token DROPDB
+%token DROP
 %token SET
 %token ON
+%token INTO
+%token DATABASE
+%token TABLE
+%token VALUES
 
 %token EOF
 
@@ -65,35 +57,36 @@ prog:
   ;
 
 statement:
-  | q1 = statement; JOIN; q2 = statement; ON; c1 = COLUMN; EQUAL; c2 = COLUMN
+  | q1 = statement; JOIN; q2 = statement; ON; c1 = ID; EQUAL; c2 = ID
       {JoinQueries(q1, q2, (c1, c2))}
-  | t1 = ID; JOIN; t2 = ID; ON; c1 = COLUMN; EQUAL; c2 = COLUMN
+  | t1 = ID; JOIN; t2 = ID; ON; c1 = ID; EQUAL; c2 = ID
       {JoinTables(t1, t2, (c1, c2))}
-  | tab = ID; JOIN; query = statement; ON; c1 = COLUMN; EQUAL; c2 = COLUMN
+  | tab = ID; JOIN; query = statement; ON; c1 = ID; EQUAL; c2 = ID
       {JoinTabQuer(tab, query, (c1, c2))}
-  | query = statement; JOIN; tab = ID; ON; c1 = COLUMN; EQUAL; c2 = COLUMN
+  | query = statement; JOIN; tab = ID; ON; c1 = ID; EQUAL; c2 = ID
       {JoinQuerTab(query, tab, (c1, c2))}
-  | SELECT; cols = col_list; FROM; tab = ID; WHERE; w = where_condition
-      {Select(cols, tab, w)}
   | SELECT; cols = col_list; FROM; tab = ID; w = where_condition
       {Select(cols, tab, w)}
   | SELECT; ASTERISK; FROM; tab = ID; w = where_condition
       {SelectAll(tab, w)}
-  | INSERT; tab = ID; cols = col_list; vals = val_list
-      {Insert(tab, cols, vals)}
+  | INSERT; INTO; tab = ID; LEFT_PAREN; cols = col_list; RIGHT_PAREN;
+      VALUES; LEFT_PAREN; vals = val_list RIGHT_PAREN
+        {Insert(tab, cols, vals)}
+  | INSERT; INTO; tab = ID; VALUES; LEFT_PAREN; vals = val_list; RIGHT_PAREN
+      {InsertAll(tab, vals)}
   | UPDATE; tab = ID; SET; pairs = pair_list; WHERE; w = where_condition
       {Update(tab, pairs, w)}
-  | DELETE; tab = ID; WHERE; w = where_condition
+  | DELETE; FROM; tab = ID; WHERE; w = where_condition
       {Delete(tab, w)}
-  | DELETE; tab = ID; w = where_condition
+  | DELETE; FROM; tab = ID; w = where_condition
       {Delete(tab, w)}
-  | CREATETABLE; tab = ID; LEFT_PAREN; decs = dec_list; RIGHT_PAREN
+  | CREATE; TABLE; tab = ID; LEFT_PAREN; decs = dec_list; RIGHT_PAREN
       {CreateTable(tab, decs)}
-  | CREATEDB; db = ID
+  | CREATE; DATABASE; db = ID
       {CreateDb(db)}
-  | DROPTABLE; tab = ID
+  | DROP; TABLE; tab = ID
       {DropTable(tab)}
-  | DROPDB; db = ID
+  | DROP; DATABASE; db = ID
       {DropDb(db)}
   ;
 
@@ -106,9 +99,9 @@ dec_list: decs = rev_dec_list  {List.rev decs};
 pair_list: pairs = rev_pair_list {List.rev pairs};
 
 rev_col_list:
-  | (* empty *)                               {[]}
-  | col = COLUMN                              {[col]}
-  | cols = rev_col_list; COMMA; col = COLUMN  {col::cols}
+  | (* empty *)                           {[]}
+  | col = ID                              {[col]}
+  | cols = rev_col_list; COMMA; col = ID  {col::cols}
   ;
 
 rev_val_list:
@@ -118,33 +111,33 @@ rev_val_list:
   ;
 
 rev_dec_list:
-  | (* empty *)                                             {[]}
-  | col = COLUMN; v = value                                 {[(col, v)]}
-  | decs = rev_dec_list; COMMA; col = COLUMN; v = value     {(col, v)::decs}
+  | (* empty *)                                         {[]}
+  | col = ID; v = value                                 {[(col, v)]}
+  | decs = rev_dec_list; COMMA; col = ID; v = value     {(col, v)::decs}
   ;
 
 rev_pair_list:
-  | (* empty *)                                                {[]}
-  | col = COLUMN; EQUAL; v = value                             {[(col, v)]}
-  | ps = rev_pair_list; COMMA; col = COLUMN; EQUAL; v = value  {(col, v)::ps}
+  | (* empty *)                                            {[]}
+  | col = ID; EQUAL; v = value                             {[(col, v)]}
+  | ps = rev_pair_list; COMMA; col = ID; EQUAL; v = value  {(col, v)::ps}
   ;
 
 where_condition:
   | (* empty *)
       {Null}
-  | col = COLUMN; LIKE_REGEX; QUOTE; PERCENTAGE; v = ID; QUOTE
-      {Condition(col, LikeBegin, VString(v))}
-  | col = COLUMN; LIKE_REGEX; QUOTE; v = ID; PERCENTAGE; QUOTE
+  | WHERE; col = ID; LK; QUOTE; PERCENTAGE; v = ID; QUOTE
       {Condition(col, LikeEnd, VString(v))}
-  | col = COLUMN; LIKE_REGEX; QUOTE; PERCENTAGE; v = ID; PERCENTAGE; QUOTE
+  | WHERE; col = ID; LK; QUOTE; v = ID; PERCENTAGE; QUOTE
+      {Condition(col, LikeBegin, VString(v))}
+  | WHERE; col = ID; LK; QUOTE; PERCENTAGE; v = ID; PERCENTAGE; QUOTE
       {Condition(col, LikeSubstring, VString(v))}
-  | col = COLUMN; NOT_LIKE; QUOTE; PERCENTAGE; v = ID; QUOTE
-      {Condition(col, NotLikeBegin, VString(v))}
-  | col = COLUMN; NOT_LIKE; QUOTE; v = ID; PERCENTAGE; QUOTE
+  | WHERE; col = ID; NT; LK; QUOTE; PERCENTAGE; v = ID; QUOTE
       {Condition(col, NotLikeEnd, VString(v))}
-  | col = COLUMN; NOT_LIKE; QUOTE; PERCENTAGE; v = ID; PERCENTAGE; QUOTE
+  | WHERE; col = ID; NT; LK; QUOTE; v = ID; PERCENTAGE; QUOTE
+      {Condition(col, NotLikeBegin, VString(v))}
+  | WHERE; col = ID; NT; LK; QUOTE; PERCENTAGE; v = ID; PERCENTAGE; QUOTE
       {Condition(col, NotLikeSubstring, VString(v))}
-  | col = COLUMN; o = operator; v = value
+  | WHERE; col = ID; o = operator; v = value
       {Condition(col, o, v)}
   ;
 
