@@ -4,7 +4,7 @@ open Table
 type t = (string, Table.t) Hashtbl.t
 
 (* creates an empty Database.t *)
-let create (str: string) : t =
+let create () : t =
   Hashtbl.create 7
 
 (* [add_table db str tbl] adds a table to a specified database

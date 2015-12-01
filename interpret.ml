@@ -1,6 +1,5 @@
 open Typs
 open Ast
-open Dbms
 
 let evaluated = Table.t option * bool
 
