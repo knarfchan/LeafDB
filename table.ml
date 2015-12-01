@@ -9,12 +9,7 @@ let next_val =
    incr counter;
    !counter
 
-let lookup col tbl = failwith "unimplemented" (*Idk if this is necessary*)
-(*
-let rec find_col col clst =
-  match clst with
-  | [] -> false
-  | hd::tl -> if col = hd then true else find_col col tl*)
+let lookup col tbl = failwith "unimplemented"
 
 let make_select tbl col =
   if List.mem_assoc col tbl then Maps.empty (List.assoc col tbl)
@@ -51,18 +46,20 @@ let select clst tbl w =
   let rows = Maps.get_rows map in
     (all_col tbl clst rows [])
 
+let rec strip_col (tbl:t) (acc:column list) :column list =
+  match tbl with
+  | [] -> acc
+  | (a,_)::t -> (strip_col t (acc @ [a]))
+
+let selectAll tbl w =
+  select (strip_col tbl []) tbl w
+
+
 let rec get_cvlst (clst: column list) (vlst: value list) (acc: (column * value) list) =
   match clst, vlst with
   | [],[] -> acc
   | h::t, h'::t' -> get_cvlst t t' (acc @ [(h,h')])
   | _, _ -> failwith "Column list and value list should be the same length"
-
-(*
-let rec insert_helper (tbl:t) (cvlst: (column * value) list) (acc: (column * unit) list)=
-  match tbl with
-  | [] -> acc
-  | (col, map)::tl -> if List.mem_assoc col cvlst then insert_helper tl cvlst acc
-              else insert_helper tl cvlst (acc @ [col, ()])*)
 
 let rec insert_help (tbl:t) (cvlst: (column * value) list) (rowid) (acc) =
     match tbl with
@@ -85,7 +82,13 @@ let rec insert (tbl:t) (clst:column list) (vlst: value list) =
     if List.length tbl = List.length clst then (insertAll tbl vlst rowid [])
     else (insert_help tbl cvlst rowid [])
 
-let update = failwith "unimplemented"
+let get_col cvlst acc =
+  match cvlist with
+  | [] ->
+  | (c,v)::t -> get_col t (acc @ [c])
+
+let update tbl cvlst w =
+  let new_tbl =
 
 let updateAll = failwith "unimplemented"
 

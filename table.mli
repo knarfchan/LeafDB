@@ -15,6 +15,8 @@ val lookup    : column -> t -> value option
  *)
 val select    : column list -> t -> where -> t
 
+val selectAll : t -> where -> t
+
 (* Takes a table, a list of columns, a list of values that
  * correspond respectively with the data types of the columns, and return a
  * table with the values appended to the columns
