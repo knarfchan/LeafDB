@@ -6,7 +6,7 @@ let create () : t =
 (* adds an empty database to a DBMS *)
 let add_database (dbs: t) (str: string) : bool =
   if Hashtbl.mem dbs str then false
-  else ((Hashtbl.add dbs str (Database.create())); true)
+  else (Hashtbl.add dbs str (Database.create()); true)
 
 (* [use dbs str] takes the name of a database and returns it
  * precondition  : none

@@ -9,6 +9,9 @@ type t
  *)
 val lookup    : column -> t -> value option
 
+(* Takes two columns and returns the difference in their lengths*)
+val get_diff  : t -> t -> int
+
 (* Takes a list of columns, a table, and a condition and returns a
  * query given that the columns listed are in the table and the condition is
  * valid on the values of the columns
