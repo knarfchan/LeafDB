@@ -59,3 +59,5 @@ val join      : t -> t -> on -> t
 val union     : t -> t -> t
 
 val create    : column_dec list -> t
+
+val print_tbl : t -> unit
