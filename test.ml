@@ -1,5 +1,6 @@
 open Ast
 open Typs
+open Lexer
 
 (* Parse a string into an ast *)
 let parse s =
@@ -37,6 +38,7 @@ let val_to_string v =
   | VString s -> "VString(" ^ s ^ ")"
   | VBool b -> "VBool(" ^ string_of_bool(b) ^ ")"
   | VFloat f -> "VFloat(" ^ string_of_float(f) ^ ")"
+  | VNull -> "VNull"
 
 let rec vl2str vl acc =
   match vl with
