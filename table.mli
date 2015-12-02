@@ -43,11 +43,6 @@ val insertAll : t -> value list -> t
  *)
 val update    : t -> (column * value) list -> where -> t
 
-(* Takes a table and an updated list of (column * value) pairs and returns
- * a table with all of the records updated
- *)
-val updateAll : t -> (column * value) list -> t
-
 (* Takes a table, a list of (column * value) pairs, and returns a table
  * without the bindings in the list*)
 val delete    : t -> where -> t
@@ -64,3 +59,5 @@ val join      : t -> t -> on -> t
 val union     : t -> t -> t
 
 val create    : column_dec list -> t
+
+val print_tbl : t -> unit

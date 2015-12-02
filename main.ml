@@ -1,11 +1,5 @@
-open Dbms
-open Database
-open Interpret
-open Table
-open Maps
 open Ast
 
-(*let print_tbl (tbl: Table.t) =*)
 let print_command (q: Table.t) e =
   match e with
   | Select (lst, tbl, w) -> failwith "unimplemented"
@@ -33,6 +27,7 @@ let valid_command (q: Table.t option) e =
   match q with
   | None -> Printf.printf "Table does not exist"
   | Some x -> print_command x e
+
 
 let repl (d:Database.t option) (e:expr) = failwith "no"
   (*let input = read_line() in
