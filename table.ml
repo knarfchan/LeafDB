@@ -121,7 +121,12 @@ let insertAll (tbl:t) (vlst: value list) : t =
 let rec get_col cvlst acc =
   match cvlst with
   | [] -> acc
-  | (c,v)::t -> get_col t (acc @ [c])
+  | (c,_)::t -> get_col t (acc @ [c])
+
+let rec get_val_from_cvlst cvlst acc =
+  match cvlst with
+  | [] -> acc
+  | (_,v)::t -> get_val_from_cvlst t (acc @ [v])
 
 (* precondition:
  * postcondition: *)
@@ -254,10 +259,39 @@ let print_tbl (tbl:t) =
   print_tbl_helper (Array.of_list (row_to_array ((strip_col tbl []) ::
   (tbl_val (convert_matrix tbl) [])) []))
 
-(* precondition:
- * postcondition: *)
-let union = failwith "unimplemented"
+let rec get_vals (tbl:t) row acc =
+  match tbl with
+  | [] -> acc
+  | (name, map)::t -> if Maps.is_member row map then
+                        get_vals t row (acc @ [(name, Maps.lookup row map)])
+                      else get_vals t row acc
+
+let rec get_cvlst (t1:t) (t2:t) rows acc =
+  match rows with
+  | [] -> acc
+  | (r1, r2)::t -> get_cvlst t1 t2 t (acc @ [(get_vals t1 r1 []) @ (get_vals t2 r2 [])])
+
+let rec empty_table tbl acc =
+  match tbl with
+  | [] -> acc
+  | (name, map)::t -> (empty_table t (acc @ [(name, Maps.empty map)]))
+
+
+
+let rec join_help tbl cvlst =
+  match cvlst with
+  | [] -> tbl
+  | lst::t -> join_help (insert tbl (get_col lst []) (get_val_from_cvlst lst [])) t
 
 (* precondition:
  * postcondition: *)
-let join = failwith "unimplemented"
+let join t1 t2 o =
+  let rows = (match o with
+             | (c1, c2) -> if List.mem_assoc c1 t1 && List.mem_assoc c2 t2 then
+                             Maps.join (List.assoc c1 t1) (List.assoc c2 t2)
+                           else failwith "Columns are not found in tables") in
+  join_help ((empty_table t1 []) @ (empty_table t2 [])) (get_cvlst t1 t2 rows [])
+
+(* precondition:
+ * postcondition: *)
+let union = failwith "unimplemented"
