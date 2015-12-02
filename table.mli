@@ -4,11 +4,7 @@ open Typs
 (* represents our table *)
 type t
 
-(* Takes a column, a table, returns the value associated with the column.
- * [postcondition] : returns Some value or None if no table exists w/ that name
- *)
-val lookup    : column -> t -> value option
-
+val get_size  : t -> int
 (* Takes two columns and returns the difference in their lengths*)
 val get_diff  : t -> t -> int
 
@@ -26,6 +22,11 @@ val selectAll : t -> where -> t
  *)
 val insert    : t -> column list -> value list -> t
 
+(* Takes a table, a list of values that correspond with the data types
+ * of all the columns, and returns a table with the values appended to all
+ * of the columns *)
+val insertAll : t -> value list -> t
+
 (* Takes a table, and a list which has a length equal to the number of
  * columns and which values correspond to the data types of the columns in order
  * of the columns, and returns a table with the values appended to the columns
@@ -37,11 +38,6 @@ val insert    : t -> column list -> value list -> t
  * holds true
  *)
 val update    : t -> (column * value) list -> where -> t
-
-(* Takes a table and an updated list of (column * value) pairs and returns
- * a table with all of the records updated
- *)
-val updateAll : t -> (column * value) list -> t
 
 (* Takes a table, a list of (column * value) pairs, and returns a table
  * without the bindings in the list*)
@@ -57,3 +53,7 @@ val join      : t -> t -> on -> t
  * Takes two queries with the same number of columns and corresponding data
  * types. and appends one onto the other in a new query *)
 val union     : t -> t -> t
+
+val create    : column_dec list -> t
+
+val print_tbl : t -> unit

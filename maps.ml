@@ -107,6 +107,7 @@ let create (v : value) =
   | VString _ -> Smap (StringMap.empty)
   | VFloat _ -> Fmap (FloatMap.empty)
   | VBool _ -> Bmap (BoolMap.empty)
+  | _ -> failwith "Error"
 
 let like_compare comp key condition =
   match condition with

@@ -13,6 +13,7 @@ type value =
   | VString of string
   | VBool of bool
   | VFloat of float
+  | VNull
 
 (* supported operators in where used to conditionally select rows *)
 type operator =

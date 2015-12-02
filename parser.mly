@@ -46,6 +46,10 @@ open Lexing
 %token DATABASE
 %token TABLE
 %token VALUES
+%token USE
+%token SHOW
+%token DATABASES
+%token EXIT
 
 %token EOF
 
@@ -85,12 +89,12 @@ statement:
       {Delete(tab, w)}
   | CREATE; TABLE; tab = ID; LEFT_PAREN; decs = dec_list; RIGHT_PAREN
       {CreateTable(tab, decs)}
-  | CREATE; DATABASE; db = ID
-      {CreateDb(db)}
-  | DROP; TABLE; tab = ID
-      {DropTable(tab)}
-  | DROP; DATABASE; db = ID
-      {DropDb(db)}
+  | CREATE; DATABASE; db = ID       {CreateDb(db)}
+  | DROP; TABLE; tab = ID           {DropTable(tab)}
+  | DROP; DATABASE; db = ID         {DropDb(db)}
+  | USE; db = ID                    {Use(db)}
+  | SHOW; DATABASES                 {ShowDatabases}
+  | EXIT                            {ExitDb}
   ;
 
 col_list: cols = rev_col_list  {List.rev cols};
@@ -163,5 +167,6 @@ value:
 supported:
   | INTEGERS        {VInt(0)}
   | BOOLS           {VBool(true)}
-  | FLOATS          {VFloat(.0)}
+  | FLOATS          {VFloat(0.)}
   | STRINGS         {VString("")}
+  ;

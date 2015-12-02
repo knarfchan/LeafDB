@@ -1,49 +1,34 @@
-open Database
-open Interpret
-open Table
-open Maps
-open Ast
+open Typs
 
 type t = (string, Database.t) Hashtbl.t
+
+let create () : t =
+  Hashtbl.create 5
+
+(* adds an empty database to a DBMS *)
+let add_database (dbs: t) (str: string) : bool =
+  if Hashtbl.mem dbs str then false
+  else (Hashtbl.add dbs str (Database.create()); true)
 
 (* [use dbs str] takes the name of a database and returns it
  * precondition  : none
  * postcondition : *)
 let use (dbs: t) (str: string) : Database.t option =
   if Hashtbl.mem dbs str then Some (Hashtbl.find dbs str)
-    else None
+  else None
 
-(*let print_tbl (tbl: Table.t) =*)
-let print_command (q: Table.t) e =
-  match e with
-  | Select (lst, tbl, w) -> failwith "unimplemented"
-  | SelectAll (tbl, w) -> failwith "unimplemented"
-  | Insert (tbl, clst, vlst) -> (match Database.lookup tbl with
-                                | Some t -> Printf.printf "Inserted %d items" (Table.get_diff t q)
-                                | None -> Printf.printf "Table does not exist")
-  | InsertAll (tbl, vlst) -> (match Database.lookup tbl with
-                              | Some t -> Printf.printf "Inserted %d items" (List.length vlst)
-                              | None -> Printf.printf "Table does not exist")
-  | JoinTables (str1, str2, o) -> failwith "unimplemented"
-  | JoinTabQuer (str, e, o) -> failwith "unimplemented"
-  | JoinQuerTab (e, str, o) -> failwith "unimplemented"
-  | JoinQueries (e1, e2, o) -> failwith "unimplemented"
-  | Update (tbl, cvlst, w) -> Printf.printf "Updated %d items" (List.length cvlst)
-  | Delete (tbl, w) -> (match Database.lookup tbl with
-                        | Some t -> Printf.printf "Deleted %d items" (Table.get_diff q t)
-                        | None -> Printf.printf "Table does not exist")
-  | CreateTable (str, cdl) -> failwith "unimplemented"
-  | CreateDb str -> failwith "unimplemented"
-  | DropTable str -> failwith "unimplemented"
-  | DropDb str -> failwith "unimplemented"
+let drop (dbs: t) (str: string) : bool =
+  if Hashtbl.mem dbs str then (Hashtbl.remove dbs str; true)
+  else false
 
-let valid_command (q: Table.t option) e =
-  match q with
-  | None -> Printf.printf "Table does not exist"
-  | Some x -> print_command x e
+let db_list = ref []
 
-let repl (d:Database.t option) (e:expr) = failwith "no"
-  (*let input = read_line() in
-  match d with
-  | None -> Printf.printf "Specify a function by calling USE [database]\n"
-  | Some x -> (Interpret.eval x e)*)
+let rec insert_databases (strs: value list) (tab: Table.t) : Table.t =
+  match strs with
+  | [] -> tab
+  | h::t -> insert_databases(t)(Table.insertAll(tab)([h]))
+
+let get_databases (dbs: t) : Table.t =
+  (Hashtbl.iter (fun x y -> db_list := VString(x)::(!db_list))(dbs));
+  let new_tab = Table.create([("Databases", VString(""))]) in
+    insert_databases(!db_list)(new_tab)
