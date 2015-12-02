@@ -15,3 +15,6 @@ type expr =
 | CreateDb of string
 | DropTable of string
 | DropDb of string
+| Use of string
+| ShowDatabases
+| ExitDb

@@ -86,3 +86,6 @@ let rec ast_to_string ast =
   | CreateDb(s) -> "CreateDb(" ^ s ^ ")"
   | DropTable(s) -> "DropTable(" ^ s ^ ")"
   | DropDb(s) -> "DropDb(" ^ s ^ ")"
+  | Use(s) -> "Use(" ^ s ^ ")"
+  | ExitDb -> "ExitDb"
+  | ShowDatabases -> "ShowDatabases"
