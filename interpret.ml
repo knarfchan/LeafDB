@@ -2,6 +2,7 @@ open Typs
 open Ast
 
 type evaluated = Table.t option * bool
+type dbresult = Database.t option * bool
 
 let attempt_op db tbl op =
   match Database.lookup db tbl with
@@ -9,7 +10,7 @@ let attempt_op db tbl op =
   | Some x -> (Some (op x), true)
 
 let attempt_join p1 p2 o =
-  match p1 p2 with
+  match p1, p2 with
   | Some x, Some y -> (Some(Table.join x y o), true)
   | _ -> (None, false)
 
@@ -36,25 +37,27 @@ let eval (db : Database.t) (e : expr): evaluated =
   | Update (tbl, cvlst, w) ->
       attempt_op(db)(tbl)(fun x -> Table.update x cvlst w)
   | JoinTables (str1, str2, o) ->
-      (match Database.lookup db str1, Database.lookup db str2 with
-            | Some x, Some y -> (Some(Table.join x y o), true)
-            | _ -> (None, false))
+      attempt_join (Database.lookup db str1) (Database.lookup db str2) o
   | JoinTabQuer (str, e, o) ->
-      (match Database.lookup db str, eval_select db e with
-            | Some x, Some y -> (Some(Table.join x y o), true)
-            | _ -> (None, false))
+      attempt_join (Database.lookup db str) (eval_select db e) o
   | JoinQuerTab (e, str, o) ->
-      (match eval_select db e, Database.lookup db str with
-            | Some x, Some y -> (Some(Table.join x y o), true)
-            | _ -> (None, false))
-  | JoinQueries (e1, e2, o) ->
-      (match eval_select db e1, eval_select db e2 with
-            | Some x, Some y -> (Some(Table.join x y o), true)
-            | _ -> (None, false))
+      attempt_join (eval_select db e) (Database.lookup db str) o
+  | JoinQueries (e1, e2, o) ->      attempt_join (eval_select db e1) (eval_select db e2) o
+
+  | CreateTable(str, cdl) -> (None, Database.add_table db str (Table.create cdl))
+  | DropTable(str) -> (None, Database.drop db str)
+  | CreateDb(str) -> (None, Dbms.add_database dbs str)
+  | DropDb(str) -> (None, Dbms.drop dbs str)
+  | Use(str) ->
+  | ShowDatabases ->
+  | Exit ->
   | _ -> (None, false)
 
-let eval_dbms (dbms : Dbms.t) (e) : TBD =
-  | CreateTable(str, cdl) -> (None, Database.add_table db str (Table.create cdl))
-  | CreateDb(str) -> (None, Dbms.add_database str)
-  | DropTable(str) -> (None, Database.drop db str)
-  | DropDb(str) -> (None, Dbms.drop db str)
+let eval_dbms (dbs : Dbms.t) (e) : dbresult =
+  match e with
+  | CreateDb(str) -> (None, Dbms.add_database dbs str)
+  | DropDb(str) -> (None, Dbms.drop dbs str)
+  | ShowDatabases ->
+  | Use(str) ->
+  | Exit ->
+  | _ -> (None, false)
