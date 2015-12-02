@@ -188,8 +188,71 @@ let rec tbl_to_matrix (tbl : t) acc =
               let rows = Maps.get_rows new_map in
                 get_all_rows rows tbl acc
 
-let convert_matrix tbl:value list list =
+let convert_matrix (tbl:t) =
   tbl_to_matrix tbl []
+
+
+let rec row_val (r:value list) acc =
+  match r with
+  | [] -> acc
+  | VInt x::t -> row_val t (acc @ [string_of_int x])
+  | VString x::t -> row_val t (acc @ [x])
+  | VBool x::t -> row_val t (acc @ [string_of_bool x])
+  | VFloat x::t -> row_val t (acc @ [string_of_float x])
+  | VNull::t -> row_val t (acc @ ["NULL"])
+
+let rec tbl_val (m: value list list) acc: string list list=
+  match m with
+  | [] -> acc
+  | h::t -> tbl_val t (acc @ [row_val h []])
+
+let rec row_to_array (m: column list list) acc =
+  match m with
+  | [] -> acc
+  | h::t -> row_to_array t (acc @ [Array.of_list h])
+
+let row_size tbl =
+  let size = Array.make (Array.length tbl.(0)) 0 in
+    (for i = 0 to (Array.length tbl) - 1 do
+      for j = 0 to (Array.length tbl.(0)) -1 do
+        if Bytes.length tbl.(i).(j) > size.(j) then
+          size.(j) <- (Bytes.length tbl.(i).(j) + 1)
+        else ()
+      done
+    done);
+  size
+
+(* precondition: the number of columns of tbl and size must be the same
+ * postcondition: format_array returns a string matrix where all values are the same length*)
+let format_array tbl size =
+  (for i = 0 to (Array.length tbl) - 1 do
+    for j = 0 to (Array.length tbl.(0)) -1 do
+      tbl.(i).(j) <- (Bytes.make (size.(j) - (Bytes.length tbl.(i).(j))) ' ') ^ (tbl.(i).(j))
+    done
+  done); tbl
+
+let get_bars (size: int array) length:int=
+  (for i = 0 to (Array.length size) - 1 do
+    length := !length + size.(i)
+  done); length := !length + ((Array.length size) * 3) + 1; !length
+
+let print_tbl_helper (tbl:string array array) =
+  let total_size = row_size tbl in
+  let bar = get_bars total_size (ref 0) in
+  let matrix = format_array tbl (total_size) in
+    (Printf.printf "%s\n" (" " ^ (Bytes.make bar '-')));
+    (for i = 0 to (Array.length matrix) - 1 do
+      (for j = 0 to (Array.length matrix.(0)) -1 do
+        if i = 0 then Printf.printf "%s" (" | " ^ tbl.(i).(j))
+        else Printf.printf "%s" (" | " ^ tbl.(i).(j))
+      done);
+        if i = 0 then Printf.printf "%s\n" (" |\n" ^ " " ^ (Bytes.make bar '-'))
+        else (Printf.printf "%s\n" " |")
+    done); (Printf.printf "%s\n" (" " ^ (Bytes.make bar '-')))
+
+let print_tbl (tbl:t) =
+  print_tbl_helper (Array.of_list (row_to_array ((strip_col tbl []) ::
+  (tbl_val (convert_matrix tbl) [])) []))
 
 (* precondition:
  * postcondition: *)

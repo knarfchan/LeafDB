@@ -53,6 +53,4 @@ val join      : t -> t -> on -> t
  * types. and appends one onto the other in a new query *)
 val union     : t -> t -> t
 
-val convert_matrix : t -> value list list
-
-val strip_col : t -> column list -> column list
+val print_tbl : t -> unit
