@@ -47,10 +47,10 @@ let get_size (tbl:t) : int = match tbl with
   | (a,b)::t -> Maps.size (Maps.get_longest (strip_tbl tbl []) 0 (List.assoc a tbl))
   | [] -> 0
 
-let get_diff (first:t) (second:t) : int =
-  let old_length = (get_size first) in
-  let new_length = (get_size second) in
-    (new_length - old_length)
+let get_diff (t1:t) (t2:t) : int =
+  let l1 = (get_size t1) in
+  let l2 = (get_size t2) in
+    abs (l1 - l2)
 
 (* precondition:
  * postcondition: *)
