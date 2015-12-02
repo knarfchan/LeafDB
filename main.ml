@@ -2,8 +2,12 @@ open Ast
 
 let print_command (q: Table.t) e =
   match e with
-  | Select (lst, tbl, w) -> failwith "unimplemented"
-  | SelectAll (tbl, w) -> failwith "unimplemented"
+  | Select (lst, tbl, w) -> match Database.lookup tbl with
+                            | Some x -> (Table.print_tbl q)
+                            | None -> Printf.printf "Table does not exist"
+  | SelectAll (tbl, w) -> match Database.lookup with
+                          | Some x -> (Table.print_tbl q)
+                          | None -> Printf.printf "Table does not exist"
   | Insert (tbl, clst, vlst) -> (match Database.lookup tbl with
                                 | Some t -> Printf.printf "Inserted %d items" (Table.get_diff t q)
                                 | None -> Printf.printf "Table does not exist")
@@ -18,16 +22,11 @@ let print_command (q: Table.t) e =
   | Delete (tbl, w) -> (match Database.lookup tbl with
                         | Some t -> Printf.printf "Deleted %d items" (Table.get_diff q t)
                         | None -> Printf.printf "Table does not exist")
-  | CreateTable (str, cdl) -> failwith "unimplemented"
-  | CreateDb str -> failwith "unimplemented"
-  | DropTable str -> failwith "unimplemented"
-  | DropDb str -> failwith "unimplemented"
 
 let valid_command (q: Table.t option) e =
   match q with
   | None -> Printf.printf "Table does not exist"
   | Some x -> print_command x e
-
 
 let repl (d:Database.t option) (e:expr) = failwith "no"
   (*let input = read_line() in
