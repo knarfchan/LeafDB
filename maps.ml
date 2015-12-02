@@ -4,6 +4,7 @@ open Str
 open Assertions
 
 module Maps = struct
+
 let pair_compare (a,a') (b,b') = if a' = b' then Pervasives.compare a b
                                  else Pervasives.compare a' b'
 
@@ -212,13 +213,13 @@ let replace (newm:t) (oldm:t) =
 let join (m1:t) (m2:t) : (int*int) list =
   match m1,m2 with
   |Imap m,Imap m' ->
-    (IntMap.fold(fun (r,v) a acc -> if (has_value (VInt v) m2) then (joiner (VInt v) m1,r)::acc else acc) m [])
+    (IntMap.fold(fun (r,v) a acc -> if (has_value (VInt v) m2) then (joiner (VInt v) m2,r)::acc else acc) m [])
   |Smap m,Smap m' ->
-    (StringMap.fold(fun (r,v) a acc -> if (has_value (VString v) m2) then (joiner (VString v) m1,r)::acc else acc) m [])
+    (StringMap.fold(fun (r,v) a acc -> if (has_value (VString v) m2) then (joiner (VString v) m2,r)::acc else acc) m [])
   |Bmap m,Bmap m' ->
-    (BoolMap.fold(fun (r,v) a acc -> if (has_value (VBool v) m2) then (joiner (VBool v) m1,r)::acc else acc) m [])
+    (BoolMap.fold(fun (r,v) a acc -> if (has_value (VBool v) m2) then (joiner (VBool v) m2,r)::acc else acc) m [])
   |Fmap m,Fmap m' ->
-    (FloatMap.fold(fun (r,v) a acc -> if (has_value (VFloat v) m2) then (joiner (VFloat v) m1,r)::acc else acc) m [])
+    (FloatMap.fold(fun (r,v) a acc -> if (has_value (VFloat v) m2) then (joiner (VFloat v) m2,r)::acc else acc) m [])
   | _ -> failwith "error"
 
 let delete map op v = match v,map with
