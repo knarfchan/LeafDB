@@ -60,7 +60,11 @@ rule read =
   | "INT" | "int"               { INTEGERS }
   | "FLOAT" | "float"           { FLOATS }
   | "TEXT" | "text"             { STRINGS }
-  | "BOOLEAN" | "boolean"       { BOOLEANS }
+  | "BOOLEAN" | "boolean"       { BOOLS }
+  | "SHOW" | "show"             { SHOW }
+  | "DATABASES" | "databases"   { DATABASES }
+  | "EXIT" | "exit"             { EXIT }
+  | "USE" | "use"               { USE }
   | id                          { ID (Lexing.lexeme lexbuf) }
   | string                      { STRING (Lexing.lexeme lexbuf) }
   | int                         { INT (int_of_string (Lexing.lexeme lexbuf)) }
