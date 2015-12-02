@@ -53,7 +53,7 @@ let eval (db : Database.t) (e : expr): evaluated =
             | _ -> (None, false))
   | _ -> (None, false)
 
-let eval_dbms (dbms : Dbms.t) (e) : TBD
+let eval_dbms (dbms : Dbms.t) (e) : TBD =
   | CreateTable(str, cdl) -> (None, Database.add_table db str (Table.create cdl))
   | CreateDb(str) -> (None, Dbms.add_database str)
   | DropTable(str) -> (None, Database.drop db str)
