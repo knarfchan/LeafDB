@@ -26,6 +26,11 @@ val selectAll : t -> where -> t
  *)
 val insert    : t -> column list -> value list -> t
 
+(* Takes a table, a list of values that correspond with the data types
+ * of all the columns, and returns a table with the values appended to all
+ * of the columns *)
+val insertAll : t -> value list -> t
+
 (* Takes a table, and a list which has a length equal to the number of
  * columns and which values correspond to the data types of the columns in order
  * of the columns, and returns a table with the values appended to the columns
@@ -57,3 +62,5 @@ val join      : t -> t -> on -> t
  * Takes two queries with the same number of columns and corresponding data
  * types. and appends one onto the other in a new query *)
 val union     : t -> t -> t
+
+val create    : column_dec list -> t

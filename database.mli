@@ -12,3 +12,7 @@ val drop: t -> string -> bool
 
 (* finds a table in the database based on its name *)
 val lookup: t -> string -> Table.t option
+
+val add_table: t -> string -> Table.t -> bool
+
+val update_table: t -> string -> Table.t -> unit
