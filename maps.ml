@@ -4,24 +4,27 @@ open Str
 open Assertions
 
 module Maps = struct
+let pair_compare (a,a') (b,b') = if a' = b' then Pervasives.compare a b
+                                 else Pervasives.compare a' b'
+
 module Int: Map.OrderedType with type t = (int*int) = struct
   type t = (int*int)
-  let compare (a,a') (b,b') = Pervasives.compare a' b'
+  let compare = pair_compare
 end
 
 module String: Map.OrderedType with type t = (int*string) = struct
   type t = (int*string)
-  let compare (a,a') (b,b') = Pervasives.compare a' b'
+  let compare = pair_compare
 end
 
 module Bool: Map.OrderedType with type t = (int*bool) = struct
   type t = (int*bool)
-  let compare (a,a') (b,b') = Pervasives.compare a' b'
+  let compare = pair_compare
 end
 
 module Float: Map.OrderedType with type t = (int*float) = struct
   type t = (int*float)
-  let compare (a,a') (b,b') = Pervasives.compare a' b'
+  let compare = pair_compare
 end
 
 
@@ -195,4 +198,21 @@ let delete map op v = match v,map with
   | VFloat f,Fmap m -> (Fmap(FloatMap.filter (fun key value -> (not)(does_satisfy op f key)) m))
   | _ -> failwith "Error"
 
+
+
 end
+
+(*
+TEST_MODULE "insert_test" = struct
+
+  let a = Maps.create (VInt 0)
+  let a' = Maps.insert (VInt 10) 10 a
+
+  TEST_UNIT = Maps.size a' === 1
+
+  let a'' = Maps.insert (VInt 10) 11 a'
+
+  TEST_UNIT = Maps.size a'' === 2
+
+
+end*)
