@@ -1,3 +1,4 @@
+open Typs
 
 type t = (string, Database.t) Hashtbl.t
 
@@ -19,3 +20,15 @@ let use (dbs: t) (str: string) : Database.t option =
 let drop (dbs: t) (str: string) : bool =
   if Hashtbl.mem dbs str then (Hashtbl.remove dbs str; true)
   else false
+
+let db_list = ref []
+
+let rec insert_databases (strs: value list) (tab: Table.t) : Table.t =
+  match strs with
+  | [] -> tab
+  | h::t -> insert_databases(t)(Table.insertAll(tab)([h]))
+
+let get_databases (dbs: t) : Table.t =
+  (Hashtbl.iter (fun x y -> db_list := VString(x)::(!db_list))(dbs));
+  let new_tab = Table.create([("Databases", VString(""))]) in
+    insert_databases(!db_list)(new_tab)
