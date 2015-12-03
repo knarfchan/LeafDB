@@ -4,24 +4,28 @@ open Str
 open Assertions
 
 module Maps = struct
+
+let pair_compare (a,a') (b,b') = if a' = b' then Pervasives.compare a b
+                                 else Pervasives.compare a' b'
+
 module Int: Map.OrderedType with type t = (int*int) = struct
   type t = (int*int)
-  let compare (a,a') (b,b') = Pervasives.compare a' b'
+  let compare = pair_compare
 end
 
 module String: Map.OrderedType with type t = (int*string) = struct
   type t = (int*string)
-  let compare (a,a') (b,b') = Pervasives.compare a' b'
+  let compare = pair_compare
 end
 
 module Bool: Map.OrderedType with type t = (int*bool) = struct
   type t = (int*bool)
-  let compare (a,a') (b,b') = Pervasives.compare a' b'
+  let compare = pair_compare
 end
 
 module Float: Map.OrderedType with type t = (int*float) = struct
   type t = (int*float)
-  let compare (a,a') (b,b') = Pervasives.compare a' b'
+  let compare = pair_compare
 end
 
 
@@ -209,13 +213,13 @@ let replace (newm:t) (oldm:t) =
 let join (m1:t) (m2:t) : (int*int) list =
   match m1,m2 with
   |Imap m,Imap m' ->
-    (IntMap.fold(fun (r,v) a acc -> if (has_value (VInt v) m2) then (joiner (VInt v) m1,r)::acc else acc) m [])
+    (IntMap.fold(fun (r,v) a acc -> if (has_value (VInt v) m2) then (r, joiner (VInt v) m2)::acc else acc) m [])
   |Smap m,Smap m' ->
-    (StringMap.fold(fun (r,v) a acc -> if (has_value (VString v) m2) then (joiner (VString v) m1,r)::acc else acc) m [])
+    (StringMap.fold(fun (r,v) a acc -> if (has_value (VString v) m2) then (r, joiner (VString v) m2)::acc else acc) m [])
   |Bmap m,Bmap m' ->
-    (BoolMap.fold(fun (r,v) a acc -> if (has_value (VBool v) m2) then (joiner (VBool v) m1,r)::acc else acc) m [])
+    (BoolMap.fold(fun (r,v) a acc -> if (has_value (VBool v) m2) then (r, joiner (VBool v) m2)::acc else acc) m [])
   |Fmap m,Fmap m' ->
-    (FloatMap.fold(fun (r,v) a acc -> if (has_value (VFloat v) m2) then (joiner (VFloat v) m1,r)::acc else acc) m [])
+    (FloatMap.fold(fun (r,v) a acc -> if (has_value (VFloat v) m2) then (r, joiner (VFloat v) m2)::acc else acc) m [])
   | _ -> failwith "error"
 
 let delete ids map = match map with
@@ -235,8 +239,16 @@ let delete ids map = match map with
      (Fmap(FloatMap.filter (fun key value -> (not)(does_satisfy op f key)) m))
   | _ -> failwith "Error"*)
 
+let delete ids map = match map with
+  | Imap m -> Imap(IntMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+  | Smap m -> Smap(StringMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+  | Bmap m -> Bmap(BoolMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+  | Fmap m -> Fmap(FloatMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+
 end
+
 (*
+
 (*TESTS*)
 open Maps
 let imap = create (VInt 0)
@@ -269,5 +281,21 @@ TEST "test_select_string" = (size (select smap_hundred LikeSubstring (VString "w
 TEST "test_select_string" = (size (select smap_hundred LikeBegin (VString "1")) = 12 )
 TEST "test_select_string" = (size (select smap_hundred LikeEnd (VString "0")) = 10)
 
-
 (*TEST "JOIN" =*)*)
+
+
+TEST_MODULE "insert_test" = struct
+
+  let m = Maps.create (VInt 0)
+  let m' = Maps.insert (VInt 5) 5 m
+  let m'' = Maps.insert (VInt 8) 6 m'
+  let m''' = Maps.insert (VInt 9) 7 m''
+
+  let n = Maps.create (VInt 0)
+  let n' = Maps.insert (VInt 9) 10 n
+  let n'' = Maps.insert (VInt 8) 20 n'
+  let n''' = Maps.insert (VInt 10) 30 n''
+
+  let j = Maps.join (m''') (n''') === [(7,10); (6,20)]
+
+end

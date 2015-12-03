@@ -1,24 +1,22 @@
 (* table.ml *)
 open Typs
 open Maps
+open Assertions
 
 type t = (column * Maps.t) list
 
+(* [next_val ()] is a mutable counter used to assign unique rowid's to
+ * table rows*)
 let next_val =
  let counter = ref 0 in fun () ->
    incr counter;
    !counter
 
-let lookup col tbl = failwith "unimplemented"
-
-(* precondition: col must be a column in Table tbl
- * postcondition: [make_select] will return an empty map with the the same type of the map of col*)
+(* [make_select tbl col] makes an empty Map.t with the same type as col in tbl*)
 let make_select tbl col =
   if List.mem_assoc col tbl then Maps.empty (List.assoc col tbl)
   else failwith "Column not found in table"
 
-(* precondition:
- * postcondition: *)
 let rec select_col tbl rows col acc =
   match rows with
   | [] -> acc
@@ -29,8 +27,6 @@ let rec select_col tbl rows col acc =
               else select_col tbl t col acc
             else failwith "Column is not found in table"
 
-(* precondition:
- * postcondition: *)
 let rec all_col tbl clst rows acc =
   match clst with
   | [] -> acc
@@ -77,41 +73,39 @@ let rec strip_col (tbl:t) (acc:column list) :column list =
 let selectAll tbl w =
   select (strip_col tbl []) tbl w
 
-(* precondition:
- * postcondition: *)
-let rec get_cvlst (clst: column list) (vlst: value list) (acc: (column * value) list) =
+(* [get_cvlst clst vlst acc] accumulates the list of columns and list of values
+ * into one (column, value) list
+ * precondition: clst and vlst must be the same length *)
+let rec get_cvlst (clst: column list) (vlst: value list)
+                  (acc: (column * value) list) =
   match clst, vlst with
   | [],[] -> acc
   | h::t, h'::t' -> get_cvlst t t' (acc @ [(h,h')])
   | _, _ -> failwith "Column list and value list should be the same length"
 
-(* precondition:
- * postcondition: *)
-let rec insert_help (tbl:t) (cvlst: (column * value) list) (rowid) (acc) =
-    match tbl with
-    | [] -> acc
-    | (name, map)::tl -> if List.mem_assoc name cvlst then
-                            insert_help tl cvlst rowid
-                            (acc @ [(name, Maps.insert (List.assoc name cvlst) rowid map)])
-                         else insert_help tbl cvlst rowid (acc @ [name, map])
+(* [insert_help tbl cvlst rowid acc] *)
+let rec insert_help (tbl:t) (cvlst: (column * value) list) rowid acc =
+  match tbl with
+  | [] -> acc
+  | (name, map)::tl ->
+      if List.mem_assoc name cvlst then
+        insert_help tl cvlst rowid
+        (acc @ [(name, Maps.insert (List.assoc name cvlst) rowid map)])
+      else insert_help tl cvlst rowid (acc @ [name, map])
 
-(* precondition:
- * postcondition: *)
+
 let insert (tbl:t) (clst:column list) (vlst: value list) : t =
   let cvlst = (get_cvlst clst vlst []) in
   let rowid = next_val () in
     insert_help tbl cvlst rowid []
 
-(* precondition:
- * postcondition: *)
+
 let rec insertAll_help (tbl:t) (vlst: value list) rowid acc =
   match tbl, vlst with
     | (name, map)::tl, a::b ->
         (insertAll_help tl b rowid (acc @ [(name, Maps.insert a rowid map)]))
     | _, _ -> acc
 
-(* precondition:
- * postcondition: *)
 let insertAll (tbl:t) (vlst: value list) : t =
   let rowid = next_val () in
     insertAll_help tbl vlst rowid []
@@ -163,6 +157,7 @@ let rec make_removed ids table =
   match table with
   | (name,map)::t -> (name, (Maps.delete ids map))::(make_removed ids t)
   | [] -> []
+
 
 let delete table where =
   let rows = get_rows_to_delete table where in
@@ -288,12 +283,15 @@ let rec empty_table tbl acc =
   | [] -> acc
   | (name, map)::t -> (empty_table t (acc @ [(name, Maps.empty map)]))
 
-
-
 let rec join_help tbl cvlst =
   match cvlst with
   | [] -> tbl
   | lst::t -> join_help (insert tbl (get_col lst []) (get_val_from_cvlst lst [])) t
+
+let rec remove_on tbl col acc =
+  match tbl with
+  | [] -> acc
+  | (name, map)::t -> if col = name then acc @ t else remove_on t col (acc @ [(name, map)])
 
 (* precondition:
  * postcondition: *)
@@ -302,5 +300,71 @@ let join t1 t2 o =
              | (c1, c2) -> if List.mem_assoc c1 t1 && List.mem_assoc c2 t2 then
                              Maps.join (List.assoc c1 t1) (List.assoc c2 t2)
                            else failwith "Columns are not found in tables") in
-  join_help ((empty_table t1 []) @ (empty_table t2 [])) (get_cvlst t1 t2 rows [])
+    List.rev (remove_on (List.rev (join_help ((empty_table t1 []) @
+      (empty_table t2 [])) (get_cvlst t1 t2 rows []))) (snd o) [])
 
+TEST_MODULE "insert_test" = struct
+
+  let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
+             ("Height", Maps.create (VFloat 0.0))]
+
+  let tbl' = insert tbl ["Name"; "Age"; "Height"] [VString "Annie"; VInt 19; VFloat 5.3]
+
+  TEST_UNIT = get_size tbl' === 1
+
+  let tbl'' = insert tbl' ["Name"; "Age"; "Height"] [VString "Erin"; VInt 19; VFloat 5.8]
+
+  TEST_UNIT = get_size tbl'' === 2
+
+  let _ = print_tbl tbl''
+
+  let tbl''' = insert tbl'' ["Name"; "Height"] [VString "Frank"; VFloat 6.0]
+
+  TEST_UNIT = get_size tbl''' === 3
+
+  let _ = print_tbl tbl'''
+
+  let sel = select ["Name"; "Age"] tbl''' (Condition ("Height", Gt, VFloat 5.4))
+
+  let _ = print_tbl sel
+
+  let del = delete tbl''' (Condition ("Height", Lt, VFloat 5.9))
+
+  let _ = print_tbl del
+
+  let tibble = [("Name", Maps.create (VString "")); ("Hair Color", Maps.create (VString ""));
+                ("Male?", Maps.create (VBool true))]
+
+  let tibble' = insert tibble ["Name";"Hair Color"; "Male?"] [VString "Louis"; VString "Black"; VBool true]
+
+  let _ = print_tbl tibble'
+
+  let tibble'' = insert tibble' ["Name";"Hair Color"; "Male?"] [VString "Frank"; VString "Black"; VBool true]
+
+  let _ = print_tbl tibble''
+
+  let tibble''' = insert tibble'' ["Name";"Hair Color"; "Male?"] [VString "Erin"; VString "Brown/Black"; VBool false]
+
+  let _ = print_tbl tibble'''
+
+  let j = join (tbl''') (tibble''') ("Name", "Name")
+
+  let _ = print_tbl j
+
+  let u = update j [("Age", VInt 20); ("Height", VFloat 6.1)] (Condition ("Name", Eq, VString "Erin"))
+
+  let _ = print_tbl u
+
+  let dj = delete j (Condition ("Name", Eq, VString "Erin"))
+
+  let _ = print_tbl dj
+
+  let dj' = delete j (Null)
+
+  let _ = print_tbl dj'
+
+  let dj'' = delete j (Null)
+
+  let _ = print_tbl dj''
+
+end
