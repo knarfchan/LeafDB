@@ -276,7 +276,7 @@ let delete ids map = match map with
 end
 
 
-
+(*
 (*TESTS*)
 open Maps
 let imap = create (VInt 0)
@@ -325,4 +325,4 @@ TEST "test_select_string" = (size (select smap_hundred LikeEnd (VString "0")) = 
 
   let j = Maps.join (m''') (n''') === [(7,10); (6,20)]
 
-end*)
+end*)*)

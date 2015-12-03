@@ -51,20 +51,24 @@ let print_command1 (e: expr) (b: bool) =
                 else (Printf.printf "Error: Database %s not found.\n" str))
   | _ -> failwith "Invalid command.\n"
 
-let rec repl2 (dbs: Dbms.t) (d: Database.t) =
+let rec repl2 (dbs: Dbms.t) (d: Database.t) (name: string)=
+  Printf.printf "\027[32mLeafDB>%s>" name;Printf.printf("\027[37m");
   let input = read_line() in
-  let e = ExitDb in (*Test.parse failes*)
-    if e = Test.parse input then (Printf.printf "Exiting database.\n"; repl1 dbs)
+  let e = Test.parse input in
+  Printf.printf"%s" (Test.ast_to_string e);
+    if e = ExitDb then (Printf.printf "Exiting database.\n"; repl1 dbs)
     else let (t,b) = Interpret.eval d e in
-    (print_command2 t d e b ; repl2 dbs d)
+    (print_command2 t d e b ; repl2 dbs d name)
 
 and repl1 (dbs: Dbms.t) =
+  Printf.printf("\027[32mLeafDB>");Printf.printf("\027[37m");
   let input = read_line() in
-  let e = Test.parse input in (*Test.parse*)
+  let e = Test.parse input in
+  Printf.printf"%s" (Test.ast_to_string e);
   if e = ShowDatabases then (Table.print_tbl (Dbms.get_databases dbs); repl1 dbs)
   else let result = Interpret.eval_dbms dbs e in
       match result with
-      | (Some d, b) -> (print_command1 e b; if b then repl2 dbs d else repl1 dbs)
-      | (None, b) -> (print_command1 e b; repl1 dbs)
+      | (Some (d), Some(s), b) -> (print_command1 e b; if b then repl2 dbs d s else repl1 dbs)
+      | (_, _, b) -> (print_command1 e b; repl1 dbs)
 
 let main = repl1 (Dbms.create ())
