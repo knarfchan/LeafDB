@@ -147,13 +147,22 @@ let update tbl cvlst w =
     (update_all_col tbl updated_tbl [])
 
 
-(* precondition:
- * postcondition: *)
-let rec delete table where = match table, where with
-  | ((name,map)::t), (Condition (col,op,v)) -> (if (name = col) then (name, (Maps.delete map op v))::t
-    else delete t where)
-  | _ , Null -> []
-  | _ -> failwith "Error"
+let rec get_rows_to_delete table where =
+  match table, where with
+  | ((name,map)::t), (Condition (col,op,v)) -> (if (name = col) then Maps.select map op v
+                                                                else get_rows_to_delete t where)
+  | ((name,map)::t) , Null -> map
+  | _ -> failwith "Column is not found in table."
+
+let rec make_removed ids table =
+  match table with
+  | (name,map)::t -> (name, (Maps.delete ids map))::(make_removed ids t)
+  | [] -> []
+
+let delete table where =
+  let rows = get_rows_to_delete table where in
+  let ids = Maps.get_rows rows in
+    make_removed ids table
 
 
 
@@ -263,7 +272,7 @@ let rec get_vals (tbl:t) row acc =
 let rec get_cvlst (t1:t) (t2:t) rows acc =
   match rows with
   | [] -> acc
-  | (r1, r2)::t -> get_cvlst t1 t2 t (acc @ [(get_vals t1 r2 []) @ (get_vals t2 r1 [])])
+  | (r1, r2)::t -> get_cvlst t1 t2 t (acc @ [(get_vals t1 r1 []) @ (get_vals t2 r2 [])])
 
 let rec empty_table tbl acc =
   match tbl with
@@ -339,5 +348,21 @@ TEST_MODULE "insert_test" = struct
   let j = join (tbl''') (tibble''') ("Name", "Name")
 
   let _ = print_tbl j
+
+  let u = update j [("Age", VInt 20); ("Height", VFloat 6.1)] (Condition ("Name", Eq, VString "Erin"))
+
+  let _ = print_tbl u
+
+  let dj = delete j (Condition ("Name", Eq, VString "Erin"))
+
+  let _ = print_tbl dj
+
+  let dj' = delete j (Null)
+
+  let _ = print_tbl dj'
+
+  let dj'' = delete j (Null)
+
+  let _ = print_tbl dj''
 
 end
