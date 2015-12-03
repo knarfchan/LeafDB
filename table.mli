@@ -55,11 +55,6 @@ val delete    : t -> where -> t
  *)
 val join      : t -> t -> on -> t
 
-(* [precondition] : the two queries have the same number of columns
- * Takes two queries with the same number of columns and corresponding data
- * types. and appends one onto the other in a new query *)
-val union     : t -> t -> t
-
 val create    : column_dec list -> t
 
 val print_tbl : t -> unit

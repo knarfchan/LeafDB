@@ -1,4 +1,5 @@
 open Ast
+open Table
 
 let print_command2 (q: Table.t option) (d: Database.t) (e: expr) (b: bool) =
   match e with
@@ -10,11 +11,11 @@ let print_command2 (q: Table.t option) (d: Database.t) (e: expr) (b: bool) =
                           | None -> Printf.printf "Error: Insert failed. Table %s not found." tbl)
   | Insert (tbl, clst, vlst) -> (match q with
                                 | Some t1 -> (match Database.lookup d tbl with
-                                              | Some t2 -> Printf.printf "Inserted %d items" (Table.get_diff t1 t2)
+                                              | Some t2 -> Printf.printf "Inserted %d items into table %s." (Table.get_diff t1 t2) tbl
                                               | None -> Printf.printf "Error: Insert failed. Table %s not found." tbl)
                                 | None -> Printf.printf "Error: Insert failed. Table %s not found." tbl)
   | InsertAll (tbl, vlst) -> (match q with
-                              | Some t -> Printf.printf "Inserted %d items" (List.length vlst)
+                              | Some t -> Printf.printf "Inserted %d items into table %s" (List.length vlst) tbl
                               | None -> Printf.printf "Error: Insert all failed. Table %s not found." tbl)
   | JoinTables (str1, str2, o) -> (match q with
                                   | Some t -> Table.print_tbl t
@@ -30,11 +31,11 @@ let print_command2 (q: Table.t option) (d: Database.t) (e: expr) (b: bool) =
                                 | None -> Printf.printf "Error: Join failed. Table not found.")
   | Update (tbl, cvlst, w) -> (match q with
                               | Some t -> (let updates = Table.get_size (Table.selectAll t w) in
-                                          Printf.printf "Updated %d items." updates)
+                                          Printf.printf "Updated %d items in table %s." updates) tbl
                               | None -> Printf.printf "Error: Update failed. Table %s not found." tbl)
   | Delete (tbl, w) -> (match q with
                         | Some t1 -> (match Database.lookup d tbl with
-                                      | Some t2 -> Printf.printf "Deleted %d items" (Table.get_diff t1 t2)
+                                      | Some t2 -> Printf.printf "Deleted %d items in table %s." (Table.get_diff t1 t2) tbl
                                       | None -> Printf.printf "Error: Delete failed. Table %s not found." tbl)
                         | None -> Printf.printf "Error: Delete failed. Table %s not found." tbl)
   | CreateTable(str, cdl) -> (if b then Printf.printf "Table %s created." str
@@ -54,17 +55,19 @@ let print_command1 (e: expr) (b: bool) =
   | _ -> failwith "Invalid command."
 
 let rec repl2 (dbs: Dbms.t) (d: Database.t) =
-  let input = read_line() in
-  let e = Test.parse input in (*Test.parse failes*)
-    if e = ExitDb then (Printf.printf "Exiting database."; repl1 dbs)
+  (*let input = read_line() in*)
+  let e = ExitDb in (*Test.parse failes*)
+    if e = Test.parse then (Printf.printf "Exiting database."; repl1 dbs)
     else let (t,b) = Interpret.eval d e in
     (print_command2 t d e b ; repl2 dbs d)
 
 and repl1 (dbs: Dbms.t) =
-  let input = read_line() in
-  let e = ExitDb in (*Test.parse*)
-  (*if e = ShowDatabases then (Table.print_tbl (get_databases dbs); repl1 dbs)
-  else*) let result = Interpret.eval_dbms dbs e in
+  (*let input = read_line() in*)
+  let e = Test.parse in (*Test.parse*)
+  if e = ShowDatabases then (Table.print_tbl (Dbms.get_databases dbs); repl1 dbs)
+  else let result = Interpret.eval_dbms dbs e in
       match result with
       | (Some d, b) -> (print_command1 e b; if b then repl2 dbs d else repl1 dbs)
       | (None, b) -> (print_command1 e b; repl1 dbs)
+
+let main () = repl1 (Dbms.create ())
