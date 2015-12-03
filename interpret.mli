@@ -1,5 +1,5 @@
 (* interpret.mli *)
-open Types
+open Typs
 open Ast
 
 type evaluated = Table.t option * bool

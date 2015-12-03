@@ -118,7 +118,7 @@ rev_val_list:
   ;
 
 rev_dec_list:
-  | col = ID; v = value                                    {[(col, v)]}
+  | col = ID; t = supported                                {[(col, v)]}
   | decs = rev_dec_list; COMMA; col = ID; t = supported    {(col, t)::decs}
   ;
 
