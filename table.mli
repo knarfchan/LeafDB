@@ -4,11 +4,6 @@ open Typs
 (* represents our table *)
 type t
 
-(* Takes a column, a table, returns the value associated with the column.
- * [postcondition] : returns Some value or None if no table exists w/ that name
- *)
-val lookup    : column -> t -> value option
-
 val get_size : t -> int
 
 (* Takes two columns and returns the difference in their lengths*)

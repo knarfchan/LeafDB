@@ -136,7 +136,7 @@ let rec update_all_col tbl new_tbl acc =
   | (name, map)::t -> update_all_col t new_tbl
                       (acc @ [(name,
                       (if List.mem_assoc name new_tbl
-                        then Maps.replace (List.assoc name new_tbl) map
+                        then Maps.replace map (List.assoc name new_tbl)
                        else map))])
 
 (* precondition:
@@ -157,7 +157,7 @@ let rec make_removed ids table =
   match table with
   | (name,map)::t -> (name, (Maps.delete ids map))::(make_removed ids t)
   | [] -> []
--
+
 let delete table where =
   let rows = get_rows_to_delete table where in
   let ids = Maps.get_rows rows in
