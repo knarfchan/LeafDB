@@ -4,9 +4,13 @@ open Str
 (*filesystem.ml*)
 
 let get_files_paths folder =
-  let dir = "/path/to/dir" in
-  let children = Sys.readdir dir in
-    Array.iter print_endline children;;
+  let dbs = "/DBMS" in
+  let db_names = Sys.readdir dir in to_list(db_names)
+
+let to_sll db_lst =
+  let dbs = "/DBMS" in
+  let
+  List.map(fun name -> name, Csv.load(dbs ^ name))(db_lst)
 
 let read_db folder = failwith "not implemented"
 
