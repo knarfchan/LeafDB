@@ -54,17 +54,19 @@ let print_command1 (e: expr) (b: bool) =
   | _ -> failwith "Invalid command.\n"
 
 let rec repl2 (dbs: Dbms.t) (d: Database.t) (name: string)=
-  Printf.printf "LeafDB>%s>" name;
+  Printf.printf "\027[32mLeafDB>%s>" name;Printf.printf("\027[37m");
   let input = read_line() in
-  let e = ExitDb in
-    if e = Test.parse input then (Printf.printf "Exiting database.\n"; repl1 dbs)
+  let e = Test.parse input in
+  Printf.printf"%s" (Test.ast_to_string e);
+    if e = ExitDb then (Printf.printf "Exiting database.\n"; repl1 dbs)
     else let (t,b) = Interpret.eval d e in
     (print_command2 t d e b ; repl2 dbs d name)
 
 and repl1 (dbs: Dbms.t) =
-  Printf.printf("LeafDB>");
+  Printf.printf("\027[32mLeafDB>");Printf.printf("\027[37m");
   let input = read_line() in
   let e = Test.parse input in
+  Printf.printf"%s" (Test.ast_to_string e);
   if e = ShowDatabases then (Table.print_tbl (Dbms.get_databases dbs); repl1 dbs)
   else let result = Interpret.eval_dbms dbs e in
       match result with

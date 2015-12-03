@@ -51,6 +51,9 @@ let eval_dbms (dbs : Dbms.t) (e) : dbresult =
   match e with
   | CreateDb(str) -> (None, None, Dbms.add_database dbs str)
   | DropDb(str) -> (None, None, Dbms.drop dbs str)
-  | Use(str) -> (Dbms.use dbs str, Some str, true)
+  | Use(str) -> (match Dbms.use dbs str with
+                | Some d -> (Some d, Some str, true)
+                | None -> (None, Some str, false))
+                (*(Dbms.use dbs str, Some str, true)*)
   | ExitDb -> exit 0
   | _ -> (None, None, false)
