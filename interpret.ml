@@ -2,7 +2,7 @@ open Typs
 open Ast
 
 type evaluated = Table.t option * bool
-type dbresult = Database.t option * bool
+type dbresult = (Database.t option) * string option * bool
 
 let attempt_op db tbl op =
   match Database.lookup db tbl with
@@ -49,8 +49,8 @@ let eval (db : Database.t) (e : expr): evaluated =
 
 let eval_dbms (dbs : Dbms.t) (e) : dbresult =
   match e with
-  | CreateDb(str) -> (None, Dbms.add_database dbs str)
-  | DropDb(str) -> (None, Dbms.drop dbs str)
-  | Use(str) -> (Dbms.use dbs str, true)
+  | CreateDb(str) -> (None, None, Dbms.add_database dbs str)
+  | DropDb(str) -> (None, None, Dbms.drop dbs str)
+  | Use(str) -> (Dbms.use dbs str, Some str, true)
   | ExitDb -> exit 0
-  | _ -> (None, false)
+  | _ -> (None, None, false)

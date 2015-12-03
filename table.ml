@@ -296,7 +296,7 @@ let join t1 t2 o =
     List.rev (remove_on (List.rev (join_help ((empty_table t1 []) @
       (empty_table t2 [])) (get_cvlst t1 t2 rows []))) (snd o) [])
 
-TEST_MODULE "insert_test" = struct
+(*TEST_MODULE "insert_test" = struct
 
   let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
              ("Height", Maps.create (VFloat 0.0))]
@@ -360,4 +360,4 @@ TEST_MODULE "insert_test" = struct
 
   let _ = print_tbl dj''
 
-end
+end*)

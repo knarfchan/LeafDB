@@ -276,7 +276,7 @@ let delete ids map = match map with
 end
 
 
-
+(*
 (*TESTS*)
 open Maps
 let imap = create (VInt 0)
@@ -309,10 +309,9 @@ TEST "test_select_string" = (size (select smap_hundred LikeSubstring (VString "w
 TEST "test_select_string" = (size (select smap_hundred LikeBegin (VString "1")) = 12 )
 TEST "test_select_string" = (size (select smap_hundred LikeEnd (VString "0")) = 10)
 
+
 (*TEST "JOIN" =*)
-
-
-TEST_MODULE "insert_test" = struct
+(*TEST_MODULE "insert_test" = struct
 
   let m = Maps.create (VInt 0)
   let m' = Maps.insert (VInt 5) 5 m
@@ -326,4 +325,4 @@ TEST_MODULE "insert_test" = struct
 
   let j = Maps.join (m''') (n''') === [(7,10); (6,20)]
 
-end
+end*)*)
