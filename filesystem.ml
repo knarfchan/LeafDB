@@ -1,6 +1,7 @@
 open Sys
 open Maps
 open Str
+open Typs
 
 (*filesystem.ml*)
 
