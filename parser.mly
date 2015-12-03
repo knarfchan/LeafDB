@@ -81,7 +81,7 @@ statement:
         {Insert(tab, cols, vals)}
   | INSERT; INTO; tab = ID; VALUES; LEFT_PAREN; vals = val_list; RIGHT_PAREN
       {InsertAll(tab, vals)}
-  | UPDATE; tab = ID; SET; pairs = pair_list; WHERE; w = where_condition
+  | UPDATE; tab = ID; SET; pairs = pair_list; w = where_condition
       {Update(tab, pairs, w)}
   | DELETE; FROM; tab = ID; WHERE; w = where_condition
       {Delete(tab, w)}
@@ -118,7 +118,7 @@ rev_val_list:
   ;
 
 rev_dec_list:
-  | col = ID; t = supported                                {[(col, v)]}
+  | col = ID; t = supported                                {[(col, t)]}
   | decs = rev_dec_list; COMMA; col = ID; t = supported    {(col, t)::decs}
   ;
 
