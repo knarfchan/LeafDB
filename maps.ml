@@ -203,12 +203,41 @@ let update (map:t)(newv:value) =
      Fmap(FloatMap.fold(fun (c,k) a map -> FloatMap.add (c,f')(c)(FloatMap.remove (c,k) map)) m m)
   | _ -> failwith "Does not follow schema"
 
-let replace (newm:t) (oldm:t) =
-  match newm with
-  |Imap m -> IntMap.fold(fun (c,k) a map -> update map (VInt k)) m oldm
-  |Smap m -> StringMap.fold(fun (c,k) a map -> update map (VString k)) m oldm
-  |Bmap m -> BoolMap.fold(fun (c,k) a map -> update map (VBool k)) m oldm
-  |Fmap m -> FloatMap.fold(fun (c,k) a map -> update map (VFloat k)) m oldm
+(*precondition: the key (r,_) is in the map m
+  postcondition: the they key (r,_) is replaced with
+  the (r,newv) in the map m *)
+let replace' (row:int) (v:value) (map:t) =
+  match map,v with
+  | Imap m,VInt newv ->
+     Imap(IntMap.fold(fun (r,v) a mp -> if r = row then (IntMap.add(r,newv) r (IntMap.remove (r,v) mp)) else mp) m m)
+  | Bmap m,VBool newv->
+     Bmap(BoolMap.fold(fun (r,v) a mp -> if r = row then (BoolMap.add(r,newv) r  (BoolMap.remove (r,v) mp)) else mp) m m)
+  | Smap m,VString newv ->
+     Smap(StringMap.fold(fun (r,v) a mp -> if r = row then (StringMap.add(r,newv) r (StringMap.remove (r,v) mp)) else mp) m m)
+  | Fmap m,VFloat newv ->
+     Fmap(FloatMap.fold(fun (r,v) a mp -> if r = row then (FloatMap.add(r,newv) r (FloatMap.remove (r,v) mp)) else mp) m m)
+  | _ -> failwith "error"
+
+
+let replace (newm:t) (oldm':t) =
+  match newm,oldm' with
+  | Imap m, Imap oldm ->
+     IntMap.fold
+       (fun (c,k) a map -> if is_member c (Imap m) then (replace' c (VInt k) map) else map)
+       oldm newm
+  | Smap m, Smap oldm ->
+     StringMap.fold
+       (fun (c,k) a map -> if is_member c (Smap m) then (replace' c (VString k) map) else map)
+       oldm newm
+  | Bmap m, Bmap oldm ->
+     BoolMap.fold
+       (fun (c,k) a map -> if is_member c (Bmap m) then (replace' c (VBool k) map) else map)
+       oldm newm
+  | Fmap m, Fmap oldm ->
+     FloatMap.fold
+       (fun (c,k) a map -> if is_member c (Fmap m) then (replace' c (VFloat k) map) else map)
+       oldm newm
+  | _ -> failwith "error"
 
 let join (m1:t) (m2:t) : (int*int) list =
   match m1,m2 with

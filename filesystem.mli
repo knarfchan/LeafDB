@@ -1,5 +1,5 @@
 (* filesystem.mli *)
-
+open Csv
 (* takes the name of a database and goes through the file directory, returning
  * Some Database.t if it exists physically and None if it does not exist
  *)
