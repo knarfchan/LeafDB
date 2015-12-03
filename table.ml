@@ -157,18 +157,11 @@ let rec make_removed ids table =
   match table with
   | (name,map)::t -> (name, (Maps.delete ids map))::(make_removed ids t)
   | [] -> []
-
-
+-
 let delete table where =
   let rows = get_rows_to_delete table where in
   let ids = Maps.get_rows rows in
   make_removed ids table
-
-(*let rec delete table where = match table, where with
-  | ((name,map)::t), (Condition (col,op,v)) -> (if (name = col) then (name, (Maps.delete map op v))::t
-                                                else delete t where)
-  | _ , Null -> []
-  | _ -> failwith "Error"*)
 
 let rec create_help cdl acc =
   match cdl with

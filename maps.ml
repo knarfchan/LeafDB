@@ -44,56 +44,56 @@ type t =
 (*precondition: r is a unique key *in* the map
   postcondition: returns the value associated with the row key r*)
 let lookup r m = match m with
-  |Fmap map ->
+  | Fmap map ->
     VFloat(snd (fst (FloatMap.choose(FloatMap.filter(fun (row,v) value -> row = r) map))))
-  |Smap map ->
+  | Smap map ->
     VString(snd (fst (StringMap.choose(StringMap.filter (fun (row,v) value -> row = r) map))))
-  |Imap map ->
+  | Imap map ->
     VInt(snd (fst (IntMap.choose(IntMap.filter (fun (row,v) value -> row = r) map))))
-  |Bmap map ->
+  | Bmap map ->
     VBool(snd (fst (BoolMap.choose(BoolMap.filter(fun (row,v) value -> row = r) map))))
 (*precondition:
   postcondition: *)
 let joiner (vu:value) (m:t) : int  = match vu,m with
-  |VFloat v, Fmap map ->
+  | VFloat v, Fmap map ->
     fst (fst (FloatMap.choose(FloatMap.filter(fun (row,v') value -> v = v') map)))
-  |VString v,Smap map ->
+  | VString v,Smap map ->
     fst (fst (StringMap.choose(StringMap.filter (fun (row,v') value -> v = v') map)))
-  |VInt v, Imap map ->
+  | VInt v, Imap map ->
     fst (fst (IntMap.choose(IntMap.filter (fun (row,v') value -> v = v') map)))
-  |VBool v, Bmap map ->
+  | VBool v, Bmap map ->
     fst (fst (BoolMap.choose(BoolMap.filter(fun (row,v') value -> v = v') map)))
   |_ -> failwith "error"
 
 
 let has_value (vu:value) (map:t) : bool =
   match vu,map with
-  |VInt v, Imap m ->
+  | VInt v, Imap m ->
     not (IntMap.is_empty (IntMap.filter(fun (row,v') value -> v = v') m))
-  |VString v, Smap m ->
+  | VString v, Smap m ->
     not (StringMap.is_empty (StringMap.filter(fun (row,v') value -> v = v') m))
-  |VBool v, Bmap m ->
+  | VBool v, Bmap m ->
     not (BoolMap.is_empty (BoolMap.filter(fun (row,v') value -> v = v') m))
-  |VFloat v, Fmap m ->
+  | VFloat v, Fmap m ->
     not (FloatMap.is_empty (FloatMap.filter(fun (row,v') value -> v = v') m))
   | _ -> failwith "error"
 
 
 let is_member r map = match map with
-  |Imap m ->
+  | Imap m ->
     not (IntMap.is_empty(IntMap.filter(fun (row,v) value -> row = r) m))
-  |Smap m ->
+  | Smap m ->
     not (StringMap.is_empty(StringMap.filter(fun (row,v) value -> row = r) m))
-  |Bmap m ->
+  | Bmap m ->
     not (BoolMap.is_empty(BoolMap.filter(fun (row,v) value -> row = r) m))
-  |Fmap m ->
+  | Fmap m ->
     not (FloatMap.is_empty(FloatMap.filter(fun (row,v) value -> row = r) m))
 
 let get_rows map = match map with
-  |Imap m -> IntMap.fold (fun (r,v) a b -> a::b) m []
-  |Smap m -> StringMap.fold (fun (r,v) a b -> a::b) m []
-  |Bmap m -> BoolMap.fold (fun (r,v) a b -> a::b) m []
-  |Fmap m -> FloatMap.fold (fun (r,v) a b -> a::b) m []
+  | Imap m -> IntMap.fold (fun (r,v) a b -> a::b) m []
+  | Smap m -> StringMap.fold (fun (r,v) a b -> a::b) m []
+  | Bmap m -> BoolMap.fold (fun (r,v) a b -> a::b) m []
+  | Fmap m -> FloatMap.fold (fun (r,v) a b -> a::b) m []
 
 let empty map =
   match map with
@@ -205,10 +205,10 @@ let update (map:t)(newv:value) =
 
 let replace (newm:t) (oldm:t) =
   match newm with
-  |Imap m -> IntMap.fold(fun (c,k) a map -> update map (VInt k)) m oldm
-  |Smap m -> StringMap.fold(fun (c,k) a map -> update map (VString k)) m oldm
-  |Bmap m -> BoolMap.fold(fun (c,k) a map -> update map (VBool k)) m oldm
-  |Fmap m -> FloatMap.fold(fun (c,k) a map -> update map (VFloat k)) m oldm
+  | Imap m -> IntMap.fold(fun (c,k) a map -> update map (VInt k)) m oldm
+  | Smap m -> StringMap.fold(fun (c,k) a map -> update map (VString k)) m oldm
+  | Bmap m -> BoolMap.fold(fun (c,k) a map -> update map (VBool k)) m oldm
+  | Fmap m -> FloatMap.fold(fun (c,k) a map -> update map (VFloat k)) m oldm
 
 let join (m1:t) (m2:t) : (int*int) list =
   match m1,m2 with
@@ -227,17 +227,6 @@ let delete ids map = match map with
   | Smap m -> Smap(StringMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
   | Bmap m -> Bmap(BoolMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
   | Fmap m -> Fmap(FloatMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
-
-(*let delete map op v = match v,map with
-  | VInt i,Imap m ->
-     (Imap(IntMap.filter (fun key value -> (not)(does_satisfy op i key)) m))
-  | VString s,Smap m  ->
-     (Smap(StringMap.filter (fun key value -> (not)(does_satisfy' op s key)) m))
-  | VBool b,Bmap m ->
-     (Bmap(BoolMap.filter (fun key value -> (not)(does_satisfy op b key)) m))
-  | VFloat f,Fmap m ->
-     (Fmap(FloatMap.filter (fun key value -> (not)(does_satisfy op f key)) m))
-  | _ -> failwith "Error"*)
 
 let delete ids map = match map with
   | Imap m -> Imap(IntMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
