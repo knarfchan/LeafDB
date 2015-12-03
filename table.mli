@@ -4,7 +4,13 @@ open Typs
 (* represents our table *)
 type t
 
-val get_size  : t -> int
+(* Takes a column, a table, returns the value associated with the column.
+ * [postcondition] : returns Some value or None if no table exists w/ that name
+ *)
+val lookup    : column -> t -> value option
+
+val get_size : t -> int
+
 (* Takes two columns and returns the difference in their lengths*)
 val get_diff  : t -> t -> int
 
@@ -48,11 +54,6 @@ val delete    : t -> where -> t
  * match between columns and joins them in a new table
  *)
 val join      : t -> t -> on -> t
-
-(* [precondition] : the two queries have the same number of columns
- * Takes two queries with the same number of columns and corresponding data
- * types. and appends one onto the other in a new query *)
-val union     : t -> t -> t
 
 val create    : column_dec list -> t
 

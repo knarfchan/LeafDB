@@ -11,7 +11,7 @@ let attempt_op db tbl op =
 
 let attempt_join p1 p2 o =
   match p1, p2 with
-  | Some x, Some y -> (Some(Table.join x y o), true)
+  | Some x, Some y -> (Some (Table.join x y o), true)
   | _ -> (None, false)
 
 let eval_select (db: Database.t) (e: expr) : Table.t option =
@@ -42,8 +42,7 @@ let eval (db : Database.t) (e : expr): evaluated =
       attempt_join (Database.lookup db str) (eval_select db e) o
   | JoinQuerTab (e, str, o) ->
       attempt_join (eval_select db e) (Database.lookup db str) o
-  | JoinQueries (e1, e2, o) ->
-      attempt_join (eval_select db e1) (eval_select db e2) o
+  | JoinQueries (e1, e2, o) -> attempt_join (eval_select db e1) (eval_select db e2) o
   | CreateTable(str, cdl) -> (None, Database.add_table db str (Table.create cdl))
   | DropTable(str) -> (None, Database.drop db str)
   | _ -> (None, false)
