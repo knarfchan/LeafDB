@@ -1,6 +1,12 @@
-(*filesystem.ml*)
+open Sys
 open Maps
 open Str
+(*filesystem.ml*)
+
+let get_files_paths folder =
+  let dir = "/path/to/dir" in
+  let children = Sys.readdir dir in
+    Array.iter print_endline children;;
 
 let read_db folder = failwith "not implemented"
 
