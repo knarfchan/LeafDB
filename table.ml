@@ -263,7 +263,7 @@ let rec get_vals (tbl:t) row acc =
 let rec get_cvlst (t1:t) (t2:t) rows acc =
   match rows with
   | [] -> acc
-  | (r1, r2)::t -> get_cvlst t1 t2 t (acc @ [(get_vals t1 r1 []) @ (get_vals t2 r2 [])])
+  | (r1, r2)::t -> get_cvlst t1 t2 t (acc @ [(get_vals t1 r2 []) @ (get_vals t2 r1 [])])
 
 let rec empty_table tbl acc =
   match tbl with
@@ -275,6 +275,11 @@ let rec join_help tbl cvlst =
   | [] -> tbl
   | lst::t -> join_help (insert tbl (get_col lst []) (get_val_from_cvlst lst [])) t
 
+let rec remove_on tbl col acc =
+  match tbl with
+  | [] -> acc
+  | (name, map)::t -> if col = name then acc @ t else remove_on t col (acc @ [(name, map)])
+
 (* precondition:
  * postcondition: *)
 let join t1 t2 o =
@@ -282,7 +287,8 @@ let join t1 t2 o =
              | (c1, c2) -> if List.mem_assoc c1 t1 && List.mem_assoc c2 t2 then
                              Maps.join (List.assoc c1 t1) (List.assoc c2 t2)
                            else failwith "Columns are not found in tables") in
-  join_help ((empty_table t1 []) @ (empty_table t2 [])) (get_cvlst t1 t2 rows [])
+    List.rev (remove_on (List.rev (join_help ((empty_table t1 []) @
+      (empty_table t2 [])) (get_cvlst t1 t2 rows []))) (snd o) [])
 
 
 
@@ -330,11 +336,8 @@ TEST_MODULE "insert_test" = struct
 
   let _ = print_tbl tibble'''
 
-  let j = join tbl''' tibble''' ("Name", "Name")
+  let j = join (tbl''') (tibble''') ("Name", "Name")
 
   let _ = print_tbl j
-
-
-
 
 end
