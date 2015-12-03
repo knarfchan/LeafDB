@@ -44,56 +44,56 @@ type t =
 (*precondition: r is a unique key *in* the map
   postcondition: returns the value associated with the row key r*)
 let lookup r m = match m with
-  |Fmap map ->
+  | Fmap map ->
     VFloat(snd (fst (FloatMap.choose(FloatMap.filter(fun (row,v) value -> row = r) map))))
-  |Smap map ->
+  | Smap map ->
     VString(snd (fst (StringMap.choose(StringMap.filter (fun (row,v) value -> row = r) map))))
-  |Imap map ->
+  | Imap map ->
     VInt(snd (fst (IntMap.choose(IntMap.filter (fun (row,v) value -> row = r) map))))
-  |Bmap map ->
+  | Bmap map ->
     VBool(snd (fst (BoolMap.choose(BoolMap.filter(fun (row,v) value -> row = r) map))))
 (*precondition:
   postcondition: *)
 let joiner (vu:value) (m:t) : int  = match vu,m with
-  |VFloat v, Fmap map ->
+  | VFloat v, Fmap map ->
     fst (fst (FloatMap.choose(FloatMap.filter(fun (row,v') value -> v = v') map)))
-  |VString v,Smap map ->
+  | VString v,Smap map ->
     fst (fst (StringMap.choose(StringMap.filter (fun (row,v') value -> v = v') map)))
-  |VInt v, Imap map ->
+  | VInt v, Imap map ->
     fst (fst (IntMap.choose(IntMap.filter (fun (row,v') value -> v = v') map)))
-  |VBool v, Bmap map ->
+  | VBool v, Bmap map ->
     fst (fst (BoolMap.choose(BoolMap.filter(fun (row,v') value -> v = v') map)))
   |_ -> failwith "error"
 
 
 let has_value (vu:value) (map:t) : bool =
   match vu,map with
-  |VInt v, Imap m ->
+  | VInt v, Imap m ->
     not (IntMap.is_empty (IntMap.filter(fun (row,v') value -> v = v') m))
-  |VString v, Smap m ->
+  | VString v, Smap m ->
     not (StringMap.is_empty (StringMap.filter(fun (row,v') value -> v = v') m))
-  |VBool v, Bmap m ->
+  | VBool v, Bmap m ->
     not (BoolMap.is_empty (BoolMap.filter(fun (row,v') value -> v = v') m))
-  |VFloat v, Fmap m ->
+  | VFloat v, Fmap m ->
     not (FloatMap.is_empty (FloatMap.filter(fun (row,v') value -> v = v') m))
   | _ -> failwith "error"
 
 
 let is_member r map = match map with
-  |Imap m ->
+  | Imap m ->
     not (IntMap.is_empty(IntMap.filter(fun (row,v) value -> row = r) m))
-  |Smap m ->
+  | Smap m ->
     not (StringMap.is_empty(StringMap.filter(fun (row,v) value -> row = r) m))
-  |Bmap m ->
+  | Bmap m ->
     not (BoolMap.is_empty(BoolMap.filter(fun (row,v) value -> row = r) m))
-  |Fmap m ->
+  | Fmap m ->
     not (FloatMap.is_empty(FloatMap.filter(fun (row,v) value -> row = r) m))
 
 let get_rows map = match map with
-  |Imap m -> IntMap.fold (fun (r,v) a b -> a::b) m []
-  |Smap m -> StringMap.fold (fun (r,v) a b -> a::b) m []
-  |Bmap m -> BoolMap.fold (fun (r,v) a b -> a::b) m []
-  |Fmap m -> FloatMap.fold (fun (r,v) a b -> a::b) m []
+  | Imap m -> IntMap.fold (fun (r,v) a b -> a::b) m []
+  | Smap m -> StringMap.fold (fun (r,v) a b -> a::b) m []
+  | Bmap m -> BoolMap.fold (fun (r,v) a b -> a::b) m []
+  | Fmap m -> FloatMap.fold (fun (r,v) a b -> a::b) m []
 
 let empty map =
   match map with
@@ -203,39 +203,79 @@ let update (map:t)(newv:value) =
      Fmap(FloatMap.fold(fun (c,k) a map -> FloatMap.add (c,f')(c)(FloatMap.remove (c,k) map)) m m)
   | _ -> failwith "Does not follow schema"
 
+
+(*precondition: the key (r,_) is in the map m
+  postcondition: the they key (r,_) is replaced with
+  the (r,newv) in the map m *)
+let replace' (row:int) (v:value) (map:t) =
+  match map,v with
+  | Imap m,VInt newv ->
+     Imap(IntMap.fold(fun (r,v) a mp -> if r = row then (IntMap.add(r,newv) r (IntMap.remove (r,v) mp)) else mp) m m)
+  | Bmap m,VBool newv->
+     Bmap(BoolMap.fold(fun (r,v) a mp -> if r = row then (BoolMap.add(r,newv) r  (BoolMap.remove (r,v) mp)) else mp) m m)
+  | Smap m,VString newv ->
+     Smap(StringMap.fold(fun (r,v) a mp -> if r = row then (StringMap.add(r,newv) r (StringMap.remove (r,v) mp)) else mp) m m)
+  | Fmap m,VFloat newv ->
+     Fmap(FloatMap.fold(fun (r,v) a mp -> if r = row then (FloatMap.add(r,newv) r (FloatMap.remove (r,v) mp)) else mp) m m)
+  | _ -> failwith "error"
+
+
+let replace (newm:t) (oldm':t) =
+  match newm,oldm' with
+  | Imap m, Imap oldm ->
+     IntMap.fold
+       (fun (c,k) a map -> if is_member c (Imap m) then (replace' c (VInt k) map) else map)
+       oldm newm
+  | Smap m, Smap oldm ->
+     StringMap.fold
+       (fun (c,k) a map -> if is_member c (Smap m) then (replace' c (VString k) map) else map)
+       oldm newm
+  | Bmap m, Bmap oldm ->
+     BoolMap.fold
+       (fun (c,k) a map -> if is_member c (Bmap m) then (replace' c (VBool k) map) else map)
+       oldm newm
+  | Fmap m, Fmap oldm ->
+     FloatMap.fold
+       (fun (c,k) a map -> if is_member c (Fmap m) then (replace' c (VFloat k) map) else map)
+       oldm newm
+  | _ -> failwith "error"
+
+(*
 let replace (newm:t) (oldm:t) =
   match newm with
-  |Imap m -> IntMap.fold(fun (c,k) a map -> update map (VInt k)) m oldm
-  |Smap m -> StringMap.fold(fun (c,k) a map -> update map (VString k)) m oldm
-  |Bmap m -> BoolMap.fold(fun (c,k) a map -> update map (VBool k)) m oldm
-  |Fmap m -> FloatMap.fold(fun (c,k) a map -> update map (VFloat k)) m oldm
+  | Imap m -> IntMap.fold(fun (c,k) a map -> update map (VInt k)) m oldm
+  | Smap m -> StringMap.fold(fun (c,k) a map -> update map (VString k)) m oldm
+  | Bmap m -> BoolMap.fold(fun (c,k) a map -> update map (VBool k)) m oldm
+  | Fmap m -> FloatMap.fold(fun (c,k) a map -> update map (VFloat k)) m oldm
+*)
 
 let join (m1:t) (m2:t) : (int*int) list =
   match m1,m2 with
   |Imap m,Imap m' ->
-    (IntMap.fold(fun (r,v) a acc -> if (has_value (VInt v) m2) then (joiner (VInt v) m2,r)::acc else acc) m [])
+    (IntMap.fold(fun (r,v) a acc -> if (has_value (VInt v) m2) then (r, joiner (VInt v) m2)::acc else acc) m [])
   |Smap m,Smap m' ->
-    (StringMap.fold(fun (r,v) a acc -> if (has_value (VString v) m2) then (joiner (VString v) m2,r)::acc else acc) m [])
+    (StringMap.fold(fun (r,v) a acc -> if (has_value (VString v) m2) then (r, joiner (VString v) m2)::acc else acc) m [])
   |Bmap m,Bmap m' ->
-    (BoolMap.fold(fun (r,v) a acc -> if (has_value (VBool v) m2) then (joiner (VBool v) m2,r)::acc else acc) m [])
+    (BoolMap.fold(fun (r,v) a acc -> if (has_value (VBool v) m2) then (r, joiner (VBool v) m2)::acc else acc) m [])
   |Fmap m,Fmap m' ->
-    (FloatMap.fold(fun (r,v) a acc -> if (has_value (VFloat v) m2) then (joiner (VFloat v) m2,r)::acc else acc) m [])
+    (FloatMap.fold(fun (r,v) a acc -> if (has_value (VFloat v) m2) then (r, joiner (VFloat v) m2)::acc else acc) m [])
   | _ -> failwith "error"
 
-let delete map op v = match v,map with
-  | VInt i,Imap m ->
-     (Imap(IntMap.filter (fun key value -> (not)(does_satisfy op i key)) m))
-  | VString s,Smap m  ->
-     (Smap(StringMap.filter (fun key value -> (not)(does_satisfy' op s key)) m))
-  | VBool b,Bmap m ->
-     (Bmap(BoolMap.filter (fun key value -> (not)(does_satisfy op b key)) m))
-  | VFloat f,Fmap m ->
-     (Fmap(FloatMap.filter (fun key value -> (not)(does_satisfy op f key)) m))
-  | _ -> failwith "Error"
+let delete ids map = match map with
+  | Imap m -> Imap(IntMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+  | Smap m -> Smap(StringMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+  | Bmap m -> Bmap(BoolMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+  | Fmap m -> Fmap(FloatMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
 
-
+let delete ids map = match map with
+  | Imap m -> Imap(IntMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+  | Smap m -> Smap(StringMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+  | Bmap m -> Bmap(BoolMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+  | Fmap m -> Fmap(FloatMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
 
 end
+
+
 
 (*TESTS*)
 open Maps
@@ -271,4 +311,18 @@ TEST "test_select_string" = (size (select smap_hundred LikeEnd (VString "0")) = 
 
 
 (*TEST "JOIN" =*)
+(*TEST_MODULE "insert_test" = struct
 
+  let m = Maps.create (VInt 0)
+  let m' = Maps.insert (VInt 5) 5 m
+  let m'' = Maps.insert (VInt 8) 6 m'
+  let m''' = Maps.insert (VInt 9) 7 m''
+
+  let n = Maps.create (VInt 0)
+  let n' = Maps.insert (VInt 9) 10 n
+  let n'' = Maps.insert (VInt 8) 20 n'
+  let n''' = Maps.insert (VInt 10) 30 n''
+
+  let j = Maps.join (m''') (n''') === [(7,10); (6,20)]
+
+end*)

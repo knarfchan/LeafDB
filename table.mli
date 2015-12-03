@@ -4,7 +4,8 @@ open Typs
 (* represents our table *)
 type t
 
-val get_size  : t -> int
+val get_size : t -> int
+
 (* Takes two columns and returns the difference in their lengths*)
 val get_diff  : t -> t -> int
 

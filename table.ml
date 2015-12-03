@@ -43,10 +43,10 @@ let get_size (tbl:t) : int = match tbl with
   | (a,b)::t -> Maps.size (Maps.get_longest (strip_tbl tbl []) 0 (List.assoc a tbl))
   | [] -> 0
 
-let get_diff (first:t) (second:t) : int =
-  let old_length = (get_size first) in
-  let new_length = (get_size second) in
-    (new_length - old_length)
+let get_diff (t1:t) (t2:t) : int =
+  let l1 = (get_size t1) in
+  let l2 = (get_size t2) in
+    abs (l1 - l2)
 
 (* precondition:
  * postcondition: *)
@@ -136,7 +136,7 @@ let rec update_all_col tbl new_tbl acc =
   | (name, map)::t -> update_all_col t new_tbl
                       (acc @ [(name,
                       (if List.mem_assoc name new_tbl
-                        then Maps.replace (List.assoc name new_tbl) map
+                        then Maps.replace map (List.assoc name new_tbl)
                        else map))])
 
 (* precondition:
@@ -146,16 +146,22 @@ let update tbl cvlst w =
   let updated_tbl = update_help new_tbl cvlst [] in
     (update_all_col tbl updated_tbl [])
 
+let rec get_rows_to_delete table where =
+  match table, where with
+  | ((name,map)::t), (Condition (col,op,v)) -> (if (name = col) then Maps.select map op v
+                                                                else get_rows_to_delete t where)
+  | ((name,map)::t) , Null -> map
+  | _ -> failwith "Column is not found in table."
 
-(* precondition:
- * postcondition: *)
-let rec delete table where = match table, where with
-  | ((name,map)::t), (Condition (col,op,v)) -> (if (name = col) then (name, (Maps.delete map op v))::t
-    else delete t where)
-  | _ , Null -> []
-  | _ -> failwith "Error"
+let rec make_removed ids table =
+  match table with
+  | (name,map)::t -> (name, (Maps.delete ids map))::(make_removed ids t)
+  | [] -> []
 
-
+let delete table where =
+  let rows = get_rows_to_delete table where in
+  let ids = Maps.get_rows rows in
+  make_removed ids table
 
 let rec create_help cdl acc =
   match cdl with
@@ -275,6 +281,11 @@ let rec join_help tbl cvlst =
   | [] -> tbl
   | lst::t -> join_help (insert tbl (get_col lst []) (get_val_from_cvlst lst [])) t
 
+let rec remove_on tbl col acc =
+  match tbl with
+  | [] -> acc
+  | (name, map)::t -> if col = name then acc @ t else remove_on t col (acc @ [(name, map)])
+
 (* precondition:
  * postcondition: *)
 let join t1 t2 o =
@@ -282,11 +293,10 @@ let join t1 t2 o =
              | (c1, c2) -> if List.mem_assoc c1 t1 && List.mem_assoc c2 t2 then
                              Maps.join (List.assoc c1 t1) (List.assoc c2 t2)
                            else failwith "Columns are not found in tables") in
-  join_help ((empty_table t1 []) @ (empty_table t2 [])) (get_cvlst t1 t2 rows [])
+    List.rev (remove_on (List.rev (join_help ((empty_table t1 []) @
+      (empty_table t2 [])) (get_cvlst t1 t2 rows []))) (snd o) [])
 
-
-
-TEST_MODULE "insert_test" = struct
+(*TEST_MODULE "insert_test" = struct
 
   let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
              ("Height", Maps.create (VFloat 0.0))]
@@ -330,11 +340,24 @@ TEST_MODULE "insert_test" = struct
 
   let _ = print_tbl tibble'''
 
-  let j = join tbl''' tibble''' ("Name", "Name")
+  let j = join (tbl''') (tibble''') ("Name", "Name")
 
   let _ = print_tbl j
 
+  let u = update j [("Age", VInt 20); ("Height", VFloat 6.1)] (Condition ("Name", Eq, VString "Erin"))
 
+  let _ = print_tbl u
 
+  let dj = delete j (Condition ("Name", Eq, VString "Erin"))
 
-end
+  let _ = print_tbl dj
+
+  let dj' = delete j (Null)
+
+  let _ = print_tbl dj'
+
+  let dj'' = delete j (Null)
+
+  let _ = print_tbl dj''
+
+end*)
