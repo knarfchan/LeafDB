@@ -9,7 +9,7 @@ let print_command2 (q: Table.t option) (d: Database.t) (e: expr) (b: bool) =
                           | Some t -> (Table.print_tbl t)
                           | None -> Printf.printf "Error: Insert failed. Table %s not found.\n" tbl)
   | Insert (tbl, clst, vlst) -> (match q with
-                                | Some t1 -> (Database.update_database d tbl t1); Printf.printf "Inserted %d items into table %s.\n" (Table.get_diff t1 t2) tbl
+                                | Some t1 -> (Database.update_table d tbl t1); Printf.printf "Inserted %d items into table %s.\n" (Table.get_diff t1 t2) tbl
                                 | Some t1 -> (match Database.lookup d tbl with
                                               | Some t2 -> (Database.update_table d tbl t1); Printf.printf "Inserted %d items into table %s.\n" (Table.get_diff t1 t2) tbl
                                               | None -> Printf.printf "Error: Insert failed. Table %s not found.\n" tbl)
