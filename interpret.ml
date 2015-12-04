@@ -20,6 +20,10 @@ let eval_select (db: Database.t) (e: expr) : Table.t option =
       (match Database.lookup db tbl with
         | None -> None
         | Some x -> Some(Table.select lst x w))
+  | SelectAll (tbl, w) ->
+      (match Database.lookup db tbl with
+        | None -> None
+        | Some x -> Some(Table.select lst x w))
   | _ -> None
 
 let eval (db : Database.t) (e : expr): evaluated =
@@ -31,7 +35,7 @@ let eval (db : Database.t) (e : expr): evaluated =
   | Insert (tbl, clst, vlst) ->
       attempt_op(db)(tbl)(fun x -> Table.insert x clst vlst)
   | InsertAll (tbl, vlst) ->
-      attempt_op(db)(tbl)(fun x -> Table.insertAll x vlst)
+      (attempt_op(db)(tbl)(fun x -> Table.insertAll x (List.rev vlst)))
   | Delete (tbl, w) ->
       attempt_op(db)(tbl)(fun x -> Table.delete x w)
   | Update (tbl, cvlst, w) ->

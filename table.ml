@@ -71,7 +71,7 @@ let rec strip_col (tbl:t) (acc:column list) :column list =
 (* precondition:
  * postcondition: *)
 let selectAll tbl w =
-  select (strip_col tbl []) tbl w
+  select (List.rev (strip_col tbl [])) tbl w
 
 (* [get_cvlst clst vlst acc] accumulates the list of columns and list of values
  * into one (column, value) list
