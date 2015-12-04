@@ -361,7 +361,7 @@ let join t1 t2 o =
   let _ = print_tbl dj''
 
 end
-*)
+
 TEST_MODULE "insert_test" = struct
 
   let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
@@ -377,3 +377,4 @@ TEST_MODULE "insert_test" = struct
 
   let _ = print_tbl sel
 end
+*)
