@@ -256,7 +256,7 @@ let print_tbl_helper (tbl:string array array) =
     done); (Printf.printf "%s\n" (" " ^ (Bytes.make bar '-')))
 
 let print_tbl (tbl:t) =
-  print_tbl_helper (Array.of_list (row_to_array ((strip_col tbl []) ::
+  Printf.printf "\n"; print_tbl_helper (Array.of_list (row_to_array ((strip_col tbl []) ::
   (tbl_val (convert_matrix tbl) [])) []))
 
 let rec get_vals (tbl:t) row acc =
@@ -360,4 +360,20 @@ let join t1 t2 o =
 
   let _ = print_tbl dj''
 
-end*)
+end
+*)
+TEST_MODULE "insert_test" = struct
+
+  let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
+             ("Height", Maps.create (VFloat 0.0))]
+
+  let tbl' = insertAll tbl [VString "Annie"; VInt 19; VFloat 5.3]
+  let tbl'' = insertAll tbl' [VString "Erin"; VInt 19; VFloat 5.8]
+  let tbl''' = insertAll tbl'' [VString "Frank"; VInt 19; VFloat 6.0]
+
+  let _ = print_tbl tbl'''
+
+  let sel = selectAll (tbl''') (Condition ("Name", LikeEnd, VString "k"))
+
+  let _ = print_tbl sel
+end
