@@ -4,15 +4,29 @@ open Str
 open Typs
 
 (*filesystem.ml*)
+(* gets the name of every file in the specified directory
+ * path is the path of a folder you want the files from
+ * it should begin with "./" ? *)
+let get_files_paths path =
+  let db_names = Sys.readdir path in
+    to_list(db_names)
 
-let get_files_paths folder =
-  let dbs = "/DBMS" in
-  let db_names = Sys.readdir dir in to_list(db_names)
+(* remove extentions of the string*)
+let remove_ext str =
+  global_replace(regexp("\..*"))("")(str)
 
-let to_sll db_lst =
-  let dbs = "/DBMS" in
-  let
-  List.map(fun name -> name, Csv.load(dbs ^ name))(db_lst)
+let full_path path name =
+  if string_match(regexp(".*/$"))(path)(0) then path ^ name
+  else path ^ "/" ^ name
+
+(* return a list of tuples, (name of the table, string list list)*)
+let to_sll path db_lst =
+  List.map(fun name -> remove_ext(name), Csv.load(full_path path name))(db_lst)
+
+(* takes our database storage folder of csv files and returns the (name, sll) *)
+let DBMS_sll _ =
+  let dbs = "./DBMS" in
+  to_sll(get_files_paths(dbs))
 
 let read_db folder = failwith "not implemented"
 
