@@ -116,7 +116,7 @@ let create (v : value) =
 let like_compare comp key condition =
   match condition with
   | LikeBegin -> string_match (regexp (key^".*")) comp 0
-  | LikeEnd -> string_match (regexp (".*"^key)) comp 0
+  | LikeEnd -> string_match (regexp (".*"^key^"$")) comp 0
   | LikeSubstring -> string_match (regexp (".*"^key^".*")) comp 0
   | NotLikeBegin -> not (string_match (regexp (key^".*")) comp 0)
   | NotLikeEnd -> not (string_match (regexp (".*"^key)) comp 0)
@@ -184,12 +184,12 @@ let select map condition comp =
      Fmap(FloatMap.filter (fun key value -> does_satisfy condition f key) m)
   | _ -> failwith "Error"
 
-let insert value row  m = match value, m with
+let insert value row m = match value, m with
   | VInt i, Imap map -> Imap(IntMap.add (row,i) row map)
   | VString s, Smap map -> Smap(StringMap.add (row,s) row map)
   | VBool b, Bmap map -> Bmap(BoolMap.add (row,b) row map)
   | VFloat f, Fmap map -> Fmap(FloatMap.add (row,f) row map)
-  | _ -> failwith "Error"
+  | _ -> failwith "This is the source of all my troubles"
 
 let update (map:t)(newv:value) =
   match map,newv with
