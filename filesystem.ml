@@ -23,6 +23,11 @@ let full_path path name =
 let to_sll path db_lst =
   List.map(fun name -> remove_ext(name), Csv.load(full_path path name))(db_lst)
 
+(* takes our database storage folder of csv files and returns the (name, sll) *)
+let DBMS_sll _ =
+  let dbs = "./DBMS" in
+  to_sll(get_files_paths(dbs))
+
 let read_db folder = failwith "not implemented"
 
 let parse_item (s:string) =
