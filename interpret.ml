@@ -23,7 +23,7 @@ let eval_select (db: Database.t) (e: expr) : Table.t option =
   | SelectAll (tbl, w) ->
       (match Database.lookup db tbl with
         | None -> None
-        | Some x -> Some(Table.select lst x w))
+        | Some x -> Some(Table.selectAll x w))
   | _ -> None
 
 let eval (db : Database.t) (e : expr): evaluated =
