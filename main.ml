@@ -10,11 +10,11 @@ let print_command2 (q: Table.t option) (d: Database.t) (e: expr) (b: bool) =
                           | None -> Printf.printf "Error: Insert failed. Table %s not found.\n" tbl)
   | Insert (tbl, clst, vlst) -> (match q with
                                 | Some t1 -> (match Database.lookup d tbl with
-                                              | Some t2 -> Printf.printf "Inserted %d items into table %s.\n" (Table.get_diff t1 t2) tbl
+                                              | Some t2 -> (Database.update_table d tbl t1); Printf.printf "Inserted %d items into table %s.\n" (Table.get_diff t1 t2) tbl
                                               | None -> Printf.printf "Error: Insert failed. Table %s not found.\n" tbl)
                                 | None -> Printf.printf "Error: Insert failed. Table %s not found.\n" tbl)
   | InsertAll (tbl, vlst) -> (match q with
-                              | Some t -> Printf.printf "Inserted %d items into table %s.\n" (List.length vlst) tbl
+                              | Some t -> (Database.update_table d tbl t); Printf.printf "Inserted %d items into table %s.\n" (List.length vlst) tbl
                               | None -> Printf.printf "Error: Insert all failed. Table %s not found.\n" tbl)
   | JoinTables (str1, str2, o) -> (match q with
                                   | Some t -> Table.print_tbl t
@@ -30,11 +30,12 @@ let print_command2 (q: Table.t option) (d: Database.t) (e: expr) (b: bool) =
                                 | None -> Printf.printf "Error: Join failed. Table not found.\n")
   | Update (tbl, cvlst, w) -> (match q with
                               | Some t -> (let updates = Table.get_size (Table.selectAll t w) in
+                                          (Database.update_table d tbl t);
                                           Printf.printf "Updated %d items in table %s.\n" updates) tbl
                               | None -> Printf.printf "Error: Update failed. Table %s not found.\n" tbl)
   | Delete (tbl, w) -> (match q with
                         | Some t1 -> (match Database.lookup d tbl with
-                                      | Some t2 -> Printf.printf "Deleted %d items in table %s.\n" (Table.get_diff t1 t2) tbl
+                                      | Some t2 -> (Database.update_table d tbl t1); Printf.printf "Deleted %d items in table %s.\n" (Table.get_diff t1 t2) tbl
                                       | None -> Printf.printf "Error: Delete failed. Table %s not found.\n" tbl)
                         | None -> Printf.printf "Error: Delete failed. Table %s not found.\n" tbl)
   | CreateTable(str, cdl) -> (if b then Printf.printf "Table %s created.\n" str

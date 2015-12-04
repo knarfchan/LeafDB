@@ -376,4 +376,6 @@ TEST_MODULE "insert_test" = struct
   let sel = selectAll (tbl''') (Condition ("Name", LikeEnd, VString "k"))
 
   let _ = print_tbl sel
-end*)
+
+end
+*)

@@ -77,7 +77,7 @@ statement:
   | SELECT; ASTERISK; FROM; tab = ID; w = where_condition
       {SelectAll(tab, w)}
   | INSERT; INTO; tab = ID; LEFT_PAREN; cols = col_list; RIGHT_PAREN;
-      VALUES; LEFT_PAREN; vals = val_list RIGHT_PAREN
+      VALUES; LEFT_PAREN; vals = val_list; RIGHT_PAREN
         {Insert(tab, cols, vals)}
   | INSERT; INTO; tab = ID; VALUES; LEFT_PAREN; vals = val_list; RIGHT_PAREN
       {InsertAll(tab, vals)}

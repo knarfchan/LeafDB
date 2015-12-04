@@ -17,7 +17,7 @@ let add_table (db: t) (str: string) (tbl: Table.t) : bool =
 
 (* specs will go here *)
 let update_table (db: t) (str: string) (tbl: Table.t) : unit =
-  Hashtbl.add db str tbl
+  Hashtbl.replace db str tbl
 
 (* takes the table with name str, removes it from the database *)
 let drop (db: t) (str: string) : bool =
