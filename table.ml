@@ -15,7 +15,7 @@ let next_val =
 (* [make_select tbl col] makes an empty Map.t with the same type as col in tbl*)
 let make_select tbl col =
   if List.mem_assoc col tbl then Maps.empty (List.assoc col tbl)
-  else failwith "Column not found in table"
+  else raise (Failure "Column specified is not found in table")
 
 let rec select_col tbl rows col acc =
   match rows with
@@ -25,7 +25,7 @@ let rec select_col tbl rows col acc =
               if Maps.is_member h map then
                 select_col tbl t col (Maps.insert (Maps.lookup h map) h acc)
               else select_col tbl t col acc
-            else failwith "Column is not found in table"
+            else raise (Failure "Column specified is not found in table")
 
 let rec all_col tbl clst rows acc =
   match clst with
@@ -54,9 +54,9 @@ let select clst tbl w =
   let map =
     (match w with
     | Condition (col,op,v) -> if List.mem_assoc col tbl then Maps.select (List.assoc col tbl) op v
-                              else failwith "Column is not found in table"
+                              else raise (Failure "Column specified is not found in table")
     | Null -> (match clst with
-              | [] -> failwith "No columns chosen for select"
+              | [] -> raise (Failure "No columns specified while selecting")
               | h::t -> Maps.get_longest (strip_tbl tbl []) 0 (List.assoc h tbl))) in
   let rows = Maps.get_rows map in
     (all_col tbl clst rows [])
@@ -81,7 +81,7 @@ let rec get_cvlst (clst: column list) (vlst: value list)
   match clst, vlst with
   | [],[] -> acc
   | h::t, h'::t' -> get_cvlst t t' (acc @ [(h,h')])
-  | _, _ -> failwith "Column list and value list should be the same length"
+  | _, _ -> raise (Failure "List of columns and values must be the same length")
 
 (* [insert_help tbl cvlst rowid acc] *)
 let rec insert_help (tbl:t) (cvlst: (column * value) list) rowid acc =
@@ -128,7 +128,7 @@ let rec update_help new_tbl cvlst acc =
   match new_tbl, cvlst with
   | [], [] -> acc
   | (a,b)::t, (c,v)::t' -> update_help t t' (acc @ [(a, Maps.update b v)])
-  | _, _ -> failwith "tbl and column value lists should not be of different size"
+  | _, _ -> raise (Failure "Different number of columns in table and column list")
 
 let rec update_all_col tbl new_tbl acc =
   match tbl with
@@ -151,7 +151,7 @@ let rec get_rows_to_delete table where =
   | ((name,map)::t), (Condition (col,op,v)) -> (if (name = col) then Maps.select map op v
                                                                 else get_rows_to_delete t where)
   | ((name,map)::t) , Null -> map
-  | _ -> failwith "Column is not found in table."
+  | _ -> raise (Failure "Column specified is not found in table")
 
 let rec make_removed ids table =
   match table with
@@ -292,7 +292,7 @@ let join t1 t2 o =
   let rows = (match o with
              | (c1, c2) -> if List.mem_assoc c1 t1 && List.mem_assoc c2 t2 then
                              Maps.join (List.assoc c1 t1) (List.assoc c2 t2)
-                           else failwith "Columns are not found in tables") in
+                           else raise (Failure "Column specified is not found in table")) in
     List.rev (remove_on (List.rev (join_help ((empty_table t1 []) @
       (empty_table t2 [])) (get_cvlst t1 t2 rows []))) (snd o) [])
 
@@ -376,5 +376,6 @@ TEST_MODULE "insert_test" = struct
   let sel = selectAll (tbl''') (Condition ("Name", LikeEnd, VString "k"))
 
   let _ = print_tbl sel
+
 end
 *)

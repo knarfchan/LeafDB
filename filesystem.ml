@@ -36,7 +36,7 @@ let make_map typ =
   | "VString" -> Maps.create (VString "")
   | "VBool" -> Maps.create (VBool false)
   | "VFloat" -> Maps.create (VFloat 0.0)
-  | _ -> failwith "Error: Not a valid SQL type"
+  | _ -> raise (Failure "Error: Not a valid SQL type")
 
 let rec parse_all_items row acc =
   match row with
@@ -54,14 +54,16 @@ let rec insert_items (typ:string) map row =
   | "VFloat", m, (id, v)::t ->
       insert_items typ (Maps.insert (VFloat (float_of_string v)) id m) t
   | _ , _, [] -> map
-  | _, _, _ -> failwith "Error: Type and Map should be specified"
+  | _, _, _ -> raise (Failure "Error: Type and Map should be specified")
 
 
 let rec read_tbl_helper (matrix:bytes list list) acc =
   match matrix with
   | [] -> acc
-  | (typ::name::t)::t'-> read_tbl_helper t' (acc @ [(name, insert_items typ (make_map typ) (parse_all_items t []))])
-  | _::t' -> failwith "Error: Row should have more than 2 items"
+  | (typ::name::t)::t'->
+      read_tbl_helper t' (acc @ [(name, insert_items typ (make_map typ)
+      (parse_all_items t []))])
+  | _::t' -> raise (Failure "Error: Row should have more than 2 items")
 
 let read_tbl file = failwith "unimplemented"
 
