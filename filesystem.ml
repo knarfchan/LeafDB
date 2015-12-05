@@ -1,90 +1,74 @@
-open Sys
 open Maps
 open Str
-open Table
 open Typs
 
 (*filesystem.ml*)
 (* gets the name of every file in the specified directory
  * path is the path of a folder you want the files from
  * it should begin with "./" ? *)
-let get_files_paths path =
+let get_files_paths path : string list =
   let db_names = Sys.readdir path in
-    to_list(db_names)
+    Array.to_list(db_names)
 
-(* remove extentions of the string*)
+let get_database_names _ =
+  get_files_paths("./DBMS")
+
+(* remove extentions of the string *)
 let remove_ext str =
-  global_replace(regexp("\..*"))("")(str)
+  global_replace(regexp("\\..*"))("")(str)
 
-let full_path path name =
+(* appends a filename to a path where it resides *)
+let append_path path name =
   if string_match(regexp(".*/$"))(path)(0) then path ^ name
   else path ^ "/" ^ name
 
-(* return a list of tuples, (name of the table, string list list)*)
-let to_sll path db_lst =
-  List.map(fun name -> remove_ext(name), Csv.load(full_path path name))(db_lst)
+(* returns all the database folders full paths in DBMS *)
+(* returns databases for simplicity *)
+let get_dbs_dir path =
+  List.map(fun name -> append_path "./DBMS" name)(Array.to_list(Sys.readdir "./DBMS"))
 
-(* takes our database storage folder of csv files and returns the (name, sll) *)
-let DBMS_sll _ =
-  let dbs = "./DBMS" in
-  to_sll(get_files_paths(dbs))
+(* returns the database path with name name *)
+let get_db_path name =
+  append_path "./DBMS" name
 
+let get_tbl_path db_str tbl_str =
+  append_path(get_db_path(db_str))(tbl_str ^ ".csv")
 
-let read_db folder = failwith "not implemented"
+let read_tbl db_str tbl_str =
+  let path = get_tbl_path db_str tbl_str in
+  Table.read_tbl(Csv.load(path))
 
-(* [parse_item s] parses the string s into (row id, value) *)
-let parse_item (s:string) =
-  let sep = Str.search_forward (regexp_string "*") s 0 in
-    (int_of_string (Bytes.sub s 0 sep),
-    (Bytes.sub s (sep + 1) (Bytes.length s - sep - 1)))
-
-(* [map_map typ] makes an empty map using typ to identify the type of map *)
-let make_map typ =
-  match typ with
-  | "VInt" -> Maps.create (VInt 0)
-  | "VString" -> Maps.create (VString "")
-  | "VBool" -> Maps.create (VBool false)
-  | "VFloat" -> Maps.create (VFloat 0.0)
-  | _ -> raise (Failure "Error: Not a valid SQL type")
-
-(* [parse_all_items row acc] parses all the items in a column into a
- * (row id, value) list *)
-let rec parse_all_items row acc =
-  match row with
-  | [] -> acc
-  | h::t -> parse_all_items t (acc @ [(parse_item h)])
-
-(* [insert_items typ map row] insert (row id, values) into map of type given
- * by typ *)
-let rec insert_items (typ:string) map row =
-  match typ, map, row with
-  | "VInt", m, (id, v)::t ->
-      insert_items typ (Maps.insert (VInt (int_of_string v)) id m) t
-  | "VString", m, (id, v)::t ->
-      insert_items typ (Maps.insert (VString v) id m) t
-  | "VBool", m, (id, v)::t ->
-      insert_items typ (Maps.insert (VBool (bool_of_string v)) id m) t
-  | "VFloat", m, (id, v)::t ->
-      insert_items typ (Maps.insert (VFloat (float_of_string v)) id m) t
-  | _ , _, [] -> map
-  | _, _, _ -> raise (Failure "Error: Type and Map should be specified")
-
-(* [read_tbl_helper matrix acc] takes a matrix and parses the information in
- * the matrix into a table *)
-let rec read_tbl_helper (matrix:bytes list list) acc =
-  match matrix with
-  | [] -> acc
-  | (typ::name::t)::t'->
-      read_tbl_helper t' (acc @ [(name, insert_items typ (make_map typ)
-      (parse_all_items t []))])
-  | _::t' -> raise (Failure "Error: Row should have more than 2 items")
-
-let read_tbl file = failwith "unimplemented"
-
-let add_db db = failwith "not implemented"
+let add_db db = Unix.mkdir(get_db_path db)(0o777)
 
 let write_tbl (db_name:bytes) (tbl_name:bytes) (tbl:Table.t) : unit  =
-  let mtx = matrix_of_table tbl in
-  Csv.save ("./DBMS/"^db_name^"/"^tbl_name^".csv") mtx
+  let mtx = Table.matrix_of_table tbl in
+  Csv.save (get_tbl_path db_name tbl_name) mtx
 
-let delete_db file = failwith "not implemented"
+let rec read_db_help (db_str: string) (db: Database.t) (tbl_lst: string list) : unit =
+  match tbl_lst with
+  | [] -> ()
+  | h::t -> ignore(Database.add_table(db)(h)(read_tbl db_str h));
+              read_db_help(db_str)(db)(t)
+
+let read_db (db_str: string) (db: Database.t) : unit =
+  let tables = get_files_paths(get_db_path db_str) in
+    read_db_help(db_str)(db)(tables)
+
+let rec delete_all_tables tbl_lst =
+  match tbl_lst with
+  | [] -> ()
+  | h::t -> Sys.remove(h);delete_all_tables t
+
+let delete_db db_str =
+  let path = get_db_path db_str in
+  let tables = get_files_paths(path) in
+    delete_all_tables(tables); Unix.rmdir(path)
+
+let delete_tbl db_str tbl_str =
+  let path = get_tbl_path db_str tbl_str in
+    Unix.rmdir(path)
+
+let add_tbl db_str tbl_str tbl =
+  let path = get_tbl_path db_str tbl_str in
+  let mtx = Table.matrix_of_table tbl in
+    ignore(Sys.command("touch " ^ path)); Csv.save(path)(mtx)

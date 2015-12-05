@@ -82,4 +82,4 @@ and repl1 (dbs: Dbms.t) =
     | Failure x -> (Printf.printf "%s\n" x)
     | _ -> (Printf.printf "Invalid SQL command \n")); (repl1 dbs)
 
-let main = repl1 (Dbms.create ())
+let main = repl1 (Dbms.load_databases (Filesystem.get_database_names))

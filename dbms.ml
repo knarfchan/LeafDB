@@ -31,3 +31,12 @@ let get_databases (dbs: t) : Table.t =
     (Hashtbl.iter (fun x y -> db_list := VString(x)::(!db_list))(dbs));
     let new_tab = Table.create([("Databases", VString(""))]) in
       insert_databases(!db_list)(new_tab)
+
+let rec load_help (dbs: t) (db_names: string list) : unit =
+  match db_names with
+  | [] -> ()
+  | h::t -> ignore(add_database(dbs)(h)); load_help(dbs)(t)
+
+let load_databases (db_names : string list) : t =
+  let dbs = create() in
+  load_help(dbs)(db_names); dbs

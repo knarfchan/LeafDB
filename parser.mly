@@ -50,6 +50,7 @@ open Lexing
 %token SHOW
 %token DATABASES
 %token EXIT
+%token TABLES
 
 %token EOF
 
@@ -94,6 +95,7 @@ statement:
   | DROP; DATABASE; db = ID         {DropDb(db)}
   | USE; db = ID                    {Use(db)}
   | SHOW; DATABASES                 {ShowDatabases}
+  | SHOW; TABLES                    {ShowTables}
   | EXIT                            {ExitDb}
   ;
 
