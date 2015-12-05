@@ -433,7 +433,7 @@ let update tbl cvlst w =
       (update_all_col (insert_all_nulls tbl (insert_nulls tbl (snd new_maps) [])
       []) updated_tbl [])
 
-
+(*
 TEST_MODULE "insert_test" = struct
 
   (* Insert Test Cases *)
@@ -513,4 +513,4 @@ TEST_MODULE "insert_test" = struct
   let _ = print_tbl tbls'''
   let sel = selectAll (tbls''') (Condition ("Name", LikeEnd, VString "k"))
   let _ = print_tbl sel
-end
+end*)
