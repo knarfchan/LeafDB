@@ -426,14 +426,17 @@ let rec insert_all_nulls (tbl:t) null_cols (acc:t):t =
  * from cvlst into tbl*)
 let update tbl cvlst w =
   let new_tbl = select (get_col cvlst []) tbl w in
-    let rowids = Maps.get_rows (Maps.get_longest (strip_tbl new_tbl []) 0
+  let new_tbl2 = match w with
+  | Null -> select (get_col cvlst []) tbl w
+  | Condition (c, _, _) -> select (c::(get_col cvlst [])) tbl w in
+    let rowids = Maps.get_rows (Maps.get_longest (strip_tbl new_tbl2 []) 0
                  (Maps.create (VInt 0))) in
     let new_maps = (get_all_maps rowids tbl new_tbl [] []) in
     let updated_tbl = (update_help (fst new_maps) cvlst []) in
       (update_all_col (insert_all_nulls tbl (insert_nulls tbl (snd new_maps) [])
       []) updated_tbl [])
 
-(*
+
 TEST_MODULE "insert_test" = struct
 
   (* Insert Test Cases *)
@@ -466,12 +469,11 @@ TEST_MODULE "insert_test" = struct
   (* Select Test Cases *)
   let sel = select ["Name"; "Age"] tbl''' (Condition ("Height", Gt, VFloat 5.4))
 
-  let _ = print_tbl sel
-
   TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Name" (sel)))
               sel []) === [[VString "Erin"; VInt 19];
                             [VString "Frank"; VNull]]
 
+  (* Delete Test Cases *)
   let del = delete tbl''' (Condition ("Height", Lt, VFloat 5.9))
 
   TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Height" (del)))
@@ -489,28 +491,72 @@ TEST_MODULE "insert_test" = struct
   let tibble''' = insert tibble'' ["Name";"Hair Color"; "Male?"]
                   [VString "Erin"; VString "Brown/Black"; VBool false]
 
-  TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Height" (tbl'')))
-              tbl'' []) === [[VString "Louis"; VString "Black"; VBool true];
-                            [VString "Frank"; VString "Black"; VBool true];
-                            [VString "Erin";VString "Brown/Black"; VBool false]]
+  TEST_UNIT = (get_all_rows_print (Maps.get_rows(List.assoc "Name" (tibble''')))
+              tibble''' []) ===
+                [[VString "Erin"; VString "Brown/Black"; VBool false];
+                [VString "Frank"; VString "Black"; VBool true];
+                [VString "Louis"; VString "Black"; VBool true]]
 
+  (* Join Test Cases *)
   let j = join (tbl''') (tibble''') ("Name", "Name")
-  let _ = print_tbl j
-  let u = update j [("Age", VInt 20); ("Height", VFloat 7.0)] (Condition ("Name", Eq, VString "Frank"))
-  let _ = print_tbl u
 
+  TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Height" (j)))
+              j []) ===
+    [[VString "Erin"; VInt 19; VFloat 5.8; VString "Brown/Black"; VBool false];
+    [VString "Frank"; VNull; VFloat 6.; VString "Black"; VBool true]]
+
+  (* Update Test Cases *)
+  let u = update j [("Age", VInt 20); ("Height", VFloat 7.0)]
+          (Condition ("Name", Eq, VString "Frank"))
+
+  TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Height" (u)))
+              u []) ===
+    [[VString "Erin"; VInt 19; VFloat 5.8; VString "Brown/Black"; VBool false];
+    [VString "Frank"; VInt 20; VFloat 7.; VString "Black"; VBool true]]
+
+  let _ = print_tbl tbl'''
+
+  let u' = update (tbl''') [("Age", VInt 20)]
+          (Condition ("Name", Eq, VString "Frank"))
+
+  let _ = print_tbl u'
+
+  (* Delete Test Cases *)
   let dj = delete j (Condition ("Name", Eq, VString "Erin"))
-  let _ = print_tbl dj
+
+  TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Height" (dj)))
+              dj []) ===
+    [[VString "Frank"; VNull; VFloat 6.; VString "Black"; VBool true]]
+
   let dj' = delete j (Null)
-  let _ = print_tbl dj'
+
+  TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Height" (dj')))
+              dj' []) === []
+
   let dj'' = delete j (Null)
-  let _ = print_tbl dj''
+
+  TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Height" (dj'')))
+              dj'' []) === []
+
+  (* Insert All Test Cases *)
   let tbls = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
              ("Height", Maps.create (VFloat 0.0))]
+
   let tbls' = insertAll tbl [VString "Annie"; VInt 19; VFloat 5.3]
+
   let tbls'' = insertAll tbl' [VString "Erin"; VInt 19; VFloat 5.8]
+
   let tbls''' = insertAll tbl'' [VString "Frank"; VInt 19; VFloat 6.0]
-  let _ = print_tbl tbls'''
-  let sel = selectAll (tbls''') (Condition ("Name", LikeEnd, VString "k"))
-  let _ = print_tbl sel
-end*)
+
+  TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Name" (tbls''')))
+              tbls''' []) === [[VString "Annie"; VInt 19; VFloat 5.3];
+              [VString "Erin"; VInt 19; VFloat 5.8];
+              [VString "Frank"; VInt 19; VFloat 6.]]
+
+  (* Select All Test Cases *)
+  let sel' = selectAll (tbls''') (Condition ("Name", LikeEnd, VString "k"))
+
+  TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Name" (sel')))
+              sel' []) === [[VFloat 6.; VInt 19; VString "Frank"]]
+
+end
