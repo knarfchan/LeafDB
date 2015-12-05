@@ -40,8 +40,9 @@ let print_command2 (q: Table.t option) (d: Database.t) (e: expr)
                                       | Some t2 -> (write_tbl name tbl t1); (Database.update_table d tbl t1); Printf.printf "Deleted %d items in table %s.\n" (Table.get_diff t1 t2) tbl
                                       | None -> Printf.printf "Error: Delete failed. Table %s not found.\n" tbl)
                         | None -> Printf.printf "Error: Delete failed. Table %s not found.\n" tbl)
-  | CreateTable(str, cdl) -> (if b then ((add_empty_tbl name str); Printf.printf "Table %s created.\n" str)
-                             else Printf.printf "Error: Create table failed. Table %s already exists.\n" str)
+  | CreateTable(str, cdl) -> (match q with
+                              | Some t1 -> (add_tbl name str t1); Printf.printf "Table %s created.\n" str
+                              | None -> Printf.printf "Error: Create table failed. Table %s already exists.\n" str)
   | DropTable(str) -> (if b then ((delete_tbl name str); Printf.printf "Table %s dropped.\n" str)
                       else Printf.printf "Error: Drop table failed. Table %s not found.\n" str)
   | _ -> Printf.printf "Error: Invalid command. To create/show/drop/switch databases, use EXIT to exit the current database first.\n"
