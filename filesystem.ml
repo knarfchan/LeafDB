@@ -9,24 +9,33 @@ open Typs
  * it should begin with "./" ? *)
 let get_files_paths path =
   let db_names = Sys.readdir path in
-    to_list(db_names)
+    Array.to_list(db_names)
 
-(* remove extentions of the string*)
+(* remove extentions of the string *)
 let remove_ext str =
   global_replace(regexp("\..*"))("")(str)
 
+(* appends a filename to a path where it resides *)
 let full_path path name =
   if string_match(regexp(".*/$"))(path)(0) then path ^ name
   else path ^ "/" ^ name
 
-(* return a list of tuples, (name of the table, string list list)*)
-let to_sll path db_lst =
-  List.map(fun name -> remove_ext(name), Csv.load(full_path path name))(db_lst)
+(* returns all the database folders full paths in DBMS *)
+(* returns databases for simplicity *)
+let get_dbs_dir path =
+  List.map(fun name -> full_path "./DBMS" name)(Array.to_list(Sys.readdir "./DBMS"))
 
-(* takes our database storage folder of csv files and returns the (name, sll) *)
-let DBMS_sll _ =
-  let dbs = "./DBMS" in
-  to_sll(get_files_paths(dbs))
+let get_db_path name =
+  full_path "./DBMS" name
+
+(* takes a database folder and return a list of tuples, (name of the table, string list list)*)
+let to_sll path db_lst =
+  List.map(fun name -> remove_ext(name), Csv.load(path))(db_lst)
+
+(* for annie *)
+(* takes a database folder and a table and gives you a string list list *)
+let dbms_sll db_name tab_name =
+  to_sll(full_path get_db_path(db_name) tab_name)
 
 let read_db folder = failwith "not implemented"
 
