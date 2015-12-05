@@ -139,34 +139,6 @@ let rec get_val_from_cvlst cvlst acc =
   | [] -> acc
   | (_,v)::t -> get_val_from_cvlst t (acc @ [v])
 
-(* precondition:
- * postcondition: *)
-let rec update_help new_tbl cvlst acc =
-  match new_tbl, cvlst with
-  | [], [] -> acc
-  | (a,b)::t, (c,v)::t' -> update_help t t' (acc @ [(a, Maps.update b v)])
-  | _, _ -> raise (Failure "Different number of columns in table and column list")
-
-let rec update_all_col tbl new_tbl acc =
-  match tbl with
-  | [] -> acc
-  | (name, map)::t -> update_all_col t new_tbl
-                      (acc @ [(name,
-                      (if List.mem_assoc name new_tbl
-                        then Maps.replace map (List.assoc name new_tbl)
-                       else map))])
-
-(* precondition:
- * postcondition: *)
-let update tbl cvlst w =
-  let new_tbl = select (get_col cvlst []) tbl w in
-  let updated_tbl = update_help new_tbl cvlst [] in
-    (update_all_col tbl updated_tbl [])
-
-let rec get_rows_to_delete table where =
-  match table, where with
-  | ((name,map)::t), (Condition (col,op,v)) -> (if (name = col) then Maps.select map op v
-                                                                else get_rows_to_delete t where)
 (* [get_all_rows table where] returns the rows of all the items in table that
  * satisfies the where condition *)
 let rec get_all_rows table where =
@@ -185,7 +157,7 @@ let rec make_removed ids table =
 (* [delete table where] deletes items from a table that satisfies the where
  * condition *)
 let delete table where =
-  let rows = get_rows_to_delete table where in
+  let rows = get_all_rows table where in
   let ids = Maps.get_rows rows in
   make_removed ids table
 
@@ -347,7 +319,6 @@ let join t1 t2 o =
       (empty_table t2 [])) (get_cvlst t1 t2 rows []))) (snd o) [])
 
 
-(*TEST_MODULE "insert_test" = struct
 
 
 let parse_item (s:string) =
@@ -511,7 +482,7 @@ TEST_MODULE "insert_test" = struct
 
   let _ = print_tbl j
 
-  let u = update j [("Age", VInt 20); ("Height", VFloat 6.1)] (Condition ("Name", Eq, VString "Erin"))
+  let u = update j [("Age", VInt 20); ("Height", VFloat 7.0)] (Condition ("Name", Eq, VString "Frank"))
 
   let _ = print_tbl u
 
@@ -527,22 +498,17 @@ TEST_MODULE "insert_test" = struct
 
   let _ = print_tbl dj''
 
-end
-
-TEST_MODULE "insert_test" = struct
-
-  let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
+  let tbls = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
              ("Height", Maps.create (VFloat 0.0))]
 
-  let tbl' = insertAll tbl [VString "Annie"; VInt 19; VFloat 5.3]
-  let tbl'' = insertAll tbl' [VString "Erin"; VInt 19; VFloat 5.8]
-  let tbl''' = insertAll tbl'' [VString "Frank"; VInt 19; VFloat 6.0]
+  let tbls' = insertAll tbl [VString "Annie"; VInt 19; VFloat 5.3]
+  let tbls'' = insertAll tbl' [VString "Erin"; VInt 19; VFloat 5.8]
+  let tbls''' = insertAll tbl'' [VString "Frank"; VInt 19; VFloat 6.0]
 
-  let _ = print_tbl tbl'''
+  let _ = print_tbl tbls'''
 
-  let sel = selectAll (tbl''') (Condition ("Name", LikeEnd, VString "k"))
+  let sel = selectAll (tbls''') (Condition ("Name", LikeEnd, VString "k"))
 
   let _ = print_tbl sel
 
-end
-*)
+end*)

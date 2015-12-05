@@ -381,7 +381,7 @@ let get_type map = match map with
 
 
 (*TEST "test_size and create" = (size imap = 0)
-TEST "test_empty" = (size (empty imap) = 0)
+TEST "test_empty" = (size (empty imap) = 0)*)
 (* A NOTE ON TEST CASES: These test cases are deliberately commented out
    because the TEST_MODULE macro is not compatiable with our menhir build
    as explained in the README.txt. To compile and run the test cases individually
