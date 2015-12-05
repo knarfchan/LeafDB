@@ -10,7 +10,7 @@ type t = (column * Maps.t) list
 let next_val =
   let time = ref (int_of_float (Unix.gettimeofday ())) in fun () ->
   incr time;
-  !time
+  abs(!time)
 
 (* [matrix_of_table tbl] returns a string matrix of the table *)
 let rec matrix_of_table (tbl:t) =
