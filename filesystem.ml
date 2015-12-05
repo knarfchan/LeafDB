@@ -31,15 +31,6 @@ let get_db_path name =
 let get_tbl_path db_str tbl_str =
   append_path(get_db_path(db_str))(tbl_str ^ ".csv")
 
-(* takes a database folder and return a list of tuples, (name of the table, string list list)*)
-let to_sll path db_lst =
-  List.map(fun name -> remove_ext(name), Csv.load(path))(db_lst)
-
-(* for annie *)
-(* takes a database folder and a table and gives you a string list list *)
-let dbms_sll db_name tab_name =
-  to_sll(append_path (get_db_path(db_name)) (tab_name))
-
 let read_tbl db_str tbl_str =
   let path = get_tbl_path db_str tbl_str in
   Table.read_tbl(Csv.load(path))

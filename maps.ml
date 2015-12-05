@@ -34,6 +34,11 @@ module StringMap = Map.Make (String)
 module BoolMap   = Map.Make (Bool)
 module FloatMap  = Map.Make (Float)
 
+(* Abstraction function:
+   The map containing the keys (row,value) and values (row) represent the
+   a column in a table where row is the id of a certain value and value is the
+   data stored in the column
+*)
 
 type t =
   | Smap of int StringMap.t
@@ -41,13 +46,16 @@ type t =
   | Imap of int IntMap.t
   | Fmap of int FloatMap.t
 
-let to_string (map:t) : string list =
+(* [to_string map] returns a byte list containing the "key*value" of every
+   item map *)
+let to_string (map:t) : bytes list =
   match map with
   | Imap m -> IntMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_int v))::acc) m []
   | Smap m -> StringMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^v)::acc) m []
   | Bmap m -> BoolMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_bool v))::acc) m []
   | Fmap m -> FloatMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_float v))::acc) m []
 
+(* [build_col col map] returns a bytes list representation of a table column*)
 let build_col (col:string) (map:t) : bytes list =
   match map with
   | Imap m -> col::"VInt"::(to_string map)
@@ -57,7 +65,7 @@ let build_col (col:string) (map:t) : bytes list =
 
 (*precondition: r is a unique key *in* the map
   postcondition: returns the value associated with the row key r*)
-let lookup r m = match m with
+let lookup (r:int) (m:t) = match m with
   | Fmap map ->
     VFloat(snd (fst (FloatMap.choose(FloatMap.filter(fun (row,v) value -> row = r) map))))
   | Smap map ->
@@ -66,8 +74,8 @@ let lookup r m = match m with
     VInt(snd (fst (IntMap.choose(IntMap.filter (fun (row,v) value -> row = r) map))))
   | Bmap map ->
     VBool(snd (fst (BoolMap.choose(BoolMap.filter(fun (row,v) value -> row = r) map))))
-(*precondition:
-  postcondition: *)
+
+(*[joiner value map] returns *)
 let joiner (vu:value) (m:t) : int  = match vu,m with
   | VFloat v, Fmap map ->
     fst (fst (FloatMap.choose(FloatMap.filter(fun (row,v') value -> v = v') map)))
@@ -79,7 +87,7 @@ let joiner (vu:value) (m:t) : int  = match vu,m with
     fst (fst (BoolMap.choose(BoolMap.filter(fun (row,v') value -> v = v') map)))
   | _ -> raise (Failure "Unable to join tables")
 
-
+(* [has_value val map] returns true IFF a key with (_,value) exist in map*)
 let has_value (vu:value) (map:t) : bool =
   match vu,map with
   | VInt v, Imap m ->
@@ -92,7 +100,7 @@ let has_value (vu:value) (map:t) : bool =
     not (FloatMap.is_empty (FloatMap.filter(fun (row,v') value -> v = v') m))
   | _ -> raise (Failure "Value is not found in column")
 
-
+(* [is_member row map] returns true IFF a key with (row,_) exist in map*)
 let is_member r map = match map with
   | Imap m ->
     not (IntMap.is_empty(IntMap.filter(fun (row,v) value -> row = r) m))
@@ -103,12 +111,15 @@ let is_member r map = match map with
   | Fmap m ->
     not (FloatMap.is_empty(FloatMap.filter(fun (row,v) value -> row = r) m))
 
+(* [get_rows map] returns a list [r1,r2...r3] that contains all they
+   row keys in map *)
 let get_rows map = match map with
   | Imap m -> IntMap.fold (fun (r,v) a b -> a::b) m []
   | Smap m -> StringMap.fold (fun (r,v) a b -> a::b) m []
   | Bmap m -> BoolMap.fold (fun (r,v) a b -> a::b) m []
   | Fmap m -> FloatMap.fold (fun (r,v) a b -> a::b) m []
 
+(* [empty map] returns an empty Maps.t with the same type as map *)
 let empty map =
   match map with
   | Smap _ -> Smap (StringMap.empty)
@@ -116,9 +127,7 @@ let empty map =
   | Imap _ -> Imap (IntMap.empty)
   | Fmap _ -> Fmap (FloatMap.empty)
 
-(* [create v] creates an empty map based on the value v
- * precondition  : none
- * postcondition : create v ~ empty (create v) *)
+(* [create value] creates an empty map based on the value type *)
 let create (v : value) =
   match v with
   | VInt _ -> Imap (IntMap.empty)
@@ -127,21 +136,25 @@ let create (v : value) =
   | VBool _ -> Bmap (BoolMap.empty)
   | _ -> raise (Failure "Error: Changes to column may not be made")
 
+(* [like_compare comp key condition] returns 0 if condition
+   is satisfied by comparing key to comp *)
 let like_compare comp key condition =
   match condition with
   | LikeBegin -> string_match (regexp (key^".*")) comp 0
   | LikeEnd -> string_match (regexp (".*"^key^"$")) comp 0
   | LikeSubstring -> string_match (regexp (".*"^key^".*")) comp 0
   | NotLikeBegin -> not (string_match (regexp (key^".*")) comp 0)
-  | NotLikeEnd -> not (string_match (regexp (".*"^key)) comp 0)
+  | NotLikeEnd -> not (string_match (regexp (".*"^key^"$")) comp 0)
   | NotLikeSubstring -> not (string_match (regexp (".*"^key^".*")) comp 0)
   | _ -> false
 
+(* [size map] returns the cardinality of map *)
 let size (map: t) : int = match map with
   | Smap m -> StringMap.cardinal m
   | Bmap m -> BoolMap.cardinal m
   | Imap m -> IntMap.cardinal m
   | Fmap m -> FloatMap.cardinal m
+
 
 let rec get_longest (map_list:t list) (lsize:int) (lmap:t) : t =
   match map_list with
@@ -163,6 +176,8 @@ let rec get_longest (map_list:t list) (lsize:int) (lmap:t) : t =
        get_longest t (FloatMap.cardinal f) (Fmap f)
      else get_longest t lsize lmap
 
+(* [does_stasify condition comp (row,key)] returns 0 if
+   the condition is satisfied when comparing the key to comp *)
 let does_satisfy condition comp (c,key) =
   let var = Pervasives.compare key comp in
   match condition with
@@ -174,6 +189,9 @@ let does_satisfy condition comp (c,key) =
   | NotEq -> var <> 0
   | _ -> raise (Failure "Incorrect compare operator")
 
+(* [does_stasify condition comp (row,key)] returns 0 if
+   the condition is satisfied when comparing the key to comp.
+   Key is a string*)
 let does_satisfy' condition comp (c,key) =
   let var = Pervasives.compare key comp in
   match condition with
@@ -185,7 +203,9 @@ let does_satisfy' condition comp (c,key) =
   | NotEq -> var <> 0
   | _ -> like_compare key comp condition
 
-
+(* [select map condition comp] returns a Maps.t that is a subset of
+   map which all they keys satisfy the condition when compared to
+   comp *)
 let select map condition comp =
   match comp,map with
   | VInt i,Imap m ->
@@ -198,6 +218,8 @@ let select map condition comp =
      Fmap(FloatMap.filter (fun key value -> does_satisfy condition f key) m)
   | _ -> raise (Failure "Incompatable value and column types while selecting")
 
+(* [insert value row map] adds an item with key = (row*value) and value (row) to
+   map *)
 let insert value row m = match value, m with
   | VInt i, Imap map -> Imap(IntMap.add (row,i) row map)
   | VString s, Smap map -> Smap(StringMap.add (row,s) row map)
@@ -205,6 +227,7 @@ let insert value row m = match value, m with
   | VFloat f, Fmap map -> Fmap(FloatMap.add (row,f) row map)
   | _ -> raise (Failure "Incompatable value and column types while inserting")
 
+(* [update map newv] replaces each item in map with the value newv*)
 let update (map:t)(newv:value) =
   match map,newv with
   | Imap m, VInt i' ->
@@ -233,7 +256,8 @@ let replace' (row:int) (v:value) (map:t) =
      Fmap(FloatMap.fold(fun (r,v) a mp -> if r = row then (FloatMap.add(r,newv) r (FloatMap.remove (r,v) mp)) else mp) m m)
   | _ -> raise (Failure "Incompatable value and column types while updating")
 
-
+(* [replace newm oldm] replaces all values in oldm with newm values for
+   all occurances of matching rows*)
 let replace (newm:t) (oldm':t) =
   match newm,oldm' with
   | Imap m, Imap oldm ->
@@ -254,7 +278,8 @@ let replace (newm:t) (oldm':t) =
        oldm newm
   | _ -> raise (Failure "Incompatable value and column types while updating")
 
-
+(* [joing m1 m2] returns the list of paired rows of each map
+   having equal values*)
 let join (m1:t) (m2:t) : (int*int) list =
   match m1,m2 with
   |Imap m,Imap m' ->
@@ -267,18 +292,24 @@ let join (m1:t) (m2:t) : (int*int) list =
     (FloatMap.fold(fun (r,v) a acc -> if (has_value (VFloat v) m2) then (r, joiner (VFloat v) m2)::acc else acc) m [])
   | _ -> raise (Failure "Incompatable value and column types while joining")
 
+(* [delete ids map] removes each item in the map with
+    rows that are in the list ids *)
 let delete ids map = match map with
   | Imap m -> Imap(IntMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
   | Smap m -> Smap(StringMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
   | Bmap m -> Bmap(BoolMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
   | Fmap m -> Fmap(FloatMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
 
-end
+(* [get_type map] returns the value type of a map *)
+let get_type map = match map with
+  | Imap _ -> VInt 0
+  | Smap _ -> VString ""
+  | Bmap _ -> VBool false
+  | Fmap _ -> VFloat 0.0
 
 
-(*
 (*TESTS*)
-open Maps
+
 let imap = create (VInt 0)
 
 
@@ -311,18 +342,19 @@ TEST "test_select_string" = (size (select smap_hundred LikeEnd (VString "0")) = 
 
 
 (*TEST "JOIN" =*)
-(*TEST_MODULE "insert_test" = struct
+TEST_MODULE "insert_test" = struct
 
-  let m = Maps.create (VInt 0)
-  let m' = Maps.insert (VInt 5) 5 m
-  let m'' = Maps.insert (VInt 8) 6 m'
-  let m''' = Maps.insert (VInt 9) 7 m''
+    let m = create (VInt 0)
+    let m' = insert (VInt 5) 5 m
+    let m'' = insert (VInt 8) 6 m'
+    let m''' = insert (VInt 9) 7 m''
 
-  let n = Maps.create (VInt 0)
-  let n' = Maps.insert (VInt 9) 10 n
-  let n'' = Maps.insert (VInt 8) 20 n'
-  let n''' = Maps.insert (VInt 10) 30 n''
+    let n = create (VInt 0)
+    let n' = insert (VInt 9) 10 n
+    let n'' = insert (VInt 8) 20 n'
+    let n''' = insert (VInt 10) 30 n''
 
-  let j = Maps.join (m''') (n''') === [(7,10); (6,20)]
+    let j = join (m''') (n''') === [(7,10); (6,20)]
 
-end*)*)
+  end
+end
