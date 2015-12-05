@@ -70,10 +70,10 @@ let to_string (map:t) : bytes list =
 (* [build_col col map] returns a bytes list representation of a table column*)
 let build_col (col:string) (map:t) : bytes list =
   match map with
-  | Imap m -> col::"VInt"::(to_string map)
-  | Bmap m -> col::"VBool"::(to_string map)
-  | Fmap m -> col::"VFloat"::(to_string map)
-  | Smap m -> col::"VString"::(to_string map)
+  | Imap m -> "VInt"::col::(to_string map)
+  | Bmap m -> "VBool"::col::(to_string map)
+  | Fmap m -> "VFloat"::col::(to_string map)
+  | Smap m -> "VString"::col::(to_string map)
 
 (*precondition: r is a unique key *in* the map
   postcondition: returns the value associated with the row key r*)

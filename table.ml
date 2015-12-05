@@ -10,7 +10,7 @@ type t = (column * Maps.t) list
 let next_val =
   let time = ref (int_of_float (Unix.gettimeofday ())) in fun () ->
   incr time;
-  !time
+  abs(!time)
 
 let to_table (lst: (string * Maps.t) list) = lst
 
