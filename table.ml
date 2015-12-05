@@ -12,6 +12,11 @@ let next_val =
    incr counter;
    !counter
 
+let rec matrix_of_table (tbl:t) =
+  match tbl with
+  |[] -> []
+  |(col,map)::t -> (Maps.build_col col map)::(matrix_of_table t)
+
 (* [make_select tbl col] makes an empty Map.t with the same type as col in tbl*)
 let make_select tbl col =
   if List.mem_assoc col tbl then Maps.empty (List.assoc col tbl)
@@ -71,7 +76,7 @@ let rec strip_col (tbl:t) (acc:column list) :column list =
 (* precondition:
  * postcondition: *)
 let selectAll tbl w =
-  select (strip_col tbl []) tbl w
+  select (List.rev (strip_col tbl [])) tbl w
 
 (* [get_cvlst clst vlst acc] accumulates the list of columns and list of values
  * into one (column, value) list

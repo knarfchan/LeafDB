@@ -1,6 +1,7 @@
 open Sys
 open Maps
 open Str
+open Table
 open Typs
 
 (*filesystem.ml*)
@@ -37,6 +38,7 @@ let to_sll path db_lst =
 (* takes a database folder and a table and gives you a string list list *)
 let dbms_sll db_name tab_name =
   to_sll(append_path (get_db_path(db_name)) (tab_name))
+
 
 let read_db folder = failwith "not implemented"
 
@@ -84,7 +86,9 @@ let read_tbl file = failwith "unimplemented"
 
 let add_db db = failwith "not implemented"
 
-let write_tbl tbl = failwith "not implemented"
+let write_tbl (db_name:bytes) (tbl_name:bytes) (tbl:Table.t) : unit  =
+  let mtx = matrix_of_table tbl in
+  Csv.save ("./DBMS/"^db_name^"/"^tbl_name^".csv") mtx
 
 let delete_db file = failwith "not implemented"
 
