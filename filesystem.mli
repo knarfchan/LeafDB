@@ -19,6 +19,9 @@ val add_db : string -> unit
 (* takes a database and table name and a Table.t and creates the csv *)
 val add_tbl : string -> string -> Table.t -> unit
 
+(* takes a database and table name and creates an empty csv *)
+val add_empty_tbl : string -> string -> unit
+
 (* takes a database and table name and delete it *)
 val delete_tbl : string -> string -> unit
 
