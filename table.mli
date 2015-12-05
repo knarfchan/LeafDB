@@ -5,9 +5,12 @@ open Maps
 (* t represents a table *)
 type t
 
-
+(* precondition: None
+ * poscondition : turns a (string * Map.t) list into a table *)
 val to_table : (string * Maps.t) list -> t
-(* Tables a column name, a table and returns the associated map.*)
+
+(* precondition: Column must be a column in t
+ * poscondition : returns the map in table t with the column name parameter *)
 val get_one_map : column -> t -> Maps.t
 
 (* precondition : None

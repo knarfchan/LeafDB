@@ -12,8 +12,10 @@ let next_val =
   incr time;
   abs(!time)
 
+(* [to_table lst] converts a (string * Maps.t) list into a table *)
 let to_table (lst: (string * Maps.t) list) = lst
 
+(* [get_one_map] searches the table t for a column and returns the map *)
 let get_one_map (column: string) (t:t) = List.assoc column t
 
 (* [matrix_of_table tbl] returns a string matrix of the table *)
