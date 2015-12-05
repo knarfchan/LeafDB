@@ -433,7 +433,7 @@ let update tbl cvlst w =
       (update_all_col (insert_all_nulls tbl (insert_nulls tbl (snd new_maps) [])
       []) updated_tbl [])
 
-
+(*
 TEST_MODULE "insert_test" = struct
 
   let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
@@ -501,7 +501,7 @@ TEST_MODULE "insert_test" = struct
 
   let _ = print_tbl dj''*)
 
-end
+end*)
 (*
 TEST_MODULE "insert_test" = struct
 

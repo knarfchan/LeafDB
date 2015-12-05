@@ -61,7 +61,8 @@ let print_command1 (e: expr) (b: bool) =
     let e = Test.parse input in
     Printf.printf"%s" (Test.ast_to_string e);
       if e = ExitDb then (Printf.printf "Exiting database.\n"; repl1 dbs)
-      else let (t,b) = Interpret.eval d e in
+      else if e = ShowTables then (Table.print_tbl (Database.get_tables d); repl2 dbs d name) else
+      let (t,b) = Interpret.eval d e in
       (print_command2 t d e b)
   with
     | Failure x -> (Printf.printf "%s\n" x)
