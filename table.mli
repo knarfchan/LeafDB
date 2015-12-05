@@ -23,6 +23,9 @@ val selectAll : t -> where -> t
  *)
 val insert    : t -> column list -> value list -> t
 
+
+val matrix_of_table : t -> string list list
+
 (* Takes a table, a list of values that correspond with the data types
  * of all the columns, and returns a table with the values appended to all
  * of the columns *)

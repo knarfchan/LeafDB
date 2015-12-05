@@ -15,6 +15,13 @@ type value =
   | VFloat of float
   | VNull
 
+let val_to_string value = match value with
+  | VInt i -> string_of_int i
+  | VString s -> s
+  | VBool b -> string_of_bool b
+  | VFloat f -> string_of_float f
+  | VNull -> ""
+
 (* supported operators in where used to conditionally select rows *)
 type operator =
   | Gt | Lt | Eq | GtEq | LtEq | NotEq
