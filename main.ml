@@ -58,7 +58,7 @@ let print_command1 (e: expr) (b: bool) =
 
   let rec repl2 (dbs: Dbms.t) (d: Database.t) (name: string) =
   (try
-    Printf.printf "\027[32mLeafDB>%s>" name;Printf.printf("\027[37m");
+    Printf.printf "\027[32mLeafDB>%s>" name; Printf.printf("\027[37m");
     let input = read_line() in
     let e = Test.parse input in
     Printf.printf"%s" (Test.ast_to_string e);
