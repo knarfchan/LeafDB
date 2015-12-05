@@ -5,8 +5,8 @@ open Csv
  *)
 val read_db : string -> Database.t
 
-(* takes the name of a table and goes through the file directory, returning Some
- * Some Table.t if it exists physically and None if it does not exist
+(* takes the name of a database then  table and goes through the file directory,
+ * returning Some Table.t if it exists physically and None if it does not exist
  *)
 val read_tbl : string -> string -> Table.t
 
@@ -15,10 +15,11 @@ val add_db : Database.t -> unit
 
 val add_tbl : Table.t -> unit
 
-val delete_tbl : Table.t -> unit
+(* *)
+val delete_tbl : string -> string -> unit
 
 (* takes a Table.t and stores it in file, updating the old file *)
-val write_tbl : Table.t -> unit
+val write_tbl : string -> string -> Table.t -> unit
 
 (* takes the name of a database and removes it from file, returning true if
  * it succesfully deleted and false otherwise

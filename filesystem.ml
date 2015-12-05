@@ -14,7 +14,7 @@ let get_files_paths path =
 
 (* remove extentions of the string *)
 let remove_ext str =
-  global_replace(regexp("\..*"))("")(str)
+  global_replace(regexp("\\..*"))("")(str)
 
 (* appends a filename to a path where it resides *)
 let append_path path name =
