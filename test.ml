@@ -91,3 +91,4 @@ let rec ast_to_string ast =
   | Use(s) -> "Use(" ^ s ^ ")"
   | ExitDb -> "ExitDb"
   | ShowDatabases -> "ShowDatabases"
+  | ShowTables -> "ShowTables"
