@@ -16,17 +16,18 @@ let remove_ext str =
   global_replace(regexp("\..*"))("")(str)
 
 (* appends a filename to a path where it resides *)
-let full_path path name =
+let append_path path name =
   if string_match(regexp(".*/$"))(path)(0) then path ^ name
   else path ^ "/" ^ name
 
 (* returns all the database folders full paths in DBMS *)
 (* returns databases for simplicity *)
 let get_dbs_dir path =
-  List.map(fun name -> full_path "./DBMS" name)(Array.to_list(Sys.readdir "./DBMS"))
+  List.map(fun name -> append_path "./DBMS" name)(Array.to_list(Sys.readdir "./DBMS"))
 
+(* returns the database path with name name *)
 let get_db_path name =
-  full_path "./DBMS" name
+  append_path "./DBMS" name
 
 (* takes a database folder and return a list of tuples, (name of the table, string list list)*)
 let to_sll path db_lst =
@@ -35,7 +36,7 @@ let to_sll path db_lst =
 (* for annie *)
 (* takes a database folder and a table and gives you a string list list *)
 let dbms_sll db_name tab_name =
-  to_sll(full_path get_db_path(db_name) tab_name)
+  to_sll(append_path (get_db_path(db_name)) (tab_name))
 
 let read_db folder = failwith "not implemented"
 
@@ -86,3 +87,7 @@ let add_db db = failwith "not implemented"
 let write_tbl tbl = failwith "not implemented"
 
 let delete_db file = failwith "not implemented"
+
+let delete_tbl tbl = failwith "not implemented"
+
+let add_tbl tbl = failwith "not implemented"
