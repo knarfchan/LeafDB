@@ -10,6 +10,9 @@ let get_files_paths path : string list =
   let db_names = Sys.readdir path in
     Array.to_list(db_names)
 
+let get_database_names _ =
+  get_files_paths("./DBMS")
+
 (* remove extentions of the string *)
 let remove_ext str =
   global_replace(regexp("\\..*"))("")(str)

@@ -1,5 +1,8 @@
 (* filesystem.mli *)
 open Csv
+(* *)
+val get_database_names : unit -> string list
+
 (* takes the name of a database and a Database.t and fills it with the tables
  * found in the file directory
  *)
