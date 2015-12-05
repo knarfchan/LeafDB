@@ -1,4 +1,5 @@
 open Table
+open Typs
 
 (* type representing our database *)
 type t = (string, Table.t) Hashtbl.t
@@ -30,3 +31,14 @@ let drop (db: t) (str: string) : bool =
 let lookup (db: t) (str: string) : Table.t option =
   if Hashtbl.mem db str then Some (Hashtbl.find db str)
   else None
+
+let rec insert_tables (strs: value list) (tab: Table.t) : Table.t =
+  match strs with
+  | [] -> tab
+  | h::t -> insert_tables(t)(Table.insertAll(tab)([h]))
+
+let get_tables (d: t) : Table.t =
+  let tb_list = ref [] in
+    (Hashtbl.iter (fun x y -> tb_list := VString(x)::(!tb_list))(d));
+    let new_tab = Table.create([("Tables", VString(""))]) in
+      insert_tables(!tb_list)(new_tab)

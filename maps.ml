@@ -300,8 +300,12 @@ let delete ids map = match map with
   | Bmap m -> Bmap(BoolMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
   | Fmap m -> Fmap(FloatMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
 
-
-
+(* [get_type map] returns the value type of a map *)
+let get_type map = match map with
+  | Imap _ -> VInt 0
+  | Smap _ -> VString ""
+  | Bmap _ -> VBool false
+  | Fmap _ -> VFloat 0.0
 
 
 (*TESTS*)

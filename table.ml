@@ -127,34 +127,12 @@ let rec get_val_from_cvlst cvlst acc =
   | [] -> acc
   | (_,v)::t -> get_val_from_cvlst t (acc @ [v])
 
-(* precondition:
- * postcondition: *)
-let rec update_help new_tbl cvlst acc =
-  match new_tbl, cvlst with
-  | [], [] -> acc
-  | (a,b)::t, (c,v)::t' -> update_help t t' (acc @ [(a, Maps.update b v)])
-  | _, _ -> raise (Failure "Different number of columns in table and column list")
 
-let rec update_all_col tbl new_tbl acc =
-  match tbl with
-  | [] -> acc
-  | (name, map)::t -> update_all_col t new_tbl
-                      (acc @ [(name,
-                      (if List.mem_assoc name new_tbl
-                        then Maps.replace map (List.assoc name new_tbl)
-                       else map))])
 
-(* precondition:
- * postcondition: *)
-let update tbl cvlst w =
-  let new_tbl = select (get_col cvlst []) tbl w in
-  let updated_tbl = update_help new_tbl cvlst [] in
-    (update_all_col tbl updated_tbl [])
-
-let rec get_rows_to_delete table where =
+let rec get_all_rows table where =
   match table, where with
   | ((name,map)::t), (Condition (col,op,v)) -> (if (name = col) then Maps.select map op v
-                                                                else get_rows_to_delete t where)
+                                                                else get_all_rows t where)
   | ((name,map)::t) , Null -> map
   | _ -> raise (Failure "Column specified is not found in table")
 
@@ -164,7 +142,7 @@ let rec make_removed ids table =
   | [] -> []
 
 let delete table where =
-  let rows = get_rows_to_delete table where in
+  let rows = get_all_rows table where in
   let ids = Maps.get_rows rows in
   make_removed ids table
 
@@ -301,7 +279,65 @@ let join t1 t2 o =
     List.rev (remove_on (List.rev (join_help ((empty_table t1 []) @
       (empty_table t2 [])) (get_cvlst t1 t2 rows []))) (snd o) [])
 
-(*TEST_MODULE "insert_test" = struct
+
+(*I am sad*)
+let rec get_maps rowids tbl name new_map acc =
+  match rowids with
+  | [] -> (new_map, acc)
+  | h::t -> if Maps.is_member h (List.assoc name tbl) then
+              (get_maps t tbl name (Maps.insert (Maps.lookup h (List.assoc name tbl)) h new_map) acc)
+            else
+              (get_maps t tbl name (Maps.insert (Maps.get_type new_map) h new_map)
+              (acc @ [(name, h, Maps.get_type new_map)]))
+
+let rec get_all_maps rowidlst tbl (maps:t) (acc:t) inserts =
+  match maps with
+  | [] -> (acc, inserts)
+  | (name, map)::t ->
+    let nmap = (get_maps rowidlst tbl name (Maps.create (Maps.get_type map)) []) in
+    get_all_maps rowidlst tbl t (acc @ [(name, fst nmap)]) (inserts @ (snd nmap))
+
+(* precondition:
+ * postcondition: *)
+let rec update_help new_maps cvlst acc =
+  match new_maps, cvlst with
+  | [], [] -> acc
+  | (a,b)::t, (c,v)::t' -> update_help t t' (acc @ [(a, Maps.update b v)])
+  | _, _ -> raise (Failure "Different number of columns in table and column list")
+
+let rec update_all_col tbl new_tbl acc =
+  match tbl with
+  | [] -> acc
+  | (name, map)::t -> update_all_col t new_tbl
+                      (acc @ [(name,
+                      (if List.mem_assoc name new_tbl
+                        then Maps.replace map (List.assoc name new_tbl)
+                       else map))])
+
+let rec insert_nulls tbl inserts (acc:t) =
+  match inserts with
+  | [] -> acc
+  | (name, rowid, v)::t -> insert_nulls tbl t (acc @ [(name, Maps.insert v rowid (List.assoc name tbl))])
+
+let rec insert_all_nulls (tbl:t) null_cols (acc:t):t =
+  match tbl with
+  | [] -> acc
+  | (name, map)::t -> if List.mem_assoc name null_cols then
+                        insert_all_nulls t null_cols (acc @ [(name, List.assoc name null_cols)])
+                      else insert_all_nulls t null_cols (acc @ [name, map])
+
+(* precondition:
+ * postcondition: *)
+let update tbl cvlst w =
+  let new_tbl = select (get_col cvlst []) tbl w in
+  let rowids = Maps.get_rows (Maps.get_longest (strip_tbl new_tbl []) 0 (Maps.create (VInt 0))) in
+  let new_maps = (get_all_maps rowids tbl new_tbl [] []) in
+  let updated_tbl = (update_help (fst new_maps) cvlst []) in
+    ((print_tbl new_tbl); (print_tbl updated_tbl);
+    (update_all_col (insert_all_nulls tbl (insert_nulls tbl (snd new_maps) []) []) updated_tbl []))
+
+(*
+TEST_MODULE "insert_test" = struct
 
   let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
              ("Height", Maps.create (VFloat 0.0))]
@@ -349,8 +385,11 @@ let join t1 t2 o =
 
   let _ = print_tbl j
 
-  let u = update j [("Age", VInt 20); ("Height", VFloat 6.1)] (Condition ("Name", Eq, VString "Erin"))
+  let u = update j [("Age", VInt 20); ("Height", VFloat 7.0)] (Condition ("Name", Eq, VString "Frank"))
 
+  let _ = print_tbl u
+
+(*
   let _ = print_tbl u
 
   let dj = delete j (Condition ("Name", Eq, VString "Erin"))
@@ -363,10 +402,10 @@ let join t1 t2 o =
 
   let dj'' = delete j (Null)
 
-  let _ = print_tbl dj''
+  let _ = print_tbl dj''*)
 
-end
-
+end*)
+(*
 TEST_MODULE "insert_test" = struct
 
   let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
