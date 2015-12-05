@@ -486,9 +486,6 @@ TEST_MODULE "insert_test" = struct
 
   let _ = print_tbl u
 
-(*
-  let _ = print_tbl u
-
   let dj = delete j (Condition ("Name", Eq, VString "Erin"))
 
   let _ = print_tbl dj
@@ -499,24 +496,19 @@ TEST_MODULE "insert_test" = struct
 
   let dj'' = delete j (Null)
 
-  let _ = print_tbl dj''*)
+  let _ = print_tbl dj''
 
-end*)
-(*
-TEST_MODULE "insert_test" = struct
-
-  let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
+  let tbls = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
              ("Height", Maps.create (VFloat 0.0))]
 
-  let tbl' = insertAll tbl [VString "Annie"; VInt 19; VFloat 5.3]
-  let tbl'' = insertAll tbl' [VString "Erin"; VInt 19; VFloat 5.8]
-  let tbl''' = insertAll tbl'' [VString "Frank"; VInt 19; VFloat 6.0]
+  let tbls' = insertAll tbl [VString "Annie"; VInt 19; VFloat 5.3]
+  let tbls'' = insertAll tbl' [VString "Erin"; VInt 19; VFloat 5.8]
+  let tbls''' = insertAll tbl'' [VString "Frank"; VInt 19; VFloat 6.0]
 
-  let _ = print_tbl tbl'''
+  let _ = print_tbl tbls'''
 
-  let sel = selectAll (tbl''') (Condition ("Name", LikeEnd, VString "k"))
+  let sel = selectAll (tbls''') (Condition ("Name", LikeEnd, VString "k"))
 
   let _ = print_tbl sel
 
-end
-*)
+end*)
