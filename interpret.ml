@@ -65,7 +65,7 @@ let eval_dbms (dbs : Dbms.t) (e) : dbresult =
 
 (*type evaluated = Table.t option * bool
 type dbresult = (Database.t option) * string option * bool*)
-
+(*
 TEST_MODULE "eval tests" = struct
 
   let leafDB = Dbms.create ()
@@ -143,3 +143,5 @@ TEST_MODULE "eval tests" = struct
   let s2 = eval db2 (SelectAll("t2", Null))
 
 end
+
+*)

@@ -51,7 +51,7 @@ let rec read_db_help (db_str: string) (db: Database.t) (tbl_lst: string list) : 
               read_db_help(db_str)(db)(t)
 
 let read_db (db_str: string) (db: Database.t) : unit =
-  let tables = get_files_paths(get_db_path db_str) in
+  let tables = List.map(fun name -> remove_ext(name))(get_files_paths(get_db_path db_str)) in
     read_db_help(db_str)(db)(tables)
 
 let rec delete_all_tables tbl_lst =
@@ -61,12 +61,12 @@ let rec delete_all_tables tbl_lst =
 
 let delete_db db_str =
   let path = get_db_path db_str in
-  let tables = get_files_paths(path) in
+  let tables = List.map(fun n -> append_path path n)(get_files_paths path) in
     delete_all_tables(tables); Unix.rmdir(path)
 
 let delete_tbl db_str tbl_str =
   let path = get_tbl_path db_str tbl_str in
-    Unix.rmdir(path)
+    Sys.remove(path)
 
 let add_tbl db_str tbl_str tbl =
   let path = get_tbl_path db_str tbl_str in
