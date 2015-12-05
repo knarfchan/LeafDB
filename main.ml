@@ -54,7 +54,7 @@ let print_command1 (e: expr) (b: bool) =
                 else (Printf.printf "Error: Database %s not found.\n" str))
   | _ -> Printf.printf "Error: Invalid command.\n"
 
-let rec repl2 (dbs: Dbms.t) (d: Database.t) (name: string)=
+  let rec repl2 (dbs: Dbms.t) (d: Database.t) (name: string)=
   (try
     Printf.printf "\027[32mLeafDB>%s>" name;Printf.printf("\027[37m");
     let input = read_line() in
@@ -63,7 +63,9 @@ let rec repl2 (dbs: Dbms.t) (d: Database.t) (name: string)=
       if e = ExitDb then (Printf.printf "Exiting database.\n"; repl1 dbs)
       else let (t,b) = Interpret.eval d e in
       (print_command2 t d e b)
-  with Failure x -> Printf.printf "%s\n" x); (repl2 dbs d name)
+  with
+    | Failure x -> (Printf.printf "%s\n" x)
+    | _ -> (Printf.printf "Invalid SQL command \n")); (repl2 dbs d name)
 
 and repl1 (dbs: Dbms.t) =
   (try
@@ -76,6 +78,8 @@ and repl1 (dbs: Dbms.t) =
         match result with
         | (Some (d), Some(s), b) -> (print_command1 e b; if b then repl2 dbs d s else repl1 dbs)
         | (_, _, b) -> (print_command1 e b)
-  with Failure x -> Printf.printf "%s\n" x); (repl1 dbs)
+  with
+    | Failure x -> (Printf.printf "%s\n" x)
+    | _ -> (Printf.printf "Invalid SQL command \n")); (repl1 dbs)
 
 let main = repl1 (Dbms.create ())
