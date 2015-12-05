@@ -267,11 +267,11 @@ let delete ids map = match map with
   | Bmap m -> Bmap(BoolMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
   | Fmap m -> Fmap(FloatMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
 
-let delete ids map = match map with
-  | Imap m -> Imap(IntMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
-  | Smap m -> Smap(StringMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
-  | Bmap m -> Bmap(BoolMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
-  | Fmap m -> Fmap(FloatMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
+let get_type map = match map with
+  | Imap _ -> VInt 0
+  | Smap _ -> VString ""
+  | Bmap _ -> VBool false
+  | Fmap _ -> VFloat 0.0
 
 end
 
