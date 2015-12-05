@@ -77,7 +77,7 @@ let joiner (vu:value) (m:t) : int  = match vu,m with
     fst (fst (IntMap.choose(IntMap.filter (fun (row,v') value -> v = v') map)))
   | VBool v, Bmap map ->
     fst (fst (BoolMap.choose(BoolMap.filter(fun (row,v') value -> v = v') map)))
-  |_ -> failwith "error"
+  | _ -> raise (Failure "Unable to join tables")
 
 
 let has_value (vu:value) (map:t) : bool =
@@ -90,7 +90,7 @@ let has_value (vu:value) (map:t) : bool =
     not (BoolMap.is_empty (BoolMap.filter(fun (row,v') value -> v = v') m))
   | VFloat v, Fmap m ->
     not (FloatMap.is_empty (FloatMap.filter(fun (row,v') value -> v = v') m))
-  | _ -> failwith "error"
+  | _ -> raise (Failure "Value is not found in column")
 
 
 let is_member r map = match map with
@@ -125,12 +125,12 @@ let create (v : value) =
   | VString _ -> Smap (StringMap.empty)
   | VFloat _ -> Fmap (FloatMap.empty)
   | VBool _ -> Bmap (BoolMap.empty)
-  | _ -> failwith "Error"
+  | _ -> raise (Failure "Error: Changes to column may not be made")
 
 let like_compare comp key condition =
   match condition with
   | LikeBegin -> string_match (regexp (key^".*")) comp 0
-  | LikeEnd -> string_match (regexp (".*"^key)) comp 0
+  | LikeEnd -> string_match (regexp (".*"^key^"$")) comp 0
   | LikeSubstring -> string_match (regexp (".*"^key^".*")) comp 0
   | NotLikeBegin -> not (string_match (regexp (key^".*")) comp 0)
   | NotLikeEnd -> not (string_match (regexp (".*"^key)) comp 0)
@@ -172,7 +172,7 @@ let does_satisfy condition comp (c,key) =
   | GtEq -> var > 0 || var = 0
   | LtEq -> var < 0 || var = 0
   | NotEq -> var <> 0
-  | _ -> failwith "error"
+  | _ -> raise (Failure "Incorrect compare operator")
 
 let does_satisfy' condition comp (c,key) =
   let var = Pervasives.compare key comp in
@@ -196,14 +196,14 @@ let select map condition comp =
      Bmap(BoolMap.filter (fun key value -> does_satisfy condition b key) m)
   | VFloat f,Fmap m ->
      Fmap(FloatMap.filter (fun key value -> does_satisfy condition f key) m)
-  | _ -> failwith "Error"
+  | _ -> raise (Failure "Incompatable value and column types while selecting")
 
-let insert value row  m = match value, m with
+let insert value row m = match value, m with
   | VInt i, Imap map -> Imap(IntMap.add (row,i) row map)
   | VString s, Smap map -> Smap(StringMap.add (row,s) row map)
   | VBool b, Bmap map -> Bmap(BoolMap.add (row,b) row map)
   | VFloat f, Fmap map -> Fmap(FloatMap.add (row,f) row map)
-  | _ -> failwith "Error"
+  | _ -> raise (Failure "Incompatable value and column types while inserting")
 
 let update (map:t)(newv:value) =
   match map,newv with
@@ -215,7 +215,7 @@ let update (map:t)(newv:value) =
      Bmap(BoolMap.fold(fun (c,k) a map -> BoolMap.add (c,b')(c)(BoolMap.remove (c,k) map)) m m)
   | Fmap m, VFloat f' ->
      Fmap(FloatMap.fold(fun (c,k) a map -> FloatMap.add (c,f')(c)(FloatMap.remove (c,k) map)) m m)
-  | _ -> failwith "Does not follow schema"
+  | _ -> raise (Failure "Incompatable value and column types while updating")
 
 
 (*precondition: the key (r,_) is in the map m
@@ -231,7 +231,7 @@ let replace' (row:int) (v:value) (map:t) =
      Smap(StringMap.fold(fun (r,v) a mp -> if r = row then (StringMap.add(r,newv) r (StringMap.remove (r,v) mp)) else mp) m m)
   | Fmap m,VFloat newv ->
      Fmap(FloatMap.fold(fun (r,v) a mp -> if r = row then (FloatMap.add(r,newv) r (FloatMap.remove (r,v) mp)) else mp) m m)
-  | _ -> failwith "error"
+  | _ -> raise (Failure "Incompatable value and column types while updating")
 
 
 let replace (newm:t) (oldm':t) =
@@ -252,7 +252,7 @@ let replace (newm:t) (oldm':t) =
      FloatMap.fold
        (fun (c,k) a map -> if is_member c (Fmap m) then (replace' c (VFloat k) map) else map)
        oldm newm
-  | _ -> failwith "error"
+  | _ -> raise (Failure "Incompatable value and column types while updating")
 
 
 let join (m1:t) (m2:t) : (int*int) list =
@@ -265,7 +265,7 @@ let join (m1:t) (m2:t) : (int*int) list =
     (BoolMap.fold(fun (r,v) a acc -> if (has_value (VBool v) m2) then (r, joiner (VBool v) m2)::acc else acc) m [])
   |Fmap m,Fmap m' ->
     (FloatMap.fold(fun (r,v) a acc -> if (has_value (VFloat v) m2) then (r, joiner (VFloat v) m2)::acc else acc) m [])
-  | _ -> failwith "error"
+  | _ -> raise (Failure "Incompatable value and column types while joining")
 
 let delete ids map = match map with
   | Imap m -> Imap(IntMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
@@ -276,7 +276,7 @@ let delete ids map = match map with
 end
 
 
-
+(*
 (*TESTS*)
 open Maps
 let imap = create (VInt 0)
@@ -309,10 +309,9 @@ TEST "test_select_string" = (size (select smap_hundred LikeSubstring (VString "w
 TEST "test_select_string" = (size (select smap_hundred LikeBegin (VString "1")) = 12 )
 TEST "test_select_string" = (size (select smap_hundred LikeEnd (VString "0")) = 10)
 
+
 (*TEST "JOIN" =*)
-
-
-TEST_MODULE "insert_test" = struct
+(*TEST_MODULE "insert_test" = struct
 
   let m = Maps.create (VInt 0)
   let m' = Maps.insert (VInt 5) 5 m
@@ -326,4 +325,4 @@ TEST_MODULE "insert_test" = struct
 
   let j = Maps.join (m''') (n''') === [(7,10); (6,20)]
 
-end
+end*)*)

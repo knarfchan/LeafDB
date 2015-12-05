@@ -77,11 +77,11 @@ statement:
   | SELECT; ASTERISK; FROM; tab = ID; w = where_condition
       {SelectAll(tab, w)}
   | INSERT; INTO; tab = ID; LEFT_PAREN; cols = col_list; RIGHT_PAREN;
-      VALUES; LEFT_PAREN; vals = val_list RIGHT_PAREN
+      VALUES; LEFT_PAREN; vals = val_list; RIGHT_PAREN
         {Insert(tab, cols, vals)}
   | INSERT; INTO; tab = ID; VALUES; LEFT_PAREN; vals = val_list; RIGHT_PAREN
       {InsertAll(tab, vals)}
-  | UPDATE; tab = ID; SET; pairs = pair_list; WHERE; w = where_condition
+  | UPDATE; tab = ID; SET; pairs = pair_list; w = where_condition
       {Update(tab, pairs, w)}
   | DELETE; FROM; tab = ID; WHERE; w = where_condition
       {Delete(tab, w)}
@@ -118,7 +118,7 @@ rev_val_list:
   ;
 
 rev_dec_list:
-  | col = ID; v = value                                    {[(col, v)]}
+  | col = ID; t = supported                                {[(col, t)]}
   | decs = rev_dec_list; COMMA; col = ID; t = supported    {(col, t)::decs}
   ;
 
