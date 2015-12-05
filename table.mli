@@ -1,8 +1,13 @@
 (* table.mli *)
 open Typs
+open Maps
 
 (* represents our table *)
 type t
+
+val to_table : (string * Maps.t) list -> t
+(* Tables a column name, a table and returns the associated map.*)
+val get_one_map : column -> t -> Maps.t
 
 val get_size : t -> int
 

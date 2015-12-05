@@ -12,6 +12,10 @@ let next_val =
   incr time;
   !time
 
+let to_table (lst: (string * Maps.t) list) = lst
+
+let get_one_map (column: string) (t:t) = List.assoc column t
+
 (* [matrix_of_table tbl] returns a string matrix of the table *)
 let rec matrix_of_table (tbl:t) =
   match tbl with
@@ -511,4 +515,5 @@ TEST_MODULE "insert_test" = struct
 
   let _ = print_tbl sel
 
-end*)
+end
+*)
