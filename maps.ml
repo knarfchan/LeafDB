@@ -357,7 +357,7 @@ let join (m1:t) (m2:t) : (int*int) list =
   |Fmap m,Fmap m' ->
     (FloatMap.fold
        (fun (r,v) a acc ->
-        if (has_valuef(VFloat v) m2) then
+        if (has_value(VFloat v) m2) then
           (r, joiner (VFloat v) m2)::acc else
           acc)
        m [])
