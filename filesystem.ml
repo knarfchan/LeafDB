@@ -1,6 +1,7 @@
 open Sys
 open Maps
 open Str
+open Table
 open Typs
 
 (*filesystem.ml*)
@@ -28,13 +29,16 @@ let DBMS_sll _ =
   let dbs = "./DBMS" in
   to_sll(get_files_paths(dbs))
 
+
 let read_db folder = failwith "not implemented"
 
+(* [parse_item s] parses the string s into (row id, value) *)
 let parse_item (s:string) =
   let sep = Str.search_forward (regexp_string "*") s 0 in
     (int_of_string (Bytes.sub s 0 sep),
     (Bytes.sub s (sep + 1) (Bytes.length s - sep - 1)))
 
+(* [map_map typ] makes an empty map using typ to identify the type of map *)
 let make_map typ =
   match typ with
   | "VInt" -> Maps.create (VInt 0)
@@ -43,11 +47,15 @@ let make_map typ =
   | "VFloat" -> Maps.create (VFloat 0.0)
   | _ -> raise (Failure "Error: Not a valid SQL type")
 
+(* [parse_all_items row acc] parses all the items in a column into a
+ * (row id, value) list *)
 let rec parse_all_items row acc =
   match row with
   | [] -> acc
   | h::t -> parse_all_items t (acc @ [(parse_item h)])
 
+(* [insert_items typ map row] insert (row id, values) into map of type given
+ * by typ *)
 let rec insert_items (typ:string) map row =
   match typ, map, row with
   | "VInt", m, (id, v)::t ->
@@ -61,7 +69,8 @@ let rec insert_items (typ:string) map row =
   | _ , _, [] -> map
   | _, _, _ -> raise (Failure "Error: Type and Map should be specified")
 
-
+(* [read_tbl_helper matrix acc] takes a matrix and parses the information in
+ * the matrix into a table *)
 let rec read_tbl_helper (matrix:bytes list list) acc =
   match matrix with
   | [] -> acc
@@ -74,6 +83,8 @@ let read_tbl file = failwith "unimplemented"
 
 let add_db db = failwith "not implemented"
 
-let write_tbl tbl = failwith "not implemented"
+let write_tbl (db_name:bytes) (tbl_name:bytes) (tbl:Table.t) : unit  =
+  let mtx = matrix_of_table tbl in
+  Csv.save ("./DBMS/"^db_name^"/"^tbl_name^".csv") mtx
 
 let delete_db file = failwith "not implemented"
