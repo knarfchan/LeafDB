@@ -16,3 +16,5 @@ val lookup: t -> string -> Table.t option
 val add_table: t -> string -> Table.t -> bool
 
 val update_table: t -> string -> Table.t -> unit
+
+val get_tables : t -> Table.t

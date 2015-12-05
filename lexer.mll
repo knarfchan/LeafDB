@@ -63,6 +63,7 @@ rule read =
   | "BOOLEAN" | "boolean"       { BOOLS }
   | "SHOW" | "show"             { SHOW }
   | "DATABASES" | "databases"   { DATABASES }
+  | "TABLES" | "tables"         { TABLES }
   | "EXIT" | "exit"             { EXIT }
   | "USE" | "use"               { USE }
   | id                          { ID (Lexing.lexeme lexbuf) }

@@ -50,10 +50,22 @@ type t =
    item map *)
 let to_string (map:t) : bytes list =
   match map with
-  | Imap m -> IntMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_int v))::acc) m []
-  | Smap m -> StringMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^v)::acc) m []
-  | Bmap m -> BoolMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_bool v))::acc) m []
-  | Fmap m -> FloatMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_float v))::acc) m []
+  | Imap m ->
+     IntMap.fold
+       (fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_int v))::acc)
+       m []
+  | Smap m ->
+     StringMap.fold
+       (fun (r,v) a acc -> ((string_of_int r)^"*"^v)::acc)
+       m []
+  | Bmap m ->
+     BoolMap.fold
+       (fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_bool v))::acc)
+       m []
+  | Fmap m ->
+     FloatMap.fold
+       (fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_float v))::acc)
+       m []
 
 (* [build_col col map] returns a bytes list representation of a table column*)
 let build_col (col:string) (map:t) : bytes list =
@@ -231,13 +243,25 @@ let insert value row m = match value, m with
 let update (map:t)(newv:value) =
   match map,newv with
   | Imap m, VInt i' ->
-     Imap(IntMap.fold(fun (c,k) a map -> IntMap.add (c,i')(c)(IntMap.remove (c,k) map)) m m)
+     Imap(IntMap.fold
+            (fun (c,k) a map ->
+             IntMap.add (c,i')(c)(IntMap.remove (c,k) map))
+            m m)
   | Smap m, VString s'->
-     Smap(StringMap.fold(fun (c,k) a map -> StringMap.add (c,s')(c)(StringMap.remove (c,k) map)) m m)
+     Smap(StringMap.fold
+            (fun (c,k) a map ->
+             StringMap.add (c,s')(c)(StringMap.remove (c,k) map))
+            m m)
   | Bmap m, VBool b' ->
-     Bmap(BoolMap.fold(fun (c,k) a map -> BoolMap.add (c,b')(c)(BoolMap.remove (c,k) map)) m m)
+     Bmap(BoolMap.fold
+            (fun (c,k) a map ->
+             BoolMap.add (c,b')(c)(BoolMap.remove (c,k) map))
+            m m)
   | Fmap m, VFloat f' ->
-     Fmap(FloatMap.fold(fun (c,k) a map -> FloatMap.add (c,f')(c)(FloatMap.remove (c,k) map)) m m)
+     Fmap(FloatMap.fold
+            (fun (c,k) a map ->
+             FloatMap.add (c,f')(c)(FloatMap.remove (c,k) map))
+            m m)
   | _ -> raise (Failure "Incompatable value and column types while updating")
 
 
@@ -247,13 +271,32 @@ let update (map:t)(newv:value) =
 let replace' (row:int) (v:value) (map:t) =
   match map,v with
   | Imap m,VInt newv ->
-     Imap(IntMap.fold(fun (r,v) a mp -> if r = row then (IntMap.add(r,newv) r (IntMap.remove (r,v) mp)) else mp) m m)
+     Imap(IntMap.fold
+            (fun (r,v) a mp ->
+             if r = row then
+               (IntMap.add(r,newv) r (IntMap.remove (r,v) mp))
+             else mp)
+            m m)
   | Bmap m,VBool newv->
-     Bmap(BoolMap.fold(fun (r,v) a mp -> if r = row then (BoolMap.add(r,newv) r  (BoolMap.remove (r,v) mp)) else mp) m m)
+     Bmap(BoolMap.fold
+            (fun (r,v) a mp ->
+             if r = row then
+               (BoolMap.add(r,newv) r  (BoolMap.remove (r,v) mp))
+             else mp)
+            m m)
   | Smap m,VString newv ->
-     Smap(StringMap.fold(fun (r,v) a mp -> if r = row then (StringMap.add(r,newv) r (StringMap.remove (r,v) mp)) else mp) m m)
+     Smap(StringMap.fold
+            (fun (r,v) a mp ->
+             if r = row then
+               (StringMap.add(r,newv) r (StringMap.remove (r,v) mp))
+             else mp) m m)
   | Fmap m,VFloat newv ->
-     Fmap(FloatMap.fold(fun (r,v) a mp -> if r = row then (FloatMap.add(r,newv) r (FloatMap.remove (r,v) mp)) else mp) m m)
+     Fmap(FloatMap.fold
+            (fun (r,v) a mp ->
+             if r = row then
+               (FloatMap.add(r,newv) r (FloatMap.remove (r,v) mp))
+             else mp)
+            m m)
   | _ -> raise (Failure "Incompatable value and column types while updating")
 
 (* [replace newm oldm] replaces all values in oldm with newm values for
@@ -262,19 +305,27 @@ let replace (newm:t) (oldm':t) =
   match newm,oldm' with
   | Imap m, Imap oldm ->
      IntMap.fold
-       (fun (c,k) a map -> if is_member c (Imap m) then (replace' c (VInt k) map) else map)
+       (fun (c,k) a map ->
+        if is_member c (Imap m)
+        then (replace' c (VInt k) map) else map)
        oldm newm
   | Smap m, Smap oldm ->
      StringMap.fold
-       (fun (c,k) a map -> if is_member c (Smap m) then (replace' c (VString k) map) else map)
+       (fun (c,k) a map ->
+        if is_member c (Smap m)
+        then (replace' c (VString k) map) else map)
        oldm newm
   | Bmap m, Bmap oldm ->
      BoolMap.fold
-       (fun (c,k) a map -> if is_member c (Bmap m) then (replace' c (VBool k) map) else map)
+       (fun (c,k) a map ->
+        if is_member c (Bmap m)
+        then (replace' c (VBool k) map) else map)
        oldm newm
   | Fmap m, Fmap oldm ->
      FloatMap.fold
-       (fun (c,k) a map -> if is_member c (Fmap m) then (replace' c (VFloat k) map) else map)
+       (fun (c,k) a map ->
+        if is_member c (Fmap m)
+        then (replace' c (VFloat k) map) else map)
        oldm newm
   | _ -> raise (Failure "Incompatable value and column types while updating")
 
@@ -283,13 +334,33 @@ let replace (newm:t) (oldm':t) =
 let join (m1:t) (m2:t) : (int*int) list =
   match m1,m2 with
   |Imap m,Imap m' ->
-    (IntMap.fold(fun (r,v) a acc -> if (has_value (VInt v) m2) then (r, joiner (VInt v) m2)::acc else acc) m [])
+    (IntMap.fold
+       (fun (r,v) a acc ->
+        if (has_value (VInt v) m2) then
+          (r, joiner (VInt v) m2)::acc
+        else acc)
+       m [])
   |Smap m,Smap m' ->
-    (StringMap.fold(fun (r,v) a acc -> if (has_value (VString v) m2) then (r, joiner (VString v) m2)::acc else acc) m [])
+    (StringMap.fold
+       (fun (r,v) a acc ->
+        if (has_value (VString v) m2) then
+          (r, joiner (VString v) m2)::acc
+        else acc)
+       m [])
   |Bmap m,Bmap m' ->
-    (BoolMap.fold(fun (r,v) a acc -> if (has_value (VBool v) m2) then (r, joiner (VBool v) m2)::acc else acc) m [])
+    (BoolMap.fold
+       (fun (r,v) a acc ->
+        if (has_value (VBool v) m2) then
+          (r, joiner (VBool v) m2)::acc else
+          acc)
+       m [])
   |Fmap m,Fmap m' ->
-    (FloatMap.fold(fun (r,v) a acc -> if (has_value (VFloat v) m2) then (r, joiner (VFloat v) m2)::acc else acc) m [])
+    (FloatMap.fold
+       (fun (r,v) a acc ->
+        if (has_value(VFloat v) m2) then
+          (r, joiner (VFloat v) m2)::acc else
+          acc)
+       m [])
   | _ -> raise (Failure "Incompatable value and column types while joining")
 
 (* [delete ids map] removes each item in the map with
@@ -308,53 +379,57 @@ let get_type map = match map with
   | Fmap _ -> VFloat 0.0
 
 
-(*TESTS*)
-
-let imap = create (VInt 0)
-
 
 (*TEST "test_size and create" = (size imap = 0)
 TEST "test_empty" = (size (empty imap) = 0)
-
-let rec insert_tester (i:int) m =
-  if i = 0 then m
-  else insert (VInt i) i (insert_tester (i-1) m)
-
-let make_string (i:int) : string =
-  (string_of_int i) ^ " words & letters ! " ^ (string_of_int i)
-
-let rec insert_tester_string (i:int) m =
-  if i = 0 then m
-  else insert (VString(make_string i)) i (insert_tester_string (i-1) m)
-
-let imap_hundred = insert_tester 100 imap
-(*represents the map containing (1,1) to (100,100)*)
-TEST "test_insert" = (size imap_hundred = 100)
-(* Getting all values greater than 50*)
-TEST "test_select_int" = (size (select imap_hundred Gt (VInt 50)) = 50)
+(* A NOTE ON TEST CASES: These test cases are deliberately commented out
+   because the TEST_MODULE macro is not compatiable with our menhir build
+   as explained in the README.txt. To compile and run the test cases individually
+   one must uncomment the code and compile each module with the cs3110 compiler.*)
 
 
-let smap = create (VString "")
-let smap_hundred = insert_tester_string 100 smap
-TEST "test_select_string" = (size (select smap_hundred LikeSubstring (VString "word")) = 100 )
-TEST "test_select_string" = (size (select smap_hundred LikeBegin (VString "1")) = 12 )
-TEST "test_select_string" = (size (select smap_hundred LikeEnd (VString "0")) = 10)
+(*TEST_MODULE "TEST" = struct
+  let imap = create (VInt 0)
+  TEST "test_size and create" = (size imap = 0)
+  TEST "test_empty" = (size (empty imap) = 0)
+
+  let rec insert_tester (i:int) m =
+    if i = 0 then m
+    else insert (VInt i) i (insert_tester (i-1) m)
+
+  let make_string (i:int) : string =
+    (string_of_int i) ^ " words & letters ! " ^ (string_of_int i)
+
+  let rec insert_tester_string (i:int) m =
+    if i = 0 then m
+    else insert (VString(make_string i)) i (insert_tester_string (i-1) m)
+
+  let imap_hundred = insert_tester 100 imap
+  (*represents the map containing (1,1) to (100,100)*)
+  TEST "test_insert" = (size imap_hundred = 100)
+  (* Getting all values greater than 50*)
+  TEST "test_select_int" = (size (select imap_hundred Gt (VInt 50)) = 50)
 
 
-(*TEST "JOIN" =*)
-TEST_MODULE "insert_test" = struct
+  let smap = create (VString "")
+  let smap_hundred = insert_tester_string 100 smap
+  TEST "test_select_string" = (size (select smap_hundred LikeSubstring (VString "word")) = 100 )
+  TEST "test_select_string" = (size (select smap_hundred LikeBegin (VString "1")) = 12 )
+  TEST "test_select_string" = (size (select smap_hundred LikeEnd (VString "0")) = 10)
 
-    let m = create (VInt 0)
-    let m' = insert (VInt 5) 5 m
-    let m'' = insert (VInt 8) 6 m'
-    let m''' = insert (VInt 9) 7 m''
 
-    let n = create (VInt 0)
-    let n' = insert (VInt 9) 10 n
-    let n'' = insert (VInt 8) 20 n'
-    let n''' = insert (VInt 10) 30 n''
+   let m = create (VInt 0)
+   let m' = insert (VInt 5) 5 m
+   let m'' = insert (VInt 8) 6 m'
+   let m''' = insert (VInt 9) 7 m''
 
-    let j = join (m''') (n''') === [(7,10); (6,20)]
+   let n = create (VInt 0)
+   let n' = insert (VInt 9) 10 n
+   let n'' = insert (VInt 8) 20 n'
+   let n''' = insert (VInt 10) 30 n''
+
+   let j = join (m''') (n''') === [(7,10); (6,20)]
 
   end*)
+
 end
