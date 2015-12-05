@@ -17,4 +17,5 @@ type expr =
 | DropDb of string
 | Use of string
 | ShowDatabases
+| ShowTables
 | ExitDb

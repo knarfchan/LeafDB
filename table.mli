@@ -56,3 +56,5 @@ val join      : t -> t -> on -> t
 val create    : column_dec list -> t
 
 val print_tbl : t -> unit
+
+val read_tbl : bytes list list -> t
