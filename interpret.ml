@@ -66,7 +66,7 @@ let eval_dbms (dbs : Dbms.t) (e) : dbresult =
 (*type evaluated = Table.t option * bool
 type dbresult = (Database.t option) * string option * bool*)
 
-(*TEST_MODULE "eval tests" = struct
+TEST_MODULE "eval tests" = struct
 
   let leafDB = Dbms.create ()
 
@@ -81,7 +81,7 @@ type dbresult = (Database.t option) * string option * bool*)
   let drop_db = Dbms.drop leafDB "db"
 
   TEST_UNIT "drop db again" = eval_dbms leafDB (DropDb ("db")) === (None, None, false)
-  TEST_UNIT "use 2" = eval_dbms leafDB (Use ("db2")) === (None , Some "db2" , false)
+  TEST_UNIT "use 2" = eval_dbms leafDB (Use ("db2")) === (None, Some "db2", false)
 
   let add_db1 = Dbms.add_database leafDB "db1"
   let add_db2 = Dbms.add_database leafDB "db2"
@@ -89,7 +89,7 @@ type dbresult = (Database.t option) * string option * bool*)
   let db2 = match Dbms.use leafDB "db2" with Some d -> d | None -> failwith "never reached"
 
   TEST_UNIT "use not exist" = eval_dbms leafDB (Use ("db4")) === (None, Some "db4", false)
-  TEST_UNIT "use exist" = eval_dbms leafDB (Use ("db2")) === (Some db2 , Some "db2", true)
+  TEST_UNIT "use exist" = eval_dbms leafDB (Use ("db2")) === (Some db2, Some "db2", true)
 
   TEST_UNIT "create t" = eval db2 (CreateTable("t",["name", VString ""])) === (None, true)
 
@@ -111,43 +111,35 @@ type dbresult = (Database.t option) * string option * bool*)
   TEST_UNIT "create t2" = eval db2 (CreateTable("t2",[("town",VString "");("yrs",VInt 0);("sleep",VBool true)])) === (None, true)
   TEST_UNIT "create t3" = eval db2 (CreateTable("t3",[("integer",VInt 0);("decimal",VFloat 0.)])) === (None, true)
 
-  let db22 = Database.add_table db2 "t1" t1
-  let db23 = Database.add_table db2 "t2" t2
-  let db24 = Database.add_table db2 "t3" t3
+  let db22 = Database.add_table db2 "t1" tb1
+  let db23 = Database.add_table db2 "t2" tb2
+  let db24 = Database.add_table db2 "t3" tb3
 
-  TEST_UNIT "add t1" = Database.lookup db2 "t1" === Some t1
-  TEST_UNIT "add t2" = Database.lookup db2 "t2" === Some t2
-  TEST_UNIT "add t3" = Database.lookup db2 "t3" === Some t3
+  TEST_UNIT "add t1" = Database.lookup db2 "t1" === Some tb1
+  TEST_UNIT "add t2" = Database.lookup db2 "t2" === Some tb2
+  TEST_UNIT "add t3" = Database.lookup db2 "t3" === Some tb3
 
-    | Select (lst, tbl, w) ->
-      attempt_op(db)(tbl)(fun x -> Table.select lst x w)
+  TEST_UNIT "ins t1.1" = eval db2 (Insert ("t1", ["name"; "age"; "height"], [VString("erin"); VInt(19); VFloat(5.8)]))
+                        === (Some tb1, true)
+  TEST_UNIT "ins t1.2" = eval db2 (Insert("t1", ["name"; "age"], [VString("annie"); VInt(19)]))
+                        === (Some tb1, true)
+  TEST_UNIT "ins t2.1" = eval db2 (InsertAll ("t2", [VString("houston"); VInt(19); VBool(false)]))
+                        === (Some tb2, true)
+  TEST_UNIT "ins t2.2" = eval db2 (InsertAll ("t2", [VString("lexington"); VInt(19); VBool(false)]))
+                        === (Some tb2, true)
+  TEST_UNIT "ins t2.3" = eval db2 (Insert ("t2", ["town"; "sleep"], [VString("glendora"); VBool(true)]))
+                        === (Some tb2, true)
 
-  let s1 = eval db2 (Select ())
+  let ins1 = eval db2 (Insert ("t1", ["name"; "age"; "height"], [VString("erin"); VInt(19); VFloat(5.8)]))
+  let ins_all1 = eval db2 (Insert("t1", ["name"; "age"], [VString("annie"); VInt(19)]))
+  let ins_all21 = eval db2 (InsertAll("t2", [VString("houston"); VInt(19); VBool(false)]))
+  let ins_all22 = eval db2 (InsertAll("t2", [VString("lexington"); VInt(19); VBool(false)]))
+  let ins2 = eval db2 (Insert("t2", ["town"; "sleep"], [VString("glendora"); VBool(true)]))
 
-end*)
+  TEST_UNIT "size1" = Table.get_size tb1 === 2
+  TEST_UNIT "size2" = Table.get_size tb2 === 3
 
-(*JoinQueries(SelectAll(t1, Null), SelectAll(t2, Null), (name, word))
- --------------------------------
- |  name |  age |  sleep |  age |
- --------------------------------
- |   "b" |    3 |   true |    3 |
- |   "c" |    4 |   true |    4 |
- --------------------------------
-LeafDB>d>select * from t2
-SelectAll(t2, Null)
- -------------------------
- |  word |  sleep |  age |
- -------------------------
- |   "b" |   true |    3 |
- |   "b" |  false |    4 |
- |   "c" |   true |    2 |
- -------------------------
-LeafDB>d>select * from t1 join select * from t2 on age = age
-JoinQueries(SelectAll(t1, Null), SelectAll(t2, Null), (age, age))
- ---------------------------------
- |  name |  age |  word |  sleep |
- ---------------------------------
- |   "a" |    2 |   "c" |   true |
- |   "b" |    3 |   "b" |   true |
- |   "c" |    4 |   "b" |  false |
-*)
+  let s1 = eval db2 (Select(["name"; "age"], "t1", Null))
+  let s2 = eval db2 (SelectAll("t2", Null))
+
+end

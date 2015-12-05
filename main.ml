@@ -54,7 +54,7 @@ let print_command1 (e: expr) (b: bool) =
                 else (Printf.printf "Error: Database %s not found.\n" str))
   | _ -> Printf.printf "Error: Invalid command.\n"
 
-  let rec repl2 (dbs: Dbms.t) (d: Database.t) (name: string)=
+  let rec repl2 (dbs: Dbms.t) (d: Database.t) (name: string) =
   (try
     Printf.printf "\027[32mLeafDB>%s>" name;Printf.printf("\027[37m");
     let input = read_line() in
