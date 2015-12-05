@@ -70,10 +70,10 @@ let to_string (map:t) : bytes list =
 (* [build_col col map] returns a bytes list representation of a table column*)
 let build_col (col:string) (map:t) : bytes list =
   match map with
-  | Imap m -> col::"VInt"::(to_string map)
-  | Bmap m -> col::"VBool"::(to_string map)
-  | Fmap m -> col::"VFloat"::(to_string map)
-  | Smap m -> col::"VString"::(to_string map)
+  | Imap m -> "VInt"::col::(to_string map)
+  | Bmap m -> "VBool"::col::(to_string map)
+  | Fmap m -> "VFloat"::col::(to_string map)
+  | Smap m -> "VString"::col::(to_string map)
 
 (*precondition: r is a unique key *in* the map
   postcondition: returns the value associated with the row key r*)
@@ -380,10 +380,13 @@ let get_type map = match map with
 
 
 
+(*TEST "test_size and create" = (size imap = 0)
+TEST "test_empty" = (size (empty imap) = 0)*)
 (* A NOTE ON TEST CASES: These test cases are deliberately commented out
    because the TEST_MODULE macro is not compatiable with our menhir build
    as explained in the README.txt. To compile and run the test cases individually
    one must uncomment the code and compile each module with the cs3110 compiler.*)
+
 
 (*TEST_MODULE "TEST" = struct
   let imap = create (VInt 0)
@@ -427,5 +430,6 @@ let get_type map = match map with
 
    let j = join (m''') (n''') === [(7,10); (6,20)]
 
-  end *)
+  end*)
+
 end

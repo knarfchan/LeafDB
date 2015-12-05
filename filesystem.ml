@@ -72,3 +72,7 @@ let add_tbl db_str tbl_str tbl =
   let path = get_tbl_path db_str tbl_str in
   let mtx = Table.matrix_of_table tbl in
     ignore(Sys.command("touch " ^ path)); Csv.save(path)(mtx)
+
+let add_empty_tbl db_str tbl_str =
+  let path = get_tbl_path db_str tbl_str in
+    ignore(Sys.command("touch " ^ path))
