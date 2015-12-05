@@ -65,10 +65,8 @@ let eval_dbms (dbs : Dbms.t) (e) : dbresult =
   | ExitDb -> exit 0
   | _ -> (None, None, false)
 
-(*type evaluated = Table.t option * bool
-type dbresult = (Database.t option) * string option * bool*)
 
-TEST_MODULE "eval tests 1" = struct
+TEST_MODULE "eval tests" = struct
 
   let leafDB = Dbms.create ()
 
@@ -204,9 +202,16 @@ TEST_MODULE "eval tests 2" = struct
   let add1 = Database.add_table db "tbl" tbl'''
   let add2 = Database.add_table db "tibble" tibble'''
 
+  let s1 = eval db (Select(["Name"; "Age"], "tbl", Condition ("Height",Gt,VFloat 5.)))
+  let s2 = eval db (SelectAll("tibble", Null))
+
+  let sel1 = match s1 with
+            | Some t, _ -> t
+            | _ -> failwith "never reached"
+  let sel2 = match s2 with
+            | Some t, _ -> t
+            | _ -> failwith "never reached"
 
 
-  (*let s1 = eval db2 (Select(["name"; "age"], "t1", Null))
-  let s2 = eval db2 (SelectAll("t2", Null))*)
 
 end
