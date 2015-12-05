@@ -41,6 +41,20 @@ type t =
   | Imap of int IntMap.t
   | Fmap of int FloatMap.t
 
+let to_string (map:t) : string list =
+  match map with
+  | Imap m -> IntMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_int v))::acc) m []
+  | Smap m -> StringMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^v)::acc) m []
+  | Bmap m -> BoolMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_bool v))::acc) m []
+  | Fmap m -> FloatMap.fold(fun (r,v) a acc -> ((string_of_int r)^"*"^(string_of_float v))::acc) m []
+
+let build_col (col:string) (map:t) : bytes list =
+  match map with
+  | Imap m -> col::"VInt"::(to_string map)
+  | Bmap m -> col::"VBool"::(to_string map)
+  | Fmap m -> col::"VFloat"::(to_string map)
+  | Smap m -> col::"VString"::(to_string map)
+
 (*precondition: r is a unique key *in* the map
   postcondition: returns the value associated with the row key r*)
 let lookup r m = match m with
@@ -240,14 +254,6 @@ let replace (newm:t) (oldm':t) =
        oldm newm
   | _ -> failwith "error"
 
-(*
-let replace (newm:t) (oldm:t) =
-  match newm with
-  | Imap m -> IntMap.fold(fun (c,k) a map -> update map (VInt k)) m oldm
-  | Smap m -> StringMap.fold(fun (c,k) a map -> update map (VString k)) m oldm
-  | Bmap m -> BoolMap.fold(fun (c,k) a map -> update map (VBool k)) m oldm
-  | Fmap m -> FloatMap.fold(fun (c,k) a map -> update map (VFloat k)) m oldm
-*)
 
 let join (m1:t) (m2:t) : (int*int) list =
   match m1,m2 with
@@ -260,12 +266,6 @@ let join (m1:t) (m2:t) : (int*int) list =
   |Fmap m,Fmap m' ->
     (FloatMap.fold(fun (r,v) a acc -> if (has_value (VFloat v) m2) then (r, joiner (VFloat v) m2)::acc else acc) m [])
   | _ -> failwith "error"
-
-let delete ids map = match map with
-  | Imap m -> Imap(IntMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
-  | Smap m -> Smap(StringMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
-  | Bmap m -> Bmap(BoolMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
-  | Fmap m -> Fmap(FloatMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
 
 let delete ids map = match map with
   | Imap m -> Imap(IntMap.filter (fun (r,v) a -> (not)(List.mem r ids)) m)
