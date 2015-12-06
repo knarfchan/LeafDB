@@ -379,20 +379,21 @@ let get_type map = match map with
   | Fmap _ -> VFloat 0.0
 
 
-
-(*TEST "test_size and create" = (size imap = 0)
-TEST "test_empty" = (size (empty imap) = 0)*)
+(*
 (* A NOTE ON TEST CASES: These test cases are deliberately commented out
    because the TEST_MODULE macro is not compatiable with our menhir build
    as explained in the README.txt. To compile and run the test cases individually
    one must uncomment the code and compile each module with the cs3110 compiler.*)
 
 
-(*TEST_MODULE "TEST" = struct
+TEST_MODULE "TEST" = struct
   let imap = create (VInt 0)
   TEST "test_size and create" = (size imap = 0)
   TEST "test_empty" = (size (empty imap) = 0)
+  TEST "test_size and create" = (size imap = 0)
+  TEST "test_empty" = (size (empty imap) = 0)
 
+(*TEST INSERT*)
   let rec insert_tester (i:int) m =
     if i = 0 then m
     else insert (VInt i) i (insert_tester (i-1) m)
@@ -410,14 +411,14 @@ TEST "test_empty" = (size (empty imap) = 0)*)
   (* Getting all values greater than 50*)
   TEST "test_select_int" = (size (select imap_hundred Gt (VInt 50)) = 50)
 
-
+(* TEST SELECT*)
   let smap = create (VString "")
   let smap_hundred = insert_tester_string 100 smap
   TEST "test_select_string" = (size (select smap_hundred LikeSubstring (VString "word")) = 100 )
   TEST "test_select_string" = (size (select smap_hundred LikeBegin (VString "1")) = 12 )
   TEST "test_select_string" = (size (select smap_hundred LikeEnd (VString "0")) = 10)
 
-
+(* TEST JOIN*)
    let m = create (VInt 0)
    let m' = insert (VInt 5) 5 m
    let m'' = insert (VInt 8) 6 m'
@@ -427,9 +428,33 @@ TEST "test_empty" = (size (empty imap) = 0)*)
    let n' = insert (VInt 9) 10 n
    let n'' = insert (VInt 8) 20 n'
    let n''' = insert (VInt 10) 30 n''
-
    let j = join (m''') (n''') === [(7,10); (6,20)]
 
-  end*)
 
+ (* TEST UPDATE*)
+ TEST "update" =(size (select (update imap_hundred (VInt 0) ) Eq (VInt 0)) = 100)
+ let rec bag = function
+   |[] -> ()
+   |h::t -> (print_endline h); bag t
+
+  (*let _ = bag (to_string (select smap_hundred LikeBegin (VString "90")))*)
+
+
+ (* TEST REPLACE *)
+  let rec insert_tester' (i:int) m =
+    if i = 0 then m
+    else insert (VInt (100-i)) (i) (insert_tester' (i-1) m)
+
+
+  let imap_hundred' = insert_tester' 100 imap
+  (*let _ = bag (to_string imap_hundred')*)
+  let replaced = replace imap_hundred imap_hundred'
+  let _ = print_endline "REPLACED";
+    bag (to_string replaced);
+    print_endline "OLD";
+    bag (to_string imap_hundred);
+    print_endline "NEW";
+    bag (to_string imap_hundred')
+  end
+*)
 end
