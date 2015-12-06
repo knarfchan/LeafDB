@@ -569,4 +569,5 @@ TEST_MODULE "insert_test" = struct
   TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Name" (sel')))
               sel' []) === [[VFloat 6.; VInt 19; VString "Frank"]]
 
+<<<<<<< HEAD
 end*)

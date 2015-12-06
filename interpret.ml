@@ -218,4 +218,6 @@ TEST_MODULE "eval tests 2" = struct
 
 
 
+<<<<<<< HEAD
 end*)
+

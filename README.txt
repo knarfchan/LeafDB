@@ -1,4 +1,5 @@
-LeafDB is a functional local file storage system implemented in OCaml with SQL-like commands to query.
+LeafDB is a functional local file storage system implemented in OCaml with
+SQL-like commands to query.
 
 TO RUN:
 
@@ -21,7 +22,8 @@ SUPPORTED COMMANDS
 Our file storage system uses SQL-like commands; some vary from the traditional
 SQL style. This is the full list of commands we support.
 
-NOTE: keywords can be written in CAPS or full lowercase. Semicolons are optional at the end of the command.
+NOTE: keywords can be written in CAPS or full lowercase. Semicolons are optional
+at the end of the command.
 
 In the DBMS:
 
@@ -63,6 +65,9 @@ Inside a database:
   <a select statement or table name>
   ON <column from first select/table> = <column from second select/table>
 
+  (NOTE: our JOIN strays away from conventional SQL. Also, if using select
+  statements, the columns in ON column1 = column2 must be selected.)
+
   UPDATE <table_name>
   SET <column_1>=<value_1>, <column_2>=<value_2>, ..., <column_n>=<value_n>
   WHERE <some_column>=<some_value>
@@ -76,3 +81,20 @@ Inside a database:
 
   EXIT
 
+SUPPORTED VALUES:
+These are the values that can be specified when creating tables.
+  FLOAT
+  BOOLEAN
+  STRING
+  INT
+
+SUPPORTED OPERATORS:
+These operators can be used in the WHERE conditions of SELECT statements
+  =
+  >
+  >=
+  <
+  <=
+  !=
+  LIKE
+  NOT LIKE
