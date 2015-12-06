@@ -123,7 +123,7 @@ let is_member r map = match map with
   | Fmap m ->
     not (FloatMap.is_empty(FloatMap.filter(fun (row,v) value -> row = r) m))
 
-(* [get_rows map] returns a list [r1,r2...r3] that contains all they
+(* [get_rows map] returns a list [r1,r2...r3] that contains all the
    row keys in map *)
 let get_rows map = match map with
   | Imap m -> IntMap.fold (fun (r,v) a b -> a::b) m []

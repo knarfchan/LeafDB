@@ -1,34 +1,48 @@
 (* filesystem.mli *)
-open Csv
-(* *)
+
+(* precondition: "./DBMS" folder exists
+ * postcondition: returns the names of the database folders in "./DBMS" as
+ *                a string list *)
 val get_database_names : unit -> string list
 
-(* takes the name of a database and a Database.t and fills it with the tables
- * found in the file directory
+(* precondition: string is the name of a table that exists in the database
+                 specified by the second parameter
+ * postcondition: fills the Database.t with the tables in the database folder
  *)
 val read_db : string -> Database.t -> unit
 
-(* takes the name of a database then  table and goes through the file directory,
- * returning Some Table.t if it exists physically and None if it does not exist
+(* precondition: fst string is the name of a database that exists
+ *               snd string is the name of a table that exists in the db
+ * postcondition: return the Table.t type representing the csv file in our dir.
  *)
 val read_tbl : string -> string -> Table.t
 
-(* takes a database name and creates a new directory *)
+(* precondition: none
+ * postcondition: creates a new directory with the string as the name *)
 val add_db : string -> unit
 
-(* takes a database and table name and a Table.t and creates the csv *)
+(* precondition: first string is the name of a database that exists
+ * postcondition: creates a csv with second string as name in the database
+ *                folder and stores the data from Table.t into it *)
 val add_tbl : string -> string -> Table.t -> unit
 
-(* takes a database and table name and creates an empty csv *)
+(* precondition: first string is the name of a database that exists
+ * postcondition: creates an empty csv with the second string as the name in the
+                  database folder *)
 val add_empty_tbl : string -> string -> unit
 
-(* takes a database and table name and delete it *)
+(* precondition: first string is the name of a database that exists
+ *               second string is the name of a table that exists in the db
+ * postcondition: deletes the csv file with table name in the database folder *)
 val delete_tbl : string -> string -> unit
 
-(* takes a Table.t and stores it in file, updating the old file *)
+(* precondition: first string is the name of a database that exists
+ *               second string is the name of a table that exists in the db
+ * postcondition: update the csv file with table name in the database folder
+ *                with the new data from the Table.t *)
 val write_tbl : string -> string -> Table.t -> unit
 
-(* takes the name of a database and removes it from file, returning true if
- * it succesfully deleted and false otherwise
+(* precondition: first string is the name of a database that exists
+ * postcondition: deletes the database folder, including all files inside it
  *)
 val delete_db : string -> unit

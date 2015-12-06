@@ -32,33 +32,34 @@ let print_command2 (q: Table.t option) (d: Database.t) (e: expr)
                                 | None -> Printf.printf "Error: Join failed. Table not found.\n")
   | Update (tbl, cvlst, w) -> (match q with
                               | Some t -> (let updates = Table.get_size (Table.selectAll t w) in
-                                          (Database.update_table d tbl t);
+                                          (write_tbl name tbl t); (Database.update_table d tbl t);
                                           Printf.printf "Updated %d items in table %s.\n" updates) tbl
                               | None -> Printf.printf "Error: Update failed. Table %s not found.\n" tbl)
   | Delete (tbl, w) -> (match q with
                         | Some t1 -> (match Database.lookup d tbl with
-                                      | Some t2 -> (Database.update_table d tbl t1); Printf.printf "Deleted %d items in table %s.\n" (Table.get_diff t1 t2) tbl
+                                      | Some t2 -> (write_tbl name tbl t1); (Database.update_table d tbl t1); Printf.printf "Deleted %d items in table %s.\n" (Table.get_diff t1 t2) tbl
                                       | None -> Printf.printf "Error: Delete failed. Table %s not found.\n" tbl)
                         | None -> Printf.printf "Error: Delete failed. Table %s not found.\n" tbl)
-  | CreateTable(str, cdl) -> (if b then ((add_empty_tbl name str); Printf.printf "Table %s created.\n" str)
-                             else Printf.printf "Error: Create table failed. Table %s already exists.\n" str)
-  | DropTable(str) -> (if b then Printf.printf "Table %s dropped.\n" str
+  | CreateTable(str, cdl) -> (match q with
+                              | Some t1 -> (add_tbl name str t1); Printf.printf "Table %s created.\n" str
+                              | None -> Printf.printf "Error: Create table failed. Table %s already exists.\n" str)
+  | DropTable(str) -> (if b then ((delete_tbl name str); Printf.printf "Table %s dropped.\n" str)
                       else Printf.printf "Error: Drop table failed. Table %s not found.\n" str)
-  | _ -> Printf.printf "Error: Invalid command.\n"
+  | _ -> Printf.printf "Error: Invalid command. To create/show/drop/switch databases, use EXIT to exit the current database first.\n"
 
 let print_command1 (e: expr) (b: bool) =
   match e with
-  | CreateDb(str) -> (if b then (Printf.printf "Database with name %s created.\n" str)
+  | CreateDb(str) -> (if b then (add_db str; Printf.printf "Database with name %s created.\n" str)
                      else (Printf.printf "Error: Create database failed. Database %s already exists.\n" str))
   | DropDb(str) -> (if b then ((delete_db str);(Printf.printf "Database with name %s dropped.\n" str))
                    else (Printf.printf "Error: Drop database failed. Database %s not found.\n" str))
   | Use(str) -> (if b then (Printf.printf "Entered database with name %s.\n" str)
                 else (Printf.printf "Error: Database %s not found.\n" str))
-  | _ -> Printf.printf "Error: Invalid command.\n"
+  | _ -> Printf.printf "Error: Invalid command. Choose a database using USE <name> first.\n"
 
   let rec repl2 (dbs: Dbms.t) (d: Database.t) (name: string) =
   (try
-    Printf.printf "\027[32mLeafDB>%s>" name;Printf.printf("\027[37m");
+    Printf.printf "\027[32mLeafDB>%s>" name; Printf.printf("\027[37m");
     let input = read_line() in
     let e = Test.parse input in
     Printf.printf"%s" (Test.ast_to_string e);
