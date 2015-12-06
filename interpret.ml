@@ -50,7 +50,10 @@ let eval (db : Database.t) (e : expr): evaluated =
   | JoinQuerTab (e, str, o) ->
       attempt_join (eval_select db e) (Database.lookup db str) o
   | JoinQueries (e1, e2, o) -> attempt_join (eval_select db e1) (eval_select db e2) o
-  | CreateTable(str, cdl) -> (None, Database.add_table db str (Table.create cdl))
+  | CreateTable(str, cdl) -> let new_t = Table.create cdl in
+                             if(Database.add_table db str new_t)
+                             then (Some new_t, true)
+                             else (None, false)
   | DropTable(str) -> (None, Database.drop db str)
   | _ -> (None, false)
 
@@ -66,7 +69,8 @@ let eval_dbms (dbs : Dbms.t) (e) : dbresult =
   | _ -> (None, None, false)
 
 
-TEST_MODULE "eval tests" = struct
+(*
+TEST_MODULE "eval tests 1" = struct
 
   let leafDB = Dbms.create ()
 
@@ -285,5 +289,5 @@ TEST_MODULE "eval tests 2" = struct
 
   (*let drop = eval db DropTable(tibble)*)*)
 
+end*)
 
-end

@@ -59,7 +59,7 @@ rule read =
   | "false"                     { FALSE }
   | "INT" | "int"               { INTEGERS }
   | "FLOAT" | "float"           { FLOATS }
-  | "TEXT" | "text"             { STRINGS }
+  | "STRING" | "string"         { STRINGS }
   | "BOOLEAN" | "boolean"       { BOOLS }
   | "SHOW" | "show"             { SHOW }
   | "DATABASES" | "databases"   { DATABASES }

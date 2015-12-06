@@ -89,4 +89,4 @@ let add_tbl db_str tbl_str tbl =
 
 let add_empty_tbl db_str tbl_str =
   let path = get_tbl_path db_str tbl_str in
-    ignore(Sys.command("touch " ^ path))
+    ignore(Sys.command("touch " ^ path));
