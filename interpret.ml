@@ -70,7 +70,6 @@ let eval_dbms (dbs : Dbms.t) (e) : dbresult =
 
 
 (*
-
 TEST_MODULE "eval tests 1" = struct
 
   let leafDB = Dbms.create ()
@@ -219,6 +218,6 @@ TEST_MODULE "eval tests 2" = struct
 
 
 
-end
+<<<<<<< HEAD
+end*)
 
-*)
