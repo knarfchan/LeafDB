@@ -441,7 +441,7 @@ let update tbl cvlst w =
       []) updated_tbl [])
 
 
-TEST_MODULE "insert_test" = struct
+(*TEST_MODULE "insert_test" = struct
 
   (* Insert Test Cases *)
   let tbl = [("Name", Maps.create (VString "")); ("Age", Maps.create (VInt 0));
@@ -563,4 +563,4 @@ TEST_MODULE "insert_test" = struct
   TEST_UNIT = (get_all_rows_print (Maps.get_rows (List.assoc "Name" (sel')))
               sel' []) === [[VFloat 6.; VInt 19; VString "Frank"]]
 
-end
+end*)

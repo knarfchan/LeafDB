@@ -33,7 +33,7 @@ let print_command2 (q: Table.t option) (d: Database.t) (e: expr)
   | Update (tbl, cvlst, w) -> (match q with
                               | Some t -> (let updates = Table.get_size (Table.selectAll t w) in
                                           (write_tbl name tbl t); (Database.update_table d tbl t);
-                                          Printf.printf "Updated %d items in table %s.\n" updates) tbl
+                                          Printf.printf "Updated %d items in table %s.\n" updates tbl
                               | None -> Printf.printf "Error: Update failed. Table %s not found.\n" tbl)
   | Delete (tbl, w) -> (match q with
                         | Some t1 -> (match Database.lookup d tbl with

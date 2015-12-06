@@ -66,6 +66,8 @@ val join      : t -> t -> on -> t
  * postcondition : creates a table with the columns in the column_dec list *)
 val create    : column_dec list -> t
 
+val get_all_rows_print : int list -> t -> value list list -> value list list
+
 (* precondition : None
  * postcondition : Prints the table in a matrix form *)
 val print_tbl : t -> unit
