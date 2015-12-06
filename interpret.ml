@@ -68,9 +68,7 @@ let eval_dbms (dbs : Dbms.t) (e) : dbresult =
   | ExitDb -> exit 0
   | _ -> (None, None, false)
 
-
-(*
-TEST_MODULE "eval tests 1" = struct
+(*TEST_MODULE "eval tests 1" = struct
 
   let leafDB = Dbms.create ()
 
@@ -147,29 +145,6 @@ TEST_MODULE "eval tests 1" = struct
               | _ -> failwith "never reached"
 
   TEST_UNIT "size4" = Table.get_size tb24 === 1
-
-  (*UPDATING A VNULL DOESN'T WORK YET
-  let up1 = eval db2 (Update ("t2", ["decimal",VFloat 1.2], Condition ("integer",Eq, VInt 19)))
-  let tb25 = match up1 with
-              | Some t, _ -> t
-              | _ -> failwith "never reached"
-
-  let check = Maps.lookup 1 (Table.get_one_map "decimal" tb25)
-
-  TEST_UNIT "up1" = check === VFloat 1.2*)
-
-  (*let up2 = eval db2 (Update ("t1", ["name",VString "annie"], Condition ("age",Eq,VInt 19)))
-
-  let tb13 = match up2 with
-              | Some t, _ -> t
-              | _ -> failwith "never reached"
-  let rowid = match (Maps.get_rows (Table.get_one_map "name" tb13)) with
-              | h::t -> h
-              | [] -> 0
-  let print lst = match rowid with
-                  | h::t -> Printf.printf "%d" h; print t
-                  | [] -> Printf.printf ""
-  TEST_UNIT "up2" = Maps.lookup rowid (Table.get_one_map "name" tb13) === VString "annie"*)
 
 end
 
@@ -251,43 +226,5 @@ TEST_MODULE "eval tests 2" = struct
                             [[VString "Annie"; VInt 19; VFloat 5.3];
                             [VString "Erin"; VInt 19; VFloat 5.8];
                             [VString "Frank"; VInt 20; VFloat 7.0]]
-
-  (*let j2 = eval db (JoinTabQuer ("tbl", Select(["Name"; "Hair Color"; "Male?"], "tibble",
-                                        (Condition ("Name", Eq, VString "Frank"))), ("name", "name")))
-
-  let jn2 = match j2 with
-          | Some t, _ -> t
-          | _ -> failwith "never reached"
-
-  let _ = print_tbl jn2
-
-  TEST_UNIT = (get_all_rows_print (Maps.get_rows (Table.get_one_map "Name" (jn2)))
-              un1 []) === [[VFloat 7.; VInt 20; VString "Frank"; VString "Black"; VBool true]]
-
-  let j3 = eval db (JoinQuerTab (Select(["Name"; "Age"], "tbl", (Condition ("Name", LikeSubstring, VString "n"))),
-                               "tibble", ("name", "name")))
-  let jn3 = match j3 with
-          | Some t, _ -> t
-          | _ -> failwith "never reached"
-
-  (*let _ = print_tbl jn3*)
-
-  TEST_UNIT = (get_all_rows_print (Maps.get_rows (Table.get_one_map "Height" (jn3)))
-              jn3 []) === [[VString "Erin"; VInt 19; VBool false; VString "brown"];
-                          [VString "Frank"; VInt 20; VBool true; VString "Black"]]
-
-  let j4 = eval db (JoinQueries(Select(["Name"; "Age"], "tbl", (Condition ("Name", NotLikeSubstring, VString"e"))),
-                                Select(["Name";"Male"], "tibble", Null), ("name", "name")))
-
-  let jn4 = match j4 with
-          | Some t, _ -> t
-          | _ -> failwith "never reached"
-
-  TEST_UNIT = (get_all_rows_print (Maps.get_rows (Table.get_one_map "Height" (jn4)))
-              jn4 []) === [[VString "Erin"; VInt 19; VBool false];
-                          [VString "Frank"; VInt 20; VBool true;]]
-
-  (*let drop = eval db DropTable(tibble)*)*)
-
 end*)
 

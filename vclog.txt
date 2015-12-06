@@ -1,0 +1,1405 @@
+commit f478dca9be1f50980868494daf2e598aeb752e5f
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 20:50:58 2015 -0500
+
+    FINAL COMMIT
+
+commit 1b7638b4cc27b76b7f7949fdbcfb7a8842301a1f
+Merge: 4438ac2 5447f18
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 20:46:25 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+    
+    Conflicts:
+    	main.ml
+    	table.ml
+
+commit 4438ac29cfbb88075f5f8ea306d4d721ada1a86d
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 20:41:52 2015 -0500
+
+    finished testing
+
+commit 5447f18014e63d34956dd7ab119bd5a50ef96b22
+Merge: 5de7085 16de757
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 20:29:43 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 16de7576735ca3dd29ab491b50c1a6400e427622
+Merge: 00ef499 e22ef71
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 20:33:10 2015 -0500
+
+    merge resolved
+
+commit 00ef4994f32f2cecf0f40a8d0efa45eb11f04010
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 20:31:55 2015 -0500
+
+    repl comments added
+
+commit 5de7085bffa46c7b31640ba3760421cfcbe56a49
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 20:29:37 2015 -0500
+
+    more notes
+
+commit e22ef710d1fb7a2fcf3df773447ebcfb5f3d63c3
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 20:14:05 2015 -0500
+
+    finish documenting
+
+commit 1b09ad7b38fa51c44bbdb3eb939af14f5f914526
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 20:13:40 2015 -0500
+
+    document database
+
+commit 5ecd9d144f3a2a4bc90304085a6b6efe24e30369
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 19:52:40 2015 -0500
+
+    increased documentation
+
+commit 5cff44996f7e76ccb1a0315d88096d057254f17c
+Merge: 82dad43 1473d1e
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 19:28:42 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 82dad4309a801849032c07c95b69bd58b799f23a
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 19:28:36 2015 -0500
+
+    document dbms and add change text to string
+
+commit 1473d1ef30e4277a2a9d409bc9e95e3f7bd4671a
+Merge: 5ae8efc c4a4d68
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 19:04:15 2015 -0500
+
+    merge conflicts resolved
+
+commit 5ae8efc64f9411250381bb183a46ebd8f728f75e
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 19:03:23 2015 -0500
+
+    table documentation completed
+
+commit c4a4d68b07721b5ae89a09d7ff56fe6e5b34bd11
+Merge: 4f65522 8e864b5
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Dec 5 19:00:37 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 4f65522cc039f3bd7676a64ec26b4ce72a58a8f1
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Dec 5 19:00:12 2015 -0500
+
+    add test cases to maps
+
+commit 58f5c50852b0b13727051e822b74eda134525b9f
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 18:55:20 2015 -0500
+
+    table documentation complete
+
+commit 0c1e8b06497d88eb45944c2343d2c041a4f80b65
+Merge: c1692b6 5dfdd19
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 18:52:46 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+    
+    Conflicts:
+    	interpret.ml
+
+commit c1692b689fd533c58a5ace6b92c67c64b984daf4
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 18:52:08 2015 -0500
+
+    testing eval
+
+commit 8e864b51756064416e7ed09a62b48e1fc148b37a
+Merge: 3cdca02 0c1e8b0
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 18:51:53 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 3cdca02aac49e2957c6b91fbd59db0890b176cd5
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 18:51:44 2015 -0500
+
+    intro and instructions
+
+commit 5dfdd19a16ae527360c93a4a33bac0f45121c5f3
+Merge: 94be6ab b820758
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 18:43:20 2015 -0500
+
+    merge conflicts resolved
+
+commit 94be6abc7cfb8758ffd688fddc47b7f7296118a3
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 18:40:31 2015 -0500
+
+    table update fixed
+
+commit a0f82c611021403ea109e2cd59a55675d822b313
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 18:35:48 2015 -0500
+
+    fix bug with empty tables
+
+commit b820758ea37ff0ba7bab6da2a13ac977904a0cb5
+Merge: 461f2c0 3c16cea
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 18:30:26 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+    
+    Conflicts:
+    	interpret.ml
+
+commit 461f2c0bd577b1effdd84cd94867be13e38fd09c
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 18:28:11 2015 -0500
+
+    testing eval still, added scoping methods to table
+
+commit 3c16cea3a16b1564df2c2aef4f71bea5d2e675c2
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 16:28:51 2015 -0500
+
+    document interpret
+
+commit 0fa7acc16aa5f2e551a50261604e675e65912d09
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 16:17:50 2015 -0500
+
+    document filesystem
+
+commit 107e98199a41e57ce0534da66e50bf8455c54104
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 16:16:59 2015 -0500
+
+    database updated
+
+commit 280d690ae1dcbd0e6e33ae9ff1cb681b2a088613
+Merge: ba60ab2 3c0d659
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 16:15:06 2015 -0500
+
+    add test cases
+
+commit ba60ab2a0802f2ba081ebd9c773a5addf4065d5b
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 16:13:35 2015 -0500
+
+    add test cases
+
+commit 3c0d6599d2c285c0eb8e93fe9e9c95885ac9aa1f
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 05:31:38 2015 -0500
+
+    fully functional repl
+
+commit ea9764a6eba5c3597c8da76f018f0c71430bce42
+Merge: 992c897 318fce1
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 04:20:02 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 992c897df55455083f67f78767fb33c39eebd4ab
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 04:19:53 2015 -0500
+
+    sigh
+
+commit b8ee74be8352f4ccdb2257ec60cde6bdd5c31a1f
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 04:16:30 2015 -0500
+
+    almost working
+
+commit 318fce12de46279f7265277bbfa81a6bb63bd34a
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 04:08:46 2015 -0500
+
+    merge
+
+commit af1b82abbaef27cec2a69c368761da27d21245b1
+Merge: d4e19f8 ea9764a
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 04:01:50 2015 -0500
+
+    pulling frank's code
+
+commit bc8e7316e2deb5dd5fdef00628e64b5f3d6e2431
+Merge: 999761f 5cd4263
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 03:49:38 2015 -0500
+
+    added more test cases
+
+commit 999761f51fdb6f44bf7c38976f01406294f5931d
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 03:44:20 2015 -0500
+
+    added more test cases for eval
+
+commit d4e19f8048081cc5b6cffb6550c49cac273d5698
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 03:38:00 2015 -0500
+
+    table for erin
+
+commit 5cd42633b19d1a70f223c1927fb3a2c1070a9233
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 03:09:48 2015 -0500
+
+    showworks
+
+commit 784647c0c4f2ff7b5b40b3565029230601fca241
+Merge: c20aa51 b026adf
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 02:58:37 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit b026adfa49d5eade4742bba5a66561868ee756a8
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 03:13:50 2015 -0500
+
+    add a readme
+
+commit 06000059317925051420c7a2db53754472a17179
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 03:10:19 2015 -0500
+
+    implementing filesystem
+
+commit c20aa51f4de6e8066c46ba88760af9096de9612a
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 02:55:55 2015 -0500
+
+    merge conflicts resolved
+
+commit 4aeee74959091c8f4a55937b514d21ac775aff64
+Merge: 8aed774 0600005
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 02:52:15 2015 -0500
+
+    resolving merge conflict
+
+commit 91eac4b57a9753dd5ed3c6aeb656730c3ce0f789
+Merge: 5976ab4 72685ac
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 02:51:33 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 5976ab4bb286e78cedcf5fac6d20ca09ddfef168
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 02:51:30 2015 -0500
+
+    begin filesystem in repl
+
+commit 8aed7743a553edede469a4bbbd0d97fbfa2eaa09
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 02:51:17 2015 -0500
+
+    table commented
+
+commit 72685acfc221008d7361c83e15c27edaf1671867
+Merge: b1417e1 3bca4f4
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Dec 5 02:49:48 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit b1417e12eed507762c7554fa2e5ef0801d78934e
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Dec 5 02:49:41 2015 -0500
+
+    fix style part 2
+
+commit b33607308067d54e61698ed00670347d3e51f999
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Dec 5 02:46:26 2015 -0500
+
+    fix style for maps.ml
+
+commit 3bca4f44bd3e86ea9c4ab6ad5471e5e21314cbcc
+Merge: 5ac7dfe cc7917a
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 02:46:15 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 5ac7dfe6742d75dad1cb38c45ba87790a87b1386
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Dec 5 02:45:07 2015 -0500
+
+    added annie's parse exception catch, and some eval test cases
+
+commit 11d0e58e5cd5788ec99e0dfd108745444f9616f2
+Merge: 30d0aa8 cc7917a
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 02:44:04 2015 -0500
+
+    fix merge conflicts
+
+commit 30d0aa8c3eada5d7ee93989167f3aeee790e87da
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 02:40:04 2015 -0500
+
+    implement parsing show tables and implement filesystem
+
+commit cc7917a699013a4e617b9c69f0391c6fbb3b2934
+Merge: 4488c0f df75350
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Dec 5 02:16:29 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+    
+    Conflicts:
+    	maps.ml
+
+commit 4488c0f94dc781dc861e96877ceb189be8a404e5
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Dec 5 02:14:10 2015 -0500
+
+    added specifications and abstraction function to maps.ml
+
+commit df753504883c543420bef4effb9d64a9561a2fd3
+Merge: 7e5f8b7 2cc0222
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 00:50:10 2015 -0500
+
+    fix merge
+
+commit 7e5f8b7d97df9a740b63ad0b43b57e47bf4de057
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Dec 5 00:47:16 2015 -0500
+
+    fixed update and added show tables
+
+commit 00bb326afaa46fd0b309a8da1adc56492493fcbe
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 00:31:59 2015 -0500
+
+    delete test files
+
+commit e72c035d39cc7244b4ef09d667c28bfaa7096c90
+Merge: cba0dea 2cc0222
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 00:14:55 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit cba0dea5bae0f58b1ebcfa66455ebbeab4d1a308
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Dec 5 00:14:52 2015 -0500
+
+    current state of filesystem
+
+commit 2cc0222678d2e95071ccba99740feaca7ab50f13
+Merge: b7a9a3c 8c55c91
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Dec 5 00:12:50 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+    
+    Conflicts:
+    	filesystem.ml
+
+commit b7a9a3c3f86917116abd86b63c3efee4490f70f4
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Dec 5 00:09:52 2015 -0500
+
+    complete write table in filesystem
+
+commit 909ba316d2a0250ca560c3824a69702538d8fc52
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Dec 4 22:56:42 2015 -0500
+
+    add filesystem stuff
+
+commit 8c55c9180a78c051f3420a7ec42362511baf7f39
+Author: Erin <ec587@cornell.edu>
+Date:   Fri Dec 4 03:02:37 2015 -0500
+
+    acciidentally merged join query fix incorrectly. now its correct again
+
+commit b48876a0e3ea03b86a17cf6665d5f72933357168
+Merge: f27af05 32def29
+Author: Erin <ec587@cornell.edu>
+Date:   Fri Dec 4 03:00:12 2015 -0500
+
+    almost done testing repl
+
+commit f27af05e102a8452fab67da45564db97dec356b0
+Author: Erin <ec587@cornell.edu>
+Date:   Fri Dec 4 02:59:01 2015 -0500
+
+    testing repl still
+
+commit 32def29bcb694af6f7c061d8de8bf0292c695f8d
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Dec 4 02:32:39 2015 -0500
+
+    create wrapper for dbms to sll
+
+commit 118a794a13fc53ca09a15ae1e32aba0895011f48
+Merge: 0771346 c6e5318
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Dec 4 02:13:43 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 07713466479cd6bef7783ef7a5b1a59d9b25f5ff
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Dec 4 02:13:37 2015 -0500
+
+    fix join query error
+
+commit 210a686a7adcba3aeb17b8b2cf2c4bc4b376347a
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Dec 4 00:04:04 2015 -0500
+
+    convert to string list list
+
+commit c6e531833eb944e5b64222ebbac4a0d4599cf0b2
+Merge: e8283c5 d6af68e
+Author: An Tran <at697@cornell.edu>
+Date:   Fri Dec 4 00:01:46 2015 -0500
+
+    merge handled
+
+commit e8283c5453a50297b7e30535c7cd5bf3ca8a173f
+Author: An Tran <at697@cornell.edu>
+Date:   Thu Dec 3 23:59:53 2015 -0500
+
+    errors handled
+
+commit d6af68eaca6be4f10744e7f6285f808e651a9a97
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Dec 3 22:34:01 2015 -0500
+
+    fixed show
+
+commit 8959e7ed588e2fe0f41a86505e03dcf60a72cfeb
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Dec 3 22:27:00 2015 -0500
+
+    fix show
+
+commit da5e99e0576077e6c1b7a0c4f2073a5b6990f62b
+Merge: e6b6606 265a383
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Dec 3 22:15:07 2015 -0500
+
+    fix merge conflict
+
+commit 265a383c3434507e644f5ef37e47eb3e623fbda5
+Merge: f5ffed7 1eda86d
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Dec 3 22:19:20 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit f5ffed795583abeece3733ba5084c7b319e934e6
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Dec 3 22:17:10 2015 -0500
+
+    Added databse update to repl, fixing show databases problem.
+
+commit 1eda86d712e2585c068454a8093c1b7455a6159e
+Author: An Tran <at697@cornell.edu>
+Date:   Thu Dec 3 22:13:20 2015 -0500
+
+    LIKE fixed
+
+commit e6b6606f31b714b125531bb39c34047883971220
+Merge: 8efbafa 1eda86d
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Dec 3 22:10:05 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 8efbafa770c29111993be0a43a771808ba8f0391
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Dec 3 22:09:53 2015 -0500
+
+    fix update table method
+
+commit c78dc35e858e9cd39ed7ac9e36e58e46467ee453
+Merge: 4f348a6 0b1ab34
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Dec 3 05:07:38 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 4f348a60b0ec118c4fd6fb33e7ca5ac74af9d44a
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Dec 3 05:07:36 2015 -0500
+
+    fixes to parser and addition to filesystem
+
+commit 458c21075c557dd7dc8a3a649f05955ce013a181
+Merge: aa182cd 0b1ab34
+Author: An Tran <at697@cornell.edu>
+Date:   Thu Dec 3 04:21:41 2015 -0500
+
+    merge
+
+commit 0b1ab34ea49235b812f935c4a064d15d1c26e770
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Dec 3 04:18:31 2015 -0500
+
+    Testing repl. Create table works but insert doesn't. Fixed use in eval_dbms
+
+commit aa182cd521a344058edac65e291efba95224a4b8
+Merge: c561bf0 7a5e7d3
+Author: An Tran <at697@cornell.edu>
+Date:   Thu Dec 3 03:29:19 2015 -0500
+
+    table writing started
+
+commit c561bf00e9a9148dc1142655760905fc0180fa1c
+Author: An Tran <at697@cornell.edu>
+Date:   Thu Dec 3 03:28:26 2015 -0500
+
+    table writing started
+
+commit 7a5e7d3c1f0aa0ee4af9521411333178e437be63
+Merge: e606007 fe37734
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Dec 3 03:27:13 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit e6060074aeaf64af297b03270a5727c3276fe92b
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Dec 3 03:27:09 2015 -0500
+
+    Added cool arrow thing to print statements. Changed type of dbresult in interpret
+
+commit fe37734df1307d318143cb7fcf430466b5f737cf
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Dec 3 02:59:36 2015 -0500
+
+    fixed parser
+
+commit 64f9b61b9db14baf215d3eb5d2c2a658c4121ea1
+Merge: 6cf0c73 fe83b46
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Dec 3 02:17:54 2015 -0500
+
+    fix filesystem merge
+
+commit fe83b46cc909760644ace5e9ff983bc16e7a0d86
+Merge: 2fb9d99 5e8491f
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Dec 3 02:16:13 2015 -0500
+
+    trying to merge
+
+commit 6cf0c73a4ff5584ee9955ceffc4c5b4e75c0b99b
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Dec 3 02:16:05 2015 -0500
+
+    more things added
+
+commit 2fb9d99faa89109ae8ddb933d8f3899f8f621d07
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Dec 3 02:14:14 2015 -0500
+
+    Executable repl!
+
+commit 5e8491f3975b9b93e2098f7830e38de128258854
+Author: An Tran <at697@cornell.edu>
+Date:   Thu Dec 3 01:34:56 2015 -0500
+
+    table complete
+
+commit 73cbeb170a759e170ad03dc35f547294b66cacc4
+Merge: 2ea329b 9e72ef5
+Author: An Tran <at697@cornell.edu>
+Date:   Thu Dec 3 01:18:34 2015 -0500
+
+    starting filesystem
+
+commit 9e72ef5cf1c465d1d2d9d40d0a8fdb1cf4163a84
+Merge: 0ebe12d 281e27c
+Author: louis <cruzlouis13@gmail.com>
+Date:   Thu Dec 3 01:18:06 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+    
+    Conflicts:
+    	maps.ml
+
+commit 2ea329baa4f06b04484321632d4d3e306ae6090e
+Author: An Tran <at697@cornell.edu>
+Date:   Thu Dec 3 01:18:00 2015 -0500
+
+    starting filesystem
+
+commit 0ebe12dadca0798504592dd7e3ceeb095ae7551d
+Author: louis <cruzlouis13@gmail.com>
+Date:   Thu Dec 3 01:16:24 2015 -0500
+
+    rewrite replace in maps
+
+commit 281e27c3df92e0bf1766449574b94aaf1d3ca0fd
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Dec 3 00:52:10 2015 -0500
+
+    fixed louis' indenting in map
+
+commit 6f3cf84f5b552b1c6c2bcc27e627913973e7628f
+Merge: f20179c cba7a44
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Dec 3 00:47:55 2015 -0500
+
+    repl added, delete fixed
+
+commit f20179cd899de128649c87762ee4ffd9b2b6475d
+Merge: 34c0da6 2668366
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Dec 3 00:42:29 2015 -0500
+
+    repl compiles, delete fixed
+
+commit cba7a4431d87d906879d4b07a9c1c329d78f9ba6
+Author: An Tran <at697@cornell.edu>
+Date:   Thu Dec 3 00:16:52 2015 -0500
+
+    fixed delete
+
+commit ddd6b9cf6c67a2eb1e0a552ade860bf729496e42
+Merge: cc69dad 7c23803
+Author: An Tran <at697@cornell.edu>
+Date:   Wed Dec 2 23:12:27 2015 -0500
+
+    table test cases
+
+commit cc69dad7f508e352a5788007cdebbc10b09c62ae
+Author: An Tran <at697@cornell.edu>
+Date:   Wed Dec 2 23:11:27 2015 -0500
+
+    table tests
+
+commit 7c2380376070cd0674913a9f6d79b963e08d4aa2
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Wed Dec 2 16:02:24 2015 -0500
+
+    recommitting test.ml
+
+commit aa49166ddabb6ef360ee75962c4a993647038dbb
+Merge: 5017ab2 b183d9f
+Author: An Tran <at697@cornell.edu>
+Date:   Wed Dec 2 03:09:07 2015 -0500
+
+    test cases added
+
+commit 5017ab2ffeb182ac19d9bb024a311a331658ddb0
+Merge: 0ac2646 2668366
+Author: An Tran <at697@cornell.edu>
+Date:   Wed Dec 2 03:08:21 2015 -0500
+
+    test cases added
+
+commit 0ac26469cb63b5bd8a3817d538ae57120df9ebb7
+Author: An Tran <at697@cornell.edu>
+Date:   Wed Dec 2 03:07:18 2015 -0500
+
+    Table test cases
+
+commit b183d9f66aef34379eeffbdf5ff37b3dd760e13b
+Merge: 5894adb 2668366
+Author: louis <cruzlouis13@gmail.com>
+Date:   Wed Dec 2 03:02:20 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 5894adb8e4ac6d4874b7fe18ef72c5693633e777
+Author: louis <cruzlouis13@gmail.com>
+Date:   Wed Dec 2 03:02:15 2015 -0500
+
+    change maps
+
+commit 266836633c6adede08cff7909c3ac64449d85e36
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Wed Dec 2 02:24:00 2015 -0500
+
+    added features
+
+commit 34c0da6d8e95f25ebfca8b1ed15b4c186935cbb3
+Author: Erin <ec587@cornell.edu>
+Date:   Wed Dec 2 02:23:57 2015 -0500
+
+    REPL almost done
+
+commit 23e82201c0302bc3e3e40508f40239911f9fe216
+Author: Erin <ec587@cornell.edu>
+Date:   Wed Dec 2 02:22:25 2015 -0500
+
+    REPL almost done, minor change to get_diff in table
+
+commit cddb9816967d9027677e97be263c47b0b3eea18a
+Author: louis <cruzlouis13@gmail.com>
+Date:   Wed Dec 2 01:25:51 2015 -0500
+
+    Start work on filesystem.ml
+
+commit 6e8c84831c6f7427cdca821025db66c95b3e87ba
+Author: louis <cruzlouis13@gmail.com>
+Date:   Wed Dec 2 01:05:37 2015 -0500
+
+    add csv to .cs3110
+
+commit bfd1773134c9d9bff6c2ca78f329ecd9615f2815
+Merge: 84d366a 221b279
+Author: louis <cruzlouis13@gmail.com>
+Date:   Wed Dec 2 01:05:09 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 84d366a2e4f4945a16925725b49753afce65de82
+Author: louis <cruzlouis13@gmail.com>
+Date:   Wed Dec 2 01:05:06 2015 -0500
+
+    test maps
+
+commit 221b279dc4930264f029cea9f602492ae602a767
+Merge: 33eb671 e00a68a
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Wed Dec 2 00:51:01 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 33eb67116ada053eb41d4ad03d90f605bbcfd094
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Wed Dec 2 00:50:52 2015 -0500
+
+    implement get database list
+
+commit e00a68a8ddc39e905e6cd529948ef28e1b45baeb
+Merge: ef83fa0 f1c44ec
+Author: An Tran <at697@cornell.edu>
+Date:   Wed Dec 2 00:29:40 2015 -0500
+
+    join implemented
+
+commit ef83fa04fdbd5cb024fa7eb0745324efa7b5d5ab
+Author: An Tran <at697@cornell.edu>
+Date:   Wed Dec 2 00:28:36 2015 -0500
+
+    join implemented
+
+commit f1c44ec7855cbe84b0bf6088ed726d7a3df66305
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Wed Dec 2 00:18:27 2015 -0500
+
+    eval changes
+
+commit 0750b0ed128b5048909fc9d75b682f245417b13f
+Merge: bcc8d78 f1c44ec
+Author: Erin <ec587@cornell.edu>
+Date:   Wed Dec 2 00:14:01 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit bcc8d7831da3f86cea4d3a8d2a29ab22ae1409a1
+Merge: 2b14a4e e619d26
+Author: Erin <ec587@cornell.edu>
+Date:   Tue Dec 1 23:40:51 2015 -0500
+
+    working on repl
+
+commit 2b14a4e43289e8488ef24b1ec5e777146bbce542
+Author: Erin <ec587@cornell.edu>
+Date:   Tue Dec 1 23:39:01 2015 -0500
+
+    working on repl
+
+commit e619d268af5980ebe9c10ae041876b6942172151
+Merge: b65cfc3 cd66495
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Tue Dec 1 23:35:55 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit b65cfc3ecec3ba9e48087895beb182e24f8ab826
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Tue Dec 1 23:35:44 2015 -0500
+
+    provide more dbms functions to implement
+
+commit cd664951578665fb48d68140810003d2e8b86b6f
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 22:06:40 2015 -0500
+
+    main.ml restored
+
+commit 560f187011ac702a30c83498171dd3726bf46c90
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 22:06:27 2015 -0500
+
+    main.ml restored
+
+commit da1e5e6f356878c4661ee34188ed3bdff3eb6d09
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Tue Dec 1 21:50:57 2015 -0500
+
+    split eval into two functions
+
+commit 6f1b64a9cbe9bb80ea73c0311f30a38f05729cfd
+Merge: e0a41b0 da1e5e6
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 21:34:56 2015 -0500
+
+    printing resolved
+
+commit e0a41b0308be773f44538b332d55a6e2605a2921
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 21:30:30 2015 -0500
+
+    printing queries complete
+
+commit b5d89193bce21af2692996f8d6d3b06ab00177f1
+Merge: 2992c54 c14c017
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 15:27:35 2015 -0500
+
+    merge conflicts resolved
+
+commit 2992c54cce932c3c159adf2f1c4ae686bc33b503
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 15:23:57 2015 -0500
+
+    query printing in progress
+
+commit c14c017004c5259c6f94db70e417b3995d43ff89
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Tue Dec 1 14:04:23 2015 -0500
+
+    separate insert and insertAll in table
+
+commit 14871c86fa91a630aa82b9c924cd246eda61c408
+Merge: 02e68cf 750e4ea
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Tue Dec 1 13:42:53 2015 -0500
+
+    fix all merge conflicts
+
+commit 02e68cf16107624e5b31f0aad4e3e76acaa9a4a8
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Tue Dec 1 13:36:09 2015 -0500
+
+    fix syntax errors in database modules
+
+commit 750e4ea1d9f721d6819fbd2e603898dbd57df507
+Author: louis <cruzlouis13@gmail.com>
+Date:   Tue Dec 1 10:13:08 2015 -0500
+
+    fix syntax
+
+commit d56cbac346db2f257d69a2fd9545c94ecf319ddf
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Tue Dec 1 04:21:56 2015 -0500
+
+    many changes
+
+commit 9776a8d2da97c2ef0c1962106dae58cfbbe35e43
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 04:14:04 2015 -0500
+
+    finished update in table.ml
+
+commit 8e45b615e82ac3dc247c78578e98fad6076609d2
+Merge: 4bd69a1 111d8f7
+Author: Erin <ec587@cornell.edu>
+Date:   Tue Dec 1 03:48:31 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 4bd69a1d94839e4426e75325a899195432be36ed
+Author: Erin <ec587@cornell.edu>
+Date:   Tue Dec 1 03:44:47 2015 -0500
+
+    repl begun, join in map finished, table printing begun
+
+commit 111d8f74179b1a1a2edd4232837a82daa1b62418
+Author: louis <cruzlouis13@gmail.com>
+Date:   Tue Dec 1 02:59:41 2015 -0500
+
+    finish maps implementation
+
+commit 7edb39a4b6700982c613e6cc79059eb0c597c109
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 01:58:04 2015 -0500
+
+    dmbs editted
+
+commit 99cc543ae55de1640afc69b33a0481fa330bf06e
+Merge: b25b0ff 0bb2076
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 01:23:08 2015 -0500
+
+    start main.ml
+
+commit 0bb2076147738cb3f84f8ec967da0fc46bc94adf
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Tue Dec 1 01:20:55 2015 -0500
+
+    implement database functions and start database management system module
+
+commit b25b0ff4676672eb474b2d9906c41b57c9977d2e
+Merge: 39372aa 93bb84b
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 00:19:59 2015 -0500
+
+    table comments updated
+
+commit 93bb84bc29b75d7e6ae648cd5f9dfe1f9497f325
+Merge: 7f16fbd 84d4892
+Author: louis <cruzlouis13@gmail.com>
+Date:   Tue Dec 1 00:08:03 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 7f16fbdc7a7709537d2be066406b1de4650e9728
+Merge: 737e37d e140229
+Author: louis <cruzlouis13@gmail.com>
+Date:   Tue Dec 1 00:07:41 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+    
+    Conflicts:
+    	maps.ml
+
+commit 39372aa622d685949ff2f14c6198aaaa4c6d799a
+Merge: 9be90f8 84d4892
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 00:05:18 2015 -0500
+
+    table comment
+
+commit 9be90f83bde31a04e0e5fe71f87e0e94228f1cf4
+Author: An Tran <at697@cornell.edu>
+Date:   Tue Dec 1 00:04:46 2015 -0500
+
+    table comments added
+
+commit 737e37d0b3ebfae9ae6bf95391262b0987421a12
+Author: louis <cruzlouis13@gmail.com>
+Date:   Tue Dec 1 00:03:26 2015 -0500
+
+    updating maps to include replace
+
+commit 84d489280139bd185833290a882cab907be8380d
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Tue Dec 1 00:02:05 2015 -0500
+
+    add create table and drop table functionality
+
+commit e14022919b6a49cc49695725f7cbb8bcadb3a3e7
+Merge: 1a36397 a6b1810
+Author: An Tran <at697@cornell.edu>
+Date:   Mon Nov 30 23:01:12 2015 -0500
+
+    table editted
+
+commit 7a156fd5ca80f88eb37e8f0a8b79cd76d23eed9a
+Merge: 912deb9 e140229
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Mon Nov 30 23:00:32 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 912deb9dfb73326993acd0741856e1e2657bd4f1
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Mon Nov 30 22:58:01 2015 -0500
+
+    implement database.ml partially
+
+commit 1a36397e924563b131cbc5ea799278e9797bda6e
+Author: An Tran <at697@cornell.edu>
+Date:   Mon Nov 30 22:55:29 2015 -0500
+
+    table updated
+
+commit a6b1810e2572136ab176fd5aa954d178ccfb8c90
+Merge: 45b40e7 68e112b
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Mon Nov 30 00:19:29 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 45b40e7ffdbf2354e01302ef6e51d09b5a6f9720
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Mon Nov 30 00:19:25 2015 -0500
+
+    finish parser until further notice
+
+commit 68e112b60d51940821e9a2416131387745a10048
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 23:56:47 2015 -0500
+
+    maps and table editted
+
+commit b4eb08eed37bf784b26fddf520df846b55cecd92
+Merge: ee92005 f90f320
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 23:49:10 2015 -0500
+
+    interp work
+
+commit ee920050a40b49aec2437fdcc5b5afa4223fa521
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 23:47:23 2015 -0500
+
+    work on interpret
+
+commit 4314b0712c8ad707110eae18bba0cd72743030dd
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 23:43:25 2015 -0500
+
+    select written
+
+commit f90f320675f63e2f539d6fef9a9baa284ef42af0
+Merge: a2e3f9d c31de8b
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sun Nov 29 22:59:11 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit a2e3f9df8e6f0505219f213bdbc266c2b8c0a1e1
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sun Nov 29 22:59:01 2015 -0500
+
+    partially fixed parsing
+
+commit c31de8b9722dc9a745e6c17337b91ce708d5d9c9
+Merge: 7885537 7b157d3
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 22:43:04 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit 7b157d364f4093deda692a7c22f69b5f0b078ec7
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sun Nov 29 22:50:41 2015 -0500
+
+    write more map functions
+
+commit 7885537d5e642832136dfb434e886872cff5aeb5
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 22:42:51 2015 -0500
+
+    table in progress
+
+commit 6e950b1c9088a34495e9be6b976b0ccab133a8df
+Merge: c8d52da 356b929
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sun Nov 29 21:13:33 2015 -0500
+
+    change types to typs
+
+commit 356b929afc053ccd0b897d58a0e838dd0afe7033
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 18:26:28 2015 -0500
+
+    map added back
+
+commit 94abbd9cb4dd8e739d254c49893dcfb65401e364
+Merge: 208f2e7 5da3220
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 18:21:13 2015 -0500
+
+    maps.ml restored
+
+commit 208f2e7d5fd5b087ca4070f7c5284e58c4837985
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 18:17:46 2015 -0500
+
+    maps.ml restored
+
+commit 5da32206b0534427ed145a8ec00f4294ea2cb66a
+Author: Annie Tran <at697@cornell.edu>
+Date:   Sun Nov 29 15:13:02 2015 -0500
+
+    Delete query.ml
+
+commit bf2abb0a0811c9123b676fd7480a16a1d0e2dbc1
+Author: Annie Tran <at697@cornell.edu>
+Date:   Sun Nov 29 15:12:50 2015 -0500
+
+    Delete untitled
+
+commit fced97ed9ab0f1ee3b64448a0312737ddd5685e4
+Merge: 8c1db1c 8368e32
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 15:11:21 2015 -0500
+
+    interpreter and table updated
+
+commit 8c1db1cde1513129943f00448f25700730a35d21
+Author: An Tran <at697@cornell.edu>
+Date:   Sun Nov 29 15:07:13 2015 -0500
+
+    interpret and table updated
+
+commit 8368e320251aa5262031e1d8256582bbfd697408
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Nov 28 22:51:50 2015 -0500
+
+    Delete written and compiles in table and maps
+
+commit bb247b82cb2dec3cc786df968d75277e0e205524
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Nov 28 21:05:53 2015 -0500
+
+    Finish update in maps.ml. Change map types as well
+
+commit 87a68703434aac22748bb43e0d1fa41b6b081946
+Merge: 0b09f04 47ddf85
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Nov 28 15:51:14 2015 -0500
+
+    interpreter rewritten
+
+commit 0b09f0473dd9577c3782ae659af78da21f447fd6
+Author: An Tran <at697@cornell.edu>
+Date:   Sat Nov 28 15:48:59 2015 -0500
+
+    interpreter editted
+
+commit 47ddf85224f80cfed4dce59cff77071d96867458
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Nov 28 15:45:56 2015 -0500
+
+    adding str to .cs3110
+
+commit 3c8972a56001904cafcfec39035fd11a3b7d7f46
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Nov 28 15:45:01 2015 -0500
+
+    finish insert, delete
+
+commit 7bcbe63c1ce2b328fbc4edaae34f749235a27358
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Nov 28 15:36:59 2015 -0500
+
+    finish map select
+
+commit 54d89c02cab97b8eb0a83b662b24e4673efbee51
+Author: Erin <ec587@cornell.edu>
+Date:   Sat Nov 28 14:49:57 2015 -0500
+
+    Solve maps type compilation error
+
+commit c8d52da2254f8ce29930803f053720fd5edf6f23
+Merge: 76b952a 4d5279b
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Nov 28 13:19:20 2015 -0500
+
+    fixed merge conflicts in table and maps
+
+commit 76b952a7a4cb9809670383f4eee5d5eed9b9536c
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Nov 28 13:17:04 2015 -0500
+
+    minor changes to every file
+
+commit 4d5279b4d88249fe84287bcc1c27f2639ebc3c13
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Nov 28 01:32:17 2015 -0500
+
+    change table variant
+
+commit b3008859b5cb612915f4903b4e16456714394bef
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Nov 28 01:03:19 2015 -0500
+
+    fix comment
+
+commit 2c9c97ba3c4acc4a98e7a964d8c3ac0ee96dbdda
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Nov 28 00:59:46 2015 -0500
+
+    updating maps
+
+commit b292208e0b986e3064dbb0b1c79d75dfae45dabe
+Merge: 619c1d0 ba414fc
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Nov 28 00:53:37 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+    
+    Conflicts:
+    	maps.ml
+
+commit 619c1d00239e0924c2edc129dc8c6eaa4db6856f
+Author: louis <cruzlouis13@gmail.com>
+Date:   Sat Nov 28 00:49:00 2015 -0500
+
+    add select for map
+
+commit ba414fcff396da35b49680e8f9951585ae41e9b9
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Sat Nov 28 00:14:33 2015 -0500
+
+    separate table and types
+
+commit 98a8e281da15d7098ee31609a821048530896206
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Nov 27 23:43:41 2015 -0500
+
+    update table
+
+commit e91b764eb8a31652647f3a4a7147bca2b5ecf0a8
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Nov 27 23:15:09 2015 -0500
+
+    update type expr
+
+commit 71c515dad231792b52c8e69e4fd6cce3a1b9fdfe
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Nov 27 23:13:24 2015 -0500
+
+    fixed table.ml
+
+commit 55bca3c21e361bac3a8a206eb1d86f2629e45a62
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Nov 27 23:06:40 2015 -0500
+
+    add features to parser and lexer, minor changes in mli files
+
+commit 42b2233d9847feb07632e9d195f769ebee6857f7
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Nov 27 22:30:59 2015 -0500
+
+    fix table.mli
+
+commit 782e28e4603d22f17b6ff248587a6434abe03f0f
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Nov 27 22:22:23 2015 -0500
+
+    fixed mli files
+
+commit e2ce0f89645fbeecfcc27cb23d91677f5643763e
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Nov 27 21:45:00 2015 -0500
+
+    broken query.ml
+
+commit 6bc533e926a0d2b090647c9f39864a4f4da15045
+Author: Erin <ec587@cornell.edu>
+Date:   Fri Nov 27 21:32:55 2015 -0500
+
+    Updated maps
+
+commit 78279b51b0d6557ec4aad6e088c2a555f31ed27d
+Author: An Tran <at697@cornell.edu>
+Date:   Fri Nov 27 21:31:28 2015 -0500
+
+    merge conflict resolved
+
+commit d091a17384b47c0bf036bb568cd397156c06aa3c
+Merge: 427c9cf bfd1f9e
+Author: An Tran <at697@cornell.edu>
+Date:   Fri Nov 27 21:26:02 2015 -0500
+
+    interpreter attempted
+
+commit 427c9cf9d113ad264fd7f22bd57b646372700362
+Author: An Tran <at697@cornell.edu>
+Date:   Fri Nov 27 21:22:40 2015 -0500
+
+    attempt interpreter
+
+commit bfd1f9e845f0c0946400ad26011d5145ba50f254
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Nov 27 02:29:39 2015 -0500
+
+    renamed sql.mly to parser.mly
+
+commit 6f1d199b5b9f10e08dfed0fd6ebfdbc7b09affe5
+Merge: c6fa1f7 2357932
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Nov 27 02:25:50 2015 -0500
+
+    Merge branch 'master' of https://github.com/fuhranku/LeafDB
+
+commit c6fa1f784d53ca5805300a26b8b7013812f3d095
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Fri Nov 27 02:25:46 2015 -0500
+
+    Add lexer and parser; minimal mli changes
+
+commit 23579324304b6c35e88a499149799c9590abc066
+Author: louis <cruzlouis13@gmail.com>
+Date:   Thu Nov 26 00:47:42 2015 -0500
+
+    fixing compile erros with modules
+
+commit dd423fee6029967ba3e13a03da02e3aabac3eeb6
+Author: louis <cruzlouis13@gmail.com>
+Date:   Thu Nov 26 00:38:47 2015 -0500
+
+    adding .cs3110 file
+
+commit 8411c5d71a27ae0aa8de5eed90093d5cc95d231b
+Author: Erin <ec587@cornell.edu>
+Date:   Thu Nov 26 00:12:52 2015 -0500
+
+    Creation of maps.ml
+
+commit e4269e0b442975c02d1866f28de2ba61cfc9d99b
+Author: An Tran <at697@cornell.edu>
+Date:   Wed Nov 25 23:48:58 2015 -0500
+
+    interpreter complete without database expressions
+
+commit 6b2e1c979ba1f517894eb973627882f4ada1f2fa
+Author: Erin <ec587@cornell.edu>
+Date:   Mon Nov 23 22:27:56 2015 -0500
+
+    Created table.ml and btree.ml. Variant btree types in progress.
+
+commit f2992aac3d9381ba6403e18f39ace73034c9a51d
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Nov 12 22:57:29 2015 -0500
+
+    add interpret.mli
+
+commit 8097157bfc81c2834ee9c9b2b640be1a490566b8
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Thu Nov 12 15:39:31 2015 -0500
+
+    include data type in columns
+
+commit 0379caa3a84de82d4bb677d6859f6b9e6daffca4
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Wed Nov 11 23:07:24 2015 -0500
+
+    change nature of table types and add filesystem.mli
+
+commit 596a81c9022119ff05d9de5ce8b272e364d293b5
+Author: Frank Chan <fc249@cornell.edu>
+Date:   Tue Nov 10 01:43:17 2015 -0500
+
+    initial commit
