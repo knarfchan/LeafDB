@@ -50,7 +50,10 @@ let eval (db : Database.t) (e : expr): evaluated =
   | JoinQuerTab (e, str, o) ->
       attempt_join (eval_select db e) (Database.lookup db str) o
   | JoinQueries (e1, e2, o) -> attempt_join (eval_select db e1) (eval_select db e2) o
-  | CreateTable(str, cdl) -> (None, Database.add_table db str (Table.create cdl))
+  | CreateTable(str, cdl) -> let new_t = Table.create cdl in
+                             if(Database.add_table db str new_t)
+                             then (Some new_t, true)
+                             else (None, false)
   | DropTable(str) -> (None, Database.drop db str)
   | _ -> (None, false)
 
@@ -65,10 +68,8 @@ let eval_dbms (dbs : Dbms.t) (e) : dbresult =
   | ExitDb -> exit 0
   | _ -> (None, None, false)
 
-(*type evaluated = Table.t option * bool
-type dbresult = (Database.t option) * string option * bool*)
 
-(*
+
 TEST_MODULE "eval tests 1" = struct
 
   let leafDB = Dbms.create ()
@@ -205,9 +206,16 @@ TEST_MODULE "eval tests 2" = struct
   let add1 = Database.add_table db "tbl" tbl'''
   let add2 = Database.add_table db "tibble" tibble'''
 
+  let s1 = eval db (Select(["Name"; "Age"], "tbl", Condition ("Height",Gt,VFloat 5.)))
+  let s2 = eval db (SelectAll("tibble", Null))
+
+  let sel1 = match s1 with
+            | Some t, _ -> t
+            | _ -> failwith "never reached"
+  let sel2 = match s2 with
+            | Some t, _ -> t
+            | _ -> failwith "never reached"
 
 
-  (*let s1 = eval db2 (Select(["name"; "age"], "t1", Null))
-  let s2 = eval db2 (SelectAll("t2", Null))*)
 
-end*)
+end
