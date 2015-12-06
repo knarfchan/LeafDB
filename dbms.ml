@@ -17,6 +17,7 @@ let drop (dbs: t) (str: string) : bool =
   if Hashtbl.mem dbs str then (Hashtbl.remove dbs str; true)
   else false
 
+(* helper function inserts database names into a table *)
 let rec insert_databases (strs: value list) (tab: Table.t) : Table.t =
   match strs with
   | [] -> tab
@@ -28,6 +29,7 @@ let get_databases (dbs: t) : Table.t =
     let new_tab = Table.create([("Databases", VString(""))]) in
       insert_databases(!db_list)(new_tab)
 
+(* goes through the list of database names and stores them in dbs *)
 let rec load_help (dbs: t) (db_names: string list) : unit =
   match db_names with
   | [] -> ()
