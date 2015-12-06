@@ -96,7 +96,6 @@ let rec repl2 (dbs: Dbms.t) (d: Database.t) (name: string) =
     Printf.printf "\027[32mLeafDB>%s>" name; Printf.printf("\027[37m");
     let input = read_line() in
     let e = Test.parse input in
-    Printf.printf"%s" (Test.ast_to_string e);
       if e = ExitDb then (Printf.printf "Exiting database.\n"; repl1 dbs)
       else if e = ShowTables then
         (Table.print_tbl (Database.get_tables d); repl2 dbs d name) else
@@ -112,7 +111,6 @@ and repl1 (dbs: Dbms.t) =
     Printf.printf("\027[32mLeafDB>");Printf.printf("\027[37m");
     let input = read_line() in
     let e = Test.parse input in
-    Printf.printf"%s" (Test.ast_to_string e);
     if e = ShowDatabases then
       (Table.print_tbl (Dbms.get_databases dbs); repl1 dbs)
     else let result = Interpret.eval_dbms dbs e in
