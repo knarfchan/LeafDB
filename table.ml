@@ -446,7 +446,7 @@ let update tbl cvlst w =
       (update_all_col (insert_all_nulls tbl (insert_nulls tbl (snd new_maps) [])
       []) updated_tbl [])
 
-
+(*
 TEST_MODULE "insert_test" = struct
 
   (* Insert Test Cases *)
@@ -570,3 +570,5 @@ TEST_MODULE "insert_test" = struct
               sel' []) === [[VFloat 6.; VInt 19; VString "Frank"]]
 
 end
+
+*)

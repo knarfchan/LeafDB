@@ -5,7 +5,7 @@ type t
 
 (* precondition: none
  * postcondition: create an empty Dbms t to store databases *)
-val create: t
+val create: unit -> t
 
 (* precondition: none
  * postcondition: add an empty Database.t with name string to a t if the name is

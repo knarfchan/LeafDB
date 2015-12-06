@@ -69,6 +69,7 @@ let eval_dbms (dbs : Dbms.t) (e) : dbresult =
   | _ -> (None, None, false)
 
 
+(*
 
 TEST_MODULE "eval tests 1" = struct
 
@@ -219,3 +220,5 @@ TEST_MODULE "eval tests 2" = struct
 
 
 end
+
+*)
