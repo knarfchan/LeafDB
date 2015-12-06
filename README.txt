@@ -3,10 +3,12 @@ SQL-like commands to query.
 
 TO RUN:
 
-install menhir
+install menhir if not already installed
+
 opam install menhir
 
 install csv
+
 opam install csv
 
 THEN:
@@ -63,7 +65,7 @@ Inside a database:
   <a select statement or table name>
   JOIN
   <a select statement or table name>
-  ON <column from first select/table> = <column from second select/table>
+  ON <column_name from 1st select/table> = <column_name from 2nd select/table>
 
   (NOTE: our JOIN strays away from conventional SQL. Also, if using select
   statements, the columns in ON column1 = column2 must be selected.)
@@ -98,3 +100,8 @@ These operators can be used in the WHERE conditions of SELECT statements
   !=
   LIKE
   NOT LIKE
+
+OTHER NOTES:
+The test cases in interpret.ml, map.ml, and table.ml are commented out
+because the ocamlbuild does not support the test case syntax
+
