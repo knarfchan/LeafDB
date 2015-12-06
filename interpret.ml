@@ -69,7 +69,8 @@ let eval_dbms (dbs : Dbms.t) (e) : dbresult =
   | _ -> (None, None, false)
 
 
-TEST_MODULE "eval tests" = struct
+
+TEST_MODULE "eval tests 1" = struct
 
   let leafDB = Dbms.create ()
 

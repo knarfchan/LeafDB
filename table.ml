@@ -12,8 +12,10 @@ let next_val =
   incr time;
   abs(!time)
 
+(* [to_table lst] converts a (string * Maps.t) list into a table *)
 let to_table (lst: (string * Maps.t) list) = lst
 
+(* [get_one_map] searches the table t for a column and returns the map *)
 let get_one_map (column: string) (t:t) = List.assoc column t
 
 (* [matrix_of_table tbl] returns a string matrix of the table *)
@@ -322,14 +324,13 @@ let join t1 t2 o =
     in List.rev (remove_on (List.rev (join_help ((empty_table t1 []) @
       (empty_table t2 [])) (get_cvlst t1 t2 rows []))) (snd o) [])
 
-
-
-
+(* [parse_item s] parses a string into a type with the rowid and value *)
 let parse_item (s:string) =
   let sep = Str.search_forward (Str.regexp_string "*") s 0 in
     (int_of_string (Bytes.sub s 0 sep),
     (Bytes.sub s (sep + 1) (Bytes.length s - sep - 1)))
 
+(* [make_map typ] creates a map with the type specified by typ *)
 let make_map typ =
   match typ with
   | "VInt" -> Maps.create (VInt 0)
@@ -338,11 +339,14 @@ let make_map typ =
   | "VFloat" -> Maps.create (VFloat 0.0)
   | _ -> raise (Failure "Error: Not a valid SQL type")
 
+(* [parse_all_items] parses all the items in a column into a rowid, value list*)
 let rec parse_all_items row acc =
   match row with
   | [] -> acc
   | h::t -> parse_all_items t (acc @ [(parse_item h)])
 
+(* [insert_items typ map row] the parsed items from a row of a csv file into a
+ * map *)
 let rec insert_items (typ:string) map row =
   match typ, map, row with
   | "VInt", m, (id, v)::t ->
@@ -356,7 +360,7 @@ let rec insert_items (typ:string) map row =
   | _ , _, [] -> map
   | _, _, _ -> raise (Failure "Error: Type and Map should be specified")
 
-
+(* [read_tbl_helper] converts the matrix into a table into the accumulator acc*)
 let rec read_tbl_helper (matrix:bytes list list) (acc:t) =
   match matrix with
   | [] -> acc
@@ -365,6 +369,8 @@ let rec read_tbl_helper (matrix:bytes list list) (acc:t) =
       (parse_all_items t []))])
   | _::t' -> raise (Failure "Error: Row should have more than 2 items")
 
+(* [read_tbl_helper] converts a bytes list list into a table to read from a
+ * csv file *)
 let read_tbl (matrix:bytes list list) =
   read_tbl_helper matrix []
 
